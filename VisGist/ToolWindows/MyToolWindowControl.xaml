@@ -8,21 +8,36 @@
              xmlns:util="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Utilities"
              xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
              xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             xmlns:controls="clr-namespace:VisGist.Controls"
              toolkit:Themes.UseVsTheme="True"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
              Name="MyToolWindow">
-    <Grid>
-        <StackPanel Orientation="Vertical">
-            <Label x:Name="lblHeadline"
-                   Margin="10"
-                   HorizontalAlignment="Center">Title</Label>
-            <Button Content="Click me!"
-                    Click="button1_Click"
-                    Width="120"
-                    Height="80"
-                    Name="button1" />
-        </StackPanel>
-    </Grid>
+
+    <UserControl.Resources>
+        <Style x:Key="ToolBarTray" TargetType="ToolBarTray">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style x:Key="ToolBar" TargetType="ToolBar">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </UserControl.Resources>
+
+    <DockPanel x:Name="MainDP">
+        <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top">
+            <ToolBarTray x:Name="GreeterTBT" Style="{DynamicResource ToolBarTray}">
+                <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true">
+                    <Button>
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}" />
+                    </Button>
+                    <Button x:Name="TestBT" Click="TestBT_Click">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.IntellisenseLightBulb}" />
+                    </Button>
+                </controls:ToolBar>
+            </ToolBarTray>
+        </DockPanel>
+    </DockPanel>
+    
 </UserControl>
