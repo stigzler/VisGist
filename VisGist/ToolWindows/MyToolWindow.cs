@@ -3,18 +3,22 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using VisGist.ViewModels;
 
 namespace VisGist
 {
     public class MyToolWindow : BaseToolWindow<MyToolWindow>
     {
+        internal MainWindowViewModel MainWindowViewModel;
+
+
         public override string GetTitle(int toolWindowId) => "Gists";
 
         public override Type PaneType => typeof(Pane);
 
         public override Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
-            return Task.FromResult<FrameworkElement>(new MyToolWindowControl());
+            return Task.FromResult<FrameworkElement>(new MainWindow(MainWindowViewModel));
         }
 
         [Guid("1baca796-1bb3-41d1-b804-adeb9f3018cc")]

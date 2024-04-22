@@ -49,6 +49,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\MyToolWindowCommand.cs" />
     <Compile Include="Utility\ResourceManager.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="VisGistPackage.cs" />
     <Compile Include="source.extension.cs">
       <AutoGen>True</AutoGen>
@@ -89,12 +91,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ToolWindows\MyToolWindowControl.xaml">
+    <Page Include="ToolWindows\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="ToolWindows\MyToolWindowControl.xaml.cs">
-      <DependentUpon>MyToolWindowControl.xaml</DependentUpon>
+    <Compile Include="ToolWindows\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -118,7 +120,6 @@
     <Folder Include="Data\" />
     <Folder Include="Models\" />
     <Folder Include="Services\Github\" />
-    <Folder Include="ViewModels\" />
     <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

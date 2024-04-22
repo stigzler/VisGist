@@ -2,16 +2,25 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using VisGist.ViewModels;
 
 namespace VisGist
 {
-    public partial class MyToolWindowControl : UserControl
+    public partial class MainWindow : UserControl
     {
-        public MyToolWindowControl()
+        internal MainWindowViewModel MainWindowVM;
+
+        public MainWindow()
         {
-            InitializeComponent();
+                
         }
 
+        internal MainWindow(MainWindowViewModel mainWindowViewModel)
+        {
+            InitializeComponent();
+            MainWindowVM = mainWindowViewModel;
+            this.DataContext = MainWindowVM;
+        }
         private async void TestBT_Click(object sender, RoutedEventArgs e)
         {
             var client = new GitHubClient(new ProductHeaderValue("VisGit-Tests"));
