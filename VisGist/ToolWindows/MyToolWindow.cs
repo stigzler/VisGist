@@ -9,7 +9,7 @@ namespace VisGist
 {
     public class MyToolWindow : BaseToolWindow<MyToolWindow>
     {
-        internal MainWindowViewModel MainWindowViewModel;
+        internal MainWindowViewModel MainWindowViewModel = new MainWindowViewModel();
 
 
         public override string GetTitle(int toolWindowId) => "Gists";

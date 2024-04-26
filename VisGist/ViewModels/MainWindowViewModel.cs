@@ -8,8 +8,11 @@ namespace VisGist.ViewModels
 {
     internal class MainWindowViewModel: ViewModelBase
     {
-        public string Message { get; set; } = "Dave woz ere";
-
-
+        public bool IsDarkMode { get => Helpers.UI.IsDarkMode(); }
+        public bool IsAuthenticated { get; set; } = false;
+        public MainWindowViewModel()
+        {
+                
+        }
     }
 }
