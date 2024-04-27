@@ -5,4 +5,11 @@
     <SolidColorBrush x:Key="StandardToolstripBackground" Color="Transparent" />
     <SolidColorBrush x:Key="StandardButtonBackground" Color="#808080" />
 
+    <!-- STATUSBAR STYLE -->
+    <Style x:Key="StatusBar" TargetType="StatusBar">
+        <Setter Property="Foreground" Value="{StaticResource StandardTextColor}"/>
+    </Style>
+    
+    
+
 </ResourceDictionary>

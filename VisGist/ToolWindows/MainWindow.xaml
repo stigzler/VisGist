@@ -10,7 +10,6 @@
              xmlns:controls="clr-namespace:VisGist.Controls"
              xmlns:converters="clr-namespace:VisGist.Converters" 
              xmlns:viewmodels="clr-namespace:VisGist.ViewModels" 
-             d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
              toolkit:Themes.UseVsTheme="True"
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
@@ -19,13 +18,17 @@
              d:DesignWidth="300"
              Name="MyToolWindow">
 
+    <UserControl.DataContext>
+        <viewmodels:MainWindowViewModel/>
+    </UserControl.DataContext>
 
     <UserControl.Resources>
+
+
 
         <!-- CONVERTERS ================================================================================= -->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
-
 
         <!-- STYLES ================================================================================= -->
 
@@ -41,94 +44,41 @@
 
         <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Focusable" Value="False"/>
         </Style>
 
         <Style x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
         </Style>
 
-        <!-- BUTTONS STYLE -->
+         <!--BUTTON STYLE--> 
         <Style x:Key="ToggleButton" TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-        </Style>
+        </Style>       
 
-        <!-- DROPDOWNBUTTON -->
-        <Style x:Key="dropDownButtonStyle" TargetType="controls:DropDownButton" >
-            <Setter Property="Height" Value="24" />
-            <Setter Property="Width" Value="24" />
-            <Setter Property="Padding" Value="2" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type controls:DropDownButton}">
-                        <Border x:Name="Border" Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#80808080" TargetName="Border" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="ContextMenuCheckless" TargetType="{x:Type ContextMenu}" >
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ContextMenu}">
-                        <Border BorderThickness="1" CornerRadius="4" BorderBrush="Black" x:Name="Border" Background="White">
-                            <StackPanel ClipToBounds="True" Orientation="Vertical" IsItemsHost="True" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="White" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
 
     </UserControl.Resources>
 
+    <!-- WINDOW ================================================================================= -->
 
-    <DockPanel x:Name="MainDP">
+
+    <DockPanel x:Name="MainDP" Height="Auto" LastChildFill="False">
         <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top">
 
             <ToolBarTray x:Name="GreeterTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
                 Converter={StaticResource InverseBoolToVisibilityConverter}}" Background="Transparent">
-
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true">
 
-                    <Button x:Name="LoginBT">
+                    <Button x:Name="LoginBT" Command="{Binding GitAuthenticateCMD}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}" />
                     </Button>
 
-                    <controls:DropDownButton x:Name="SettingsBT" Background="Transparent" Style="{StaticResource dropDownButtonStyle}">
-                        
-                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Settings}" />
+                    <Button x:Name="TestBT" Click="TestBT_ClickAsync">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewTest}" />
+                    </Button>
 
-                        <controls:DropDownButton.Menu>
-                            <ContextMenu Style="{Binding ContextMenuCheckless}">
-                                <MenuItem Background="Transparent">
-                                    <MenuItem.Icon>
-                                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Key}" />
-                                    </MenuItem.Icon>
-                                    <MenuItem.Header>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Secret:" Width="75"/>
-                                            <TextBox  x:Name="GitPatTB" Width="250"/>
-                                        </StackPanel>
-                                    </MenuItem.Header>
-                                </MenuItem>
-                            </ContextMenu>
-                        </controls:DropDownButton.Menu>
-                    </controls:DropDownButton>
+                    <TextBlock Text="{Binding HelloWorld}"></TextBlock>
 
                 </controls:ToolBar>
             </ToolBarTray>
@@ -136,19 +86,50 @@
             <ToolBarTray x:Name="MainTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
                 Converter={StaticResource BoolToVisibilityConverter}}">
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true">
-                    <Button x:Name="LogoutBT">
+                    
+                    <Button x:Name="LogoutBT" Command="{Binding LogOutCMD}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.UserError}" />
                     </Button>
+                    
                 </controls:ToolBar>
             </ToolBarTray>
 
         </DockPanel>
-        <!-- Top Toolbar END -->
 
         <TextBox x:Name="SearchBox" DockPanel.Dock="Top" Margin="4" Visibility="{Binding IsAuthenticated, 
-            Converter={StaticResource InverseBoolToVisibilityConverter}}">
-
+            Converter={StaticResource InverseBoolToVisibilityConverter}}" Text="{Binding HelloWorld}">
         </TextBox>
+
+        <!--<StatusBar x:Name="MainSB" DockPanel.Dock="Bottom" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Margin="4" Background="Transparent">-->
+
+        <StatusBar x:Name="MainSB" DockPanel.Dock="Bottom"  Margin="4" 
+                   Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Background="Transparent">
+            
+            <StackPanel Orientation="Horizontal">
+
+                <imaging:CrispImage Tag="{Binding StatusImage}" Width="16" Height="16">
+                    <imaging:CrispImage.Style>
+                        <Style TargetType="imaging:CrispImage">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding StatusImage}" Value="Information">
+                                    <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.StatusInformation}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding StatusImage}" Value="Warning">
+                                    <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.StatusWarning}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding StatusImage}" Value="Success">
+                                    <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.StatusOK}"/>
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                    </imaging:CrispImage.Style>                                  
+                </imaging:CrispImage>            
+                
+                <TextBlock Text="{Binding StatusText}" Padding="6,0,2,0"></TextBlock>
+                
+            </StackPanel>
+        </StatusBar>
 
 
     </DockPanel>

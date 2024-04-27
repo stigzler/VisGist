@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace VisGist.Data
 {
-    internal class Constants
+    internal static class Constants
     {
-        internal static Uri darkTheme = new Uri("/Resources/Themes/Dark.xaml", UriKind.Relative);
-        internal static Uri lightTheme = new Uri("/Resources/Themes/Light.xaml", UriKind.Relative);
-
-
+        internal const string GitProductHeaderValue = "VisGist";
     }
 }

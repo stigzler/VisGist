@@ -1,66 +1,55 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
 using Octokit;
 using Syncfusion.SfSkinManager;
-using Syncfusion.Themes.FluentDark.WPF;
-using Syncfusion.Themes.FluentLight.WPF;
 using Syncfusion.Themes.MaterialDark.WPF;
 using Syncfusion.Themes.MaterialLight.WPF;
-using Syncfusion.Themes.Windows11Dark.WPF;
-using Syncfusion.Themes.Windows11Light.WPF;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using VisGist.Utility;
 using VisGist.ViewModels;
 
 namespace VisGist
 {
     public partial class MainWindow : UserControl
     {
-        internal MainWindowViewModel MainWindowVM;
+        private MainWindowViewModel mainWindowVM;
 
+        // below not used at present, but may be needed
+        // private ResourceDictionaryManager resourceDictionaryManager = new ResourceDictionaryManager();
 
 
         internal MainWindow(MainWindowViewModel mainWindowViewModel)
         {
             InitializeComponent();
-            MainWindowVM = mainWindowViewModel;
-            this.DataContext = MainWindowVM;
 
-            // THEME
-            VSColorTheme.ThemeChanged += VSColorTheme_ThemeChanged; ;
+            mainWindowVM = (MainWindowViewModel)this.DataContext;
 
-            SetTheme();
+            SetupVmEventHooks();
+
         }
 
-        private void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
+        private void SetupVmEventHooks()
         {
-            SetTheme();
+            mainWindowVM.PropertyChanged += MainWindowVM_PropertyChanged;
         }
 
-        private void SetTheme()
+        private void MainWindowVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (MainWindowVM.IsDarkMode)
+            switch (e.PropertyName)
             {
-                MaterialDarkThemeSettings themeSettings = new MaterialDarkThemeSettings();
-                themeSettings.Palette = Syncfusion.Themes.MaterialDark.WPF.MaterialPalette.Blue;
-                SfSkinManager.RegisterThemeSettings("MaterialDark", themeSettings);
-                SfSkinManager.SetTheme(this, new Theme("MaterialDark"));
-            }
-            else
-            {
-                SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
-                MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
-                themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
-                SfSkinManager.RegisterThemeSettings("FluentDark", themeSettings);
+                case nameof(MainWindowViewModel.IsDarkMode):
+                    SetTheme(mainWindowVM.IsDarkMode);
+                    break;
             }
         }
 
-
-
-
-
-        private async void TestBT_Click(object sender, RoutedEventArgs e)
+        private async void TestBT_ClickAsync(object sender, RoutedEventArgs e)
         {
+            var options = await General.GetLiveInstanceAsync();
+            Debug.WriteLine(options.PersonalAccessToken);
+
+
             var client = new GitHubClient(new ProductHeaderValue("VisGit-Tests"));
             var tokenAuth = new Credentials("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"); // NOTE: not real token
             client.Credentials = tokenAuth;
@@ -72,20 +61,32 @@ namespace VisGist
                 user.PublicRepos,
                 user.Url);
 
-
             var gists = await client.Gist.GetAllForUser("stigzler");
-
-
         }
 
-
-
-        private void SettingsBT_Click(object sender, RoutedEventArgs e)
+        private void SetTheme(bool darkMode)
         {
-            var settingsBT = sender as FrameworkElement;
-            if (settingsBT != null)
+            if (darkMode)
             {
-                settingsBT.ContextMenu.IsOpen = true;
+                // below not used at present, but may be needed
+                // resourceDictionaryManager.ChangeTheme(new Uri("pack://application:,,,/VisGist;component/Resources/Themes/Dark.xaml"), this);
+
+                // Syncfusion Theme operations
+                MaterialDarkThemeSettings themeSettings = new MaterialDarkThemeSettings();
+                themeSettings.Palette = Syncfusion.Themes.MaterialDark.WPF.MaterialPalette.Blue;
+                SfSkinManager.RegisterThemeSettings("MaterialDark", themeSettings);
+                SfSkinManager.SetTheme(this, new Theme("MaterialDark"));
+            }
+            else
+            {
+                // below not used at present, but may be needed
+                // resourceDictionaryManager.ChangeTheme(new Uri("pack://application:,,,/VisGist;component/Resources/Themes/Light.xaml"), this);
+
+                // Syncfusion Theme operations
+                SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
+                MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
+                themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
+                SfSkinManager.RegisterThemeSettings("FluentDark", themeSettings);
             }
         }
     }
