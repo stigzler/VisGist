@@ -41,6 +41,18 @@ namespace VisGist.Services
             }
         }
 
+        internal async Task DoTestActionAsync(object obj)
+        {
+            var user = await gitHubClient.User.Get("stigzler");
+
+            Debug.WriteLine("{0} has {1} public repositories - go check out their profile at {2}",
+                user.Name,
+                user.PublicRepos,
+                user.Url);
+
+            var gists = await gitHubClient.Gist.GetAllForUser("stigzler");
+        }
+
 
         //internal async Task<bool> CanAuthenticate()
         //{

@@ -12,3 +12,30 @@ Encrypt PAT with DPAPI:
 https://weblogs.asp.net/jongalloway/encrypting-passwords-in-a-net-app-config-file
 
 
+## Octokit.Gist research
+
+### Stars
+Not held in the Gist or GistFile itself. Test via
+
+`GistClient.IsStarred(string gistId)`
+
+Star/Unstar via:
+
+`GistClient.Star(string gistId)` / `GistClient.Unstar(string gistId)`
+
+### Comments
+Not directly accessible from Gist. Have to use `GistCommentsClient`:
+
+`GistCommentsClient.GetAllForGist(string gistId)`
+
+### Updating
+
+If update Gist Description , have to use `GistUpdate`
+
+
+
+
+
+
+
+

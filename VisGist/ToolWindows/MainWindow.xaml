@@ -25,8 +25,6 @@
 
     <UserControl.Resources>
 
-
-
         <!-- CONVERTERS ================================================================================= -->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
@@ -64,7 +62,7 @@
     <!-- WINDOW ================================================================================= -->
     <behaviours:Interaction.Triggers>
         <behaviours:EventTrigger EventName="Loaded" SourceObject ="{Binding ElementName=MyToolWindow}">
-            <behaviours:InvokeCommandAction Command="{Binding OnViewLoadedCMD}"/>
+            <behaviours:InvokeCommandAction Command="{Binding DoPostLoadActionsCMD}"/>
         </behaviours:EventTrigger>
     </behaviours:Interaction.Triggers>
 
@@ -75,15 +73,10 @@
                 Converter={StaticResource InverseBoolToVisibilityConverter}}" Background="Transparent">
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true">
 
-                    <Button x:Name="LoginBT" Command="{Binding GitAuthenticateCMD}">
+                    <Button x:Name="LoginBT" Command="{Binding GitAuthenticateCMD}" ToolTip="Log In">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}" />
                     </Button>
 
-                    <Button x:Name="TestBT" Click="TestBT_ClickAsync">
-                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewTest}" />
-                    </Button>
-
-                    <TextBlock Text="{Binding HelloWorld}"></TextBlock>
 
                 </controls:ToolBar>
             </ToolBarTray>
@@ -92,8 +85,12 @@
                 Converter={StaticResource BoolToVisibilityConverter}}">
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true">
 
-                    <Button x:Name="LogoutBT" Command="{Binding LogOutCMD}">
+                    <Button x:Name="LogoutBT" Command="{Binding LogOutCMD}" ToolTip="Log Out">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.UserError}" />
+                    </Button>
+
+                    <Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewTest}" />
                     </Button>
 
                 </controls:ToolBar>

@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
 using Octokit;
 using System.ComponentModel;
+using System.Diagnostics;
 using VisGist.Enums;
 using VisGist.Services;
 
@@ -41,13 +42,15 @@ namespace VisGist.ViewModels
 
         public IAsyncRelayCommand GitAuthenticateCMD { get; set; }
         public IRelayCommand LogOutCMD {  get; set; }
-        public IAsyncRelayCommand OnViewLoadedCMD {  get; set; }
+        public IAsyncRelayCommand DoPostLoadActionsCMD {  get; set; }
+        public IAsyncRelayCommand DoTestActionCMD {  get; set; }
+
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
 
         #region OPERATIONAL PRIVATE VARS ===========================================================================
-        private GistClientService GistClientService = new GistClientService();
+        private GistClientService gitClientService = new GistClientService();
         private General userVsOptions;
 
 
@@ -60,7 +63,20 @@ namespace VisGist.ViewModels
             VSColorTheme.ThemeChanged += VSColorTheme_ThemeChanged;
 
             SetupCommands();
-        } 
+        }
+
+        private void SetupCommands()
+        {
+            GitAuthenticateCMD = new AsyncRelayCommand(AuthenticateUserAsync);
+            LogOutCMD = new RelayCommand(LogOut);
+            DoPostLoadActionsCMD = new AsyncRelayCommand(OnViewLoadedAsync);
+            DoTestActionCMD = new AsyncRelayCommand(DoTestActionAsync);
+        }
+
+        private async Task DoTestActionAsync()
+        {
+           await gitClientService.DoTestActionAsync(this);
+        }
 
         private async Task OnViewLoadedAsync()
         {
@@ -73,16 +89,11 @@ namespace VisGist.ViewModels
             IsDarkMode = Helpers.UI.IsDarkMode();
         }
 
-        private void SetupCommands()
-        {
-            GitAuthenticateCMD = new AsyncRelayCommand(AuthenticateUserAsync);
-            LogOutCMD = new RelayCommand(LogOut);
-            OnViewLoadedCMD = new AsyncRelayCommand(OnViewLoadedAsync);
-        }
+
 
         private async Task AuthenticateUserAsync()
         {
-            var authenitcationResult = await GistClientService.AuthenticateAsync();
+            var authenitcationResult = await gitClientService.AuthenticateAsync();
 
             if (authenitcationResult == null)
             {
@@ -100,7 +111,7 @@ namespace VisGist.ViewModels
 
         private void LogOut()
         {
-            GistClientService.Logout();
+            gitClientService.Logout();
             StatusImage = StatusImage.Information;
             StatusText = $"Logged Out Successfully";
             IsAuthenticated = false;

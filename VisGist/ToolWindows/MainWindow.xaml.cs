@@ -21,6 +21,7 @@ namespace VisGist
 
         internal MainWindow(MainWindowViewModel mainWindowViewModel)
         {
+            // this controls for a strange can't find Microsoft.Xaml.Behaviors library bug
             var trig = new Microsoft.Xaml.Behaviors.EventTrigger(); trig.SourceName = "foo";
 
             InitializeComponent();
@@ -49,22 +50,6 @@ namespace VisGist
 
         private async void TestBT_ClickAsync(object sender, RoutedEventArgs e)
         {
-            var options = await General.GetLiveInstanceAsync();
-            Debug.WriteLine(options.PersonalAccessToken);
-
-
-            var client = new GitHubClient(new ProductHeaderValue("VisGit-Tests"));
-            var tokenAuth = new Credentials("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"); // NOTE: not real token
-            client.Credentials = tokenAuth;
-
-            var user = await client.User.Get("stigzler");
-
-            Debug.WriteLine("{0} has {1} public repositories - go check out their profile at {2}",
-                user.Name,
-                user.PublicRepos,
-                user.Url);
-
-            var gists = await client.Gist.GetAllForUser("stigzler");
         }
 
         private void SetTheme(bool darkMode)
