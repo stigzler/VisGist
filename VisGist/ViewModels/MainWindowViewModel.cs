@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
 using Octokit;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using VisGist.Enums;
@@ -26,6 +27,7 @@ namespace VisGist.ViewModels
         public StatusImage StatusImage { get => statusImage; set => SetProperty(ref statusImage, value); }
         public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
         public string HelloWorld { get; set; } = "Hello World";
+        public ObservableCollection<Gist> Gists { get; set; } = new();
 
         #endregion End: PROPERTIES ---------------------------------------------------------------------------------
 
@@ -44,7 +46,6 @@ namespace VisGist.ViewModels
         public IRelayCommand LogOutCMD {  get; set; }
         public IAsyncRelayCommand DoPostLoadActionsCMD {  get; set; }
         public IAsyncRelayCommand DoTestActionCMD {  get; set; }
-
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 

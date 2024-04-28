@@ -20,3 +20,10 @@ Access via `Visual Studio > Tools > Options > VisGist`
 |Option|Info|
 |--|--|
 |
+
+## Thanks + Acknowledgments
+
+|Contributor|Thanks for|
+|-|-|
+|denis.akopyan @ C# Discord|Really friendly and non-rtfm advice around WPF and MVVM|
+

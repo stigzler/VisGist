@@ -18,7 +18,6 @@ namespace VisGist
         // below not used at present, but may be needed
         // private ResourceDictionaryManager resourceDictionaryManager = new ResourceDictionaryManager();
 
-
         internal MainWindow(MainWindowViewModel mainWindowViewModel)
         {
             // this controls for a strange can't find Microsoft.Xaml.Behaviors library bug
@@ -29,8 +28,6 @@ namespace VisGist
             mainWindowVM = (MainWindowViewModel)this.DataContext;
 
             SetupVmEventHooks();
-
-
         }
 
         private void SetupVmEventHooks()
@@ -46,10 +43,6 @@ namespace VisGist
                     SetTheme(mainWindowVM.IsDarkMode);
                     break;
             }
-        }
-
-        private async void TestBT_ClickAsync(object sender, RoutedEventArgs e)
-        {
         }
 
         private void SetTheme(bool darkMode)

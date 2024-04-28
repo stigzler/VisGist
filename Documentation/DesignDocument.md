@@ -89,13 +89,6 @@ Syncfusion edit control for code
 
 Raw URL link (Icon) - opens in browser
 
-
-
-
-
-
-
-
 ### Stretch Goals
 
 #### Features
