@@ -21,11 +21,14 @@ namespace VisGist
 
         internal MainWindow(MainWindowViewModel mainWindowViewModel)
         {
+            var trig = new Microsoft.Xaml.Behaviors.EventTrigger(); trig.SourceName = "foo";
+
             InitializeComponent();
 
             mainWindowVM = (MainWindowViewModel)this.DataContext;
 
             SetupVmEventHooks();
+
 
         }
 

@@ -22,7 +22,7 @@ namespace VisGist
 
         [Category("Github Settings")]
         [DisplayName("Personal Access Token")]
-        [Description("An informative description.")]
+        [Description("Your GitHub Personal Access Token. Get one via Github > Settings > Developer Settings > Personal Access Tokens > Fine-grained tokens")]
         [DefaultValue(true)]
         //[TypeConverter(typeof(PatSettingConverter))]
         [PasswordPropertyText(true)]
@@ -31,5 +31,17 @@ namespace VisGist
             get => DpapiEncrypt.ToInsecureString(DpapiEncrypt.DecryptString(personalAccessToken));
             set => personalAccessToken = DpapiEncrypt.EncryptString(DpapiEncrypt.ToSecureString(value));
         }
+
+
+        [Category("Github Settings")]
+        [DisplayName("Auto Log-In")]
+        [Description("Signs you into VisGist at startup")]
+        [DefaultValue(false)]
+        public bool AutoLogin { get; set; }
+       
+
+
+
+
     }
 }

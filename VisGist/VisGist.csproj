@@ -125,6 +125,9 @@
       <Version>8.2.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.9.3168" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
+      <Version>1.1.77</Version>
+    </PackageReference>
     <PackageReference Include="Octokit">
       <Version>11.0.1</Version>
     </PackageReference>

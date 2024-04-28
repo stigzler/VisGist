@@ -7,6 +7,7 @@
              xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
              xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:behaviours="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:controls="clr-namespace:VisGist.Controls"
              xmlns:converters="clr-namespace:VisGist.Converters" 
              xmlns:viewmodels="clr-namespace:VisGist.ViewModels" 
@@ -51,17 +52,21 @@
             <Setter Property="Background" Value="Transparent"/>
         </Style>
 
-         <!--BUTTON STYLE--> 
+        <!--BUTTON STYLE-->
         <Style x:Key="ToggleButton" TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-        </Style>       
+        </Style>
 
 
     </UserControl.Resources>
 
     <!-- WINDOW ================================================================================= -->
-
+    <behaviours:Interaction.Triggers>
+        <behaviours:EventTrigger EventName="Loaded" SourceObject ="{Binding ElementName=MyToolWindow}">
+            <behaviours:InvokeCommandAction Command="{Binding OnViewLoadedCMD}"/>
+        </behaviours:EventTrigger>
+    </behaviours:Interaction.Triggers>
 
     <DockPanel x:Name="MainDP" Height="Auto" LastChildFill="False">
         <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top">
@@ -86,11 +91,11 @@
             <ToolBarTray x:Name="MainTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
                 Converter={StaticResource BoolToVisibilityConverter}}">
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true">
-                    
+
                     <Button x:Name="LogoutBT" Command="{Binding LogOutCMD}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.UserError}" />
                     </Button>
-                    
+
                 </controls:ToolBar>
             </ToolBarTray>
 
@@ -104,7 +109,7 @@
 
         <StatusBar x:Name="MainSB" DockPanel.Dock="Bottom"  Margin="4" 
                    Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Background="Transparent">
-            
+
             <StackPanel Orientation="Horizontal">
 
                 <imaging:CrispImage Tag="{Binding StatusImage}" Width="16" Height="16">
@@ -123,15 +128,15 @@
 
                             </Style.Triggers>
                         </Style>
-                    </imaging:CrispImage.Style>                                  
-                </imaging:CrispImage>            
-                
+                    </imaging:CrispImage.Style>
+                </imaging:CrispImage>
+
                 <TextBlock Text="{Binding StatusText}" Padding="6,0,2,0"></TextBlock>
-                
+
             </StackPanel>
         </StatusBar>
 
 
-    </DockPanel>
+        </DockPanel>
 
 </UserControl>

@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Threading;
+using Octokit;
 using System.ComponentModel;
 using VisGist.Enums;
 using VisGist.Services;
@@ -39,11 +41,18 @@ namespace VisGist.ViewModels
 
         public IAsyncRelayCommand GitAuthenticateCMD { get; set; }
         public IRelayCommand LogOutCMD {  get; set; }
+        public IAsyncRelayCommand OnViewLoadedCMD {  get; set; }
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
 
+        #region OPERATIONAL PRIVATE VARS ===========================================================================
         private GistClientService GistClientService = new GistClientService();
+        private General userVsOptions;
+
+
+        #endregion End: OPERATIONAL PRIVATE VARS 
+
 
         public MainWindowViewModel()
         {
@@ -51,6 +60,12 @@ namespace VisGist.ViewModels
             VSColorTheme.ThemeChanged += VSColorTheme_ThemeChanged;
 
             SetupCommands();
+        } 
+
+        private async Task OnViewLoadedAsync()
+        {
+            userVsOptions = await General.GetLiveInstanceAsync();
+            if (userVsOptions.AutoLogin) await AuthenticateUserAsync();
         }
 
         private void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
@@ -62,6 +77,7 @@ namespace VisGist.ViewModels
         {
             GitAuthenticateCMD = new AsyncRelayCommand(AuthenticateUserAsync);
             LogOutCMD = new RelayCommand(LogOut);
+            OnViewLoadedCMD = new AsyncRelayCommand(OnViewLoadedAsync);
         }
 
         private async Task AuthenticateUserAsync()
