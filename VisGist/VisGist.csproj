@@ -58,8 +58,13 @@
     <Compile Include="Services\GistClientService.cs" />
     <Compile Include="TypeConverters\PatSettingConverter.cs" />
     <Compile Include="Utility\ResourceDictionaryManager.cs" />
+    <Compile Include="ViewModels\GistFileViewModel.cs" />
+    <Compile Include="ViewModels\GistViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\GistsBrowser.xaml.cs">
+      <DependentUpon>GistsBrowser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VisGistPackage.cs" />
     <Compile Include="source.extension.cs">
       <AutoGen>True</AutoGen>
@@ -107,6 +112,10 @@
     <Compile Include="ToolWindows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\GistsBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -161,7 +170,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

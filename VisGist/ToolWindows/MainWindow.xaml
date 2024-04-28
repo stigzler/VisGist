@@ -10,6 +10,7 @@
              xmlns:behaviours="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:controls="clr-namespace:VisGist.Controls"
              xmlns:converters="clr-namespace:VisGist.Converters" 
+             xmlns:views="clr-namespace:VisGist.Views"
              xmlns:viewmodels="clr-namespace:VisGist.ViewModels" 
              toolkit:Themes.UseVsTheme="True"
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
@@ -101,6 +102,12 @@
         <TextBox x:Name="SearchBox" DockPanel.Dock="Top" Margin="4" Visibility="{Binding IsAuthenticated, 
             Converter={StaticResource InverseBoolToVisibilityConverter}}" Text="{Binding HelloWorld}">
         </TextBox>
+
+        <views:GistsBrowser DockPanel.Dock="Top"></views:GistsBrowser>
+        
+        
+        
+        
 
         <!--<StatusBar x:Name="MainSB" DockPanel.Dock="Bottom" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Margin="4" Background="Transparent">-->
 

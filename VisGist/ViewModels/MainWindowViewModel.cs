@@ -9,7 +9,7 @@ using VisGist.Services;
 
 namespace VisGist.ViewModels
 {
-    internal class MainWindowViewModel : ObservableObject, INotifyPropertyChanged
+    internal class MainWindowViewModel : ViewModelBase
     {
 
         #region PROPERTIES =========================================================================================
