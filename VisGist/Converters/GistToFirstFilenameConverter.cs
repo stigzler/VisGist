@@ -7,15 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using VisGist.ViewModels;
 
 namespace VisGist.Converters
 {
-    internal class GistFilesToFirstFilenameConverter : IValueConverter
+    internal class GistFilesVMToFirstFilenameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
-            ObservableCollection<Models.GistFile> gistFiles = (ObservableCollection<Models.GistFile>) value;
+            ObservableCollection<GistFileViewModel> gistFiles = (ObservableCollection<GistFileViewModel>) value;
             if (gistFiles.Count > 0)
             {
                 return gistFiles.First().Filename;

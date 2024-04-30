@@ -62,6 +62,8 @@
     <Compile Include="Services\GistManager.cs" />
     <Compile Include="TypeConverters\PatSettingConverter.cs" />
     <Compile Include="Utility\ResourceDictionaryManager.cs" />
+    <Compile Include="ViewModels\GistFileViewModel.cs" />
+    <Compile Include="ViewModels\GistViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\GistsBrowser.xaml.cs">

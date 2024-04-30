@@ -22,16 +22,25 @@ namespace VisGist.ViewModels
         private StatusImage statusImage = StatusImage.Information;
         private string statusText = "Welcome to VisGist";
         private bool statusBarVisible = false;
-        private ObservableCollection<Models.Gist> gists = new ObservableCollection<Models.Gist>();
+        private ObservableCollection<GistViewModel> gists = new ObservableCollection<GistViewModel>();
 
         // Public members
-        public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); } 
-        public bool IsAuthenticated {get => isAuthenticated; set => SetProperty(ref isAuthenticated, value); }
+        public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
+        public bool IsAuthenticated { get => isAuthenticated; set => SetProperty(ref isAuthenticated, value); }
         public StatusImage StatusImage { get => statusImage; set => SetProperty(ref statusImage, value); }
         public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
-        public bool StatusBarVisible { get => statusBarVisible; set => SetProperty(ref statusBarVisible, value); }  
+        public bool StatusBarVisible { get => statusBarVisible; set => SetProperty(ref statusBarVisible, value); }
         public string HelloWorld { get; set; } = "Hello World";
-        public ObservableCollection<Models.Gist> Gists { get => gists; set => SetProperty(ref gists, value); }
+        public ObservableCollection<GistViewModel> Gists
+        {
+            get { return gists; }
+            set
+            {
+                SetProperty(ref gists, value);
+            }
+        }
+
+
 
         #endregion End: PROPERTIES ---------------------------------------------------------------------------------
 
@@ -47,10 +56,10 @@ namespace VisGist.ViewModels
         #region COMMANDS =========================================================================================
 
         public IAsyncRelayCommand GitAuthenticateCMD { get; set; }
-        public IRelayCommand LogOutCMD {  get; set; }
-        public IAsyncRelayCommand DoPostLoadActionsCMD {  get; set; }
-        public IAsyncRelayCommand DoTestActionCMD {  get; set; }
-        public IAsyncRelayCommand GetAllGistsCMD {  get; set; }
+        public IRelayCommand LogOutCMD { get; set; }
+        public IAsyncRelayCommand DoPostLoadActionsCMD { get; set; }
+        public IAsyncRelayCommand DoTestActionCMD { get; set; }
+        public IAsyncRelayCommand GetAllGistsCMD { get; set; }
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
@@ -77,7 +86,7 @@ namespace VisGist.ViewModels
         {
             GitAuthenticateCMD = new AsyncRelayCommand(AuthenticateUserAsync);
             LogOutCMD = new RelayCommand(LogOut);
-            DoPostLoadActionsCMD = new AsyncRelayCommand(OnViewLoadedAsync);    
+            DoPostLoadActionsCMD = new AsyncRelayCommand(OnViewLoadedAsync);
             GetAllGistsCMD = new AsyncRelayCommand(GetAllGistsAsync);
 
             DoTestActionCMD = new AsyncRelayCommand(DoTestActionAsync);
@@ -96,7 +105,6 @@ namespace VisGist.ViewModels
         {
             gists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
 
-            SetProperty(ref gists[0].GistFiles[0].Filename, )
            //await gitClientService.DoTestActionAsync(this);
         }
 
@@ -126,7 +134,7 @@ namespace VisGist.ViewModels
             {
                 UpdateStatusBar(StatusImage.Warning, $"Authentication Error: {authenitcationResult.Message}");
                 IsAuthenticated = false;
-            }      
+            }
         }
 
         private void UpdateStatusBar(StatusImage stausImage, string statusText, bool progressBarVisible = false)

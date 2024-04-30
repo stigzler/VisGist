@@ -31,7 +31,7 @@
         <!-- CONVERTERS ================================================================================= -->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
-        <converters:GistFilesToFirstFilenameConverter x:Key="GistFilesToFirstFilenameConverter"/>
+        <converters:GistFilesVMToFirstFilenameConverter x:Key="GistFilesToFirstFilenameConverter"/>
         <!-- STYLES ================================================================================= -->
 
         <!-- TOOLBAR STYLE -->
@@ -160,21 +160,29 @@
             </StackPanel>
         </StatusBar>
 
-        <DockPanel Width="Auto">
-            <DockPanel.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type models:Gist}" ItemsSource="{Binding Path=GistFiles}">
-                    <TextBlock Text="{Binding GistFiles, Converter={StaticResource GistFilesToFirstFilenameConverter}}"></TextBlock>
-                </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type models:GistFile}">
-                    <TextBlock Text="{Binding Filename}"></TextBlock>
-                </DataTemplate>
-            </DockPanel.Resources>
-            
-            <TreeView x:Name="GistsTV"  ItemsSource="{Binding Gists}">
-            </TreeView>
-            
-        </DockPanel>
+        <StackPanel x:Name="GistEditorSP" DockPanel.Dock="Bottom">
+            <TextBlock Text="Gist Editor" HorizontalAlignment="Stretch"></TextBlock>
+        </StackPanel>
 
+        <Grid Margin="5">
+            <Grid.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type viewmodels:GistViewModel}" ItemsSource="{Binding Path=GistFiles}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Item}"  Margin="4"/>
+                        <TextBlock Text="{Binding GistFiles, Converter={StaticResource GistFilesToFirstFilenameConverter}}"></TextBlock>
+                    </StackPanel>
+
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:GistFileViewModel}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}" Margin="4"/>
+                        <TextBlock Text="{Binding Filename}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </Grid.Resources>
+            <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}">
+            </TreeView>
+        </Grid>
     </DockPanel>
 
 </UserControl>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
+using VisGist.ViewModels;
 using Octo = Octokit;
 using VisGistModel = VisGist.Models;
 
@@ -21,17 +22,17 @@ namespace VisGist.Services
             this.gitClientService = gitClientService;
         }
 
-        internal async Task<ObservableCollection<VisGistModel.Gist>> LoadGistsAsync()
+        internal async Task<ObservableCollection<GistViewModel>> LoadGistsAsync()
         {
-            ObservableCollection<VisGistModel.Gist> gistList = new ObservableCollection<VisGistModel.Gist>();
+            ObservableCollection<GistViewModel> gistList = new ObservableCollection<GistViewModel>();
 
-            IReadOnlyList<Octo.Gist> gistsList = await gitClientService.GetAllGistsAsync();
+            IReadOnlyList<Gist> gistsList = await gitClientService.GetAllGistsAsync();
 
-            foreach (Octo.Gist octoGist in gistsList)
+            foreach (Gist octoGist in gistsList)
             {
-                VisGistModel.Gist gist = new VisGistModel.Gist(octoGist);
-                gist.Starred = await gitClientService.GistIsStarredAsync(gist.Id);
-                gistList.Add(gist);
+                GistViewModel gistVM = new GistViewModel(octoGist);
+                gistVM.Starred = await gitClientService.GistIsStarredAsync(octoGist.Id);
+                gistList.Add(gistVM);
             }
 
             return gistList;
