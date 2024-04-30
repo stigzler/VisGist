@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Octokit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,12 @@ namespace VisGist.Models
             Filename = ImportedGistFile.Filename;
             Language = ImportedGistFile.Language;
         }
+
+        //public override string ToString()
+        //{
+        //    return Filename;
+        //}
+
 
     }
 }

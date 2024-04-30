@@ -12,6 +12,7 @@ namespace VisGist.Enums
         Error,
         Information,
         Success,
-        Fail
+        Fail,
+        Loading
     }
 }

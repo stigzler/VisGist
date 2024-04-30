@@ -1,6 +1,7 @@
 ﻿using Octokit;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Security;
@@ -39,6 +40,17 @@ namespace VisGist.Services
             {
                 return ex;
             }
+        }
+
+        internal async Task<IReadOnlyList<Gist>> GetAllGistsAsync()
+        {
+            var dave = await gitHubClient.Gist.GetAll();
+            return dave;
+        }
+
+        internal async Task<bool> GistIsStarredAsync(string gistId)
+        {
+            return await gitHubClient.Gist.IsStarred(gistId);
         }
 
         internal async Task DoTestActionAsync(object obj)

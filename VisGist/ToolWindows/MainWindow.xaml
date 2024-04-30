@@ -13,7 +13,7 @@
              xmlns:converters="clr-namespace:VisGist.Converters" 
              xmlns:views="clr-namespace:VisGist.Views"
              xmlns:viewmodels="clr-namespace:VisGist.ViewModels" 
-             
+             xmlns:models="clr-namespace:VisGist.Models"             
              toolkit:Themes.UseVsTheme="True"
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
@@ -31,7 +31,7 @@
         <!-- CONVERTERS ================================================================================= -->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
-
+        <converters:GistFilesToFirstFilenameConverter x:Key="GistFilesToFirstFilenameConverter"/>
         <!-- STYLES ================================================================================= -->
 
         <!-- TOOLBAR STYLE -->
@@ -63,7 +63,9 @@
         <DataTemplate x:Key="LoadGistsSmallIcon">
             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.UpdateListItem}" />
         </DataTemplate>
-        
+
+        <!-- TREEVIEW ITEMS -->
+
 
     </UserControl.Resources>
 
@@ -97,13 +99,16 @@
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.UserError}" />
                     </Button>
 
+                    <Button x:Name="RefreshBT" Command="{Binding GetAllGistsCMD}" ToolTip="Get Gists from Github">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Refresh}" />
+                    </Button>
 
 
                     <Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewTest}" />
                     </Button>
-                    
-                    
+
+
 
                 </controls:ToolBar>
             </ToolBarTray>
@@ -114,11 +119,9 @@
             Converter={StaticResource InverseBoolToVisibilityConverter}}" Text="{Binding HelloWorld}">
         </TextBox>
 
-        <views:GistsBrowser DockPanel.Dock="Top"></views:GistsBrowser>
-        
-        
-        
-        
+
+
+
 
         <!--<StatusBar x:Name="MainSB" DockPanel.Dock="Bottom" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Margin="4" Background="Transparent">-->
 
@@ -140,18 +143,38 @@
                                 <DataTrigger Binding="{Binding StatusImage}" Value="Success">
                                     <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.StatusOK}"/>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding StatusImage}" Value="Loading">
+                                    <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.Loading}"/>
+                                </DataTrigger>
 
                             </Style.Triggers>
                         </Style>
                     </imaging:CrispImage.Style>
                 </imaging:CrispImage>
-
                 <TextBlock Text="{Binding StatusText}" Padding="6,0,2,0"></TextBlock>
+                <!--<ProgressBar Height="2" Foreground="Blue" IsIndeterminate="True"
+                             Visibility="{Binding AsyncOperationStatusManager.CurrentOperation.Execution.IsNotCompleted, Converter={StaticResource boolToVisibilityConverter}, FallbackValue=Collapsed}"/>-->
+                <ProgressBar Height="2" Foreground="Orange" IsIndeterminate="True" Width="100" Margin="10,0,2,0"
+                             Visibility="{Binding StatusBarVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             </StackPanel>
         </StatusBar>
 
-
+        <DockPanel Width="Auto">
+            <DockPanel.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type models:Gist}" ItemsSource="{Binding Path=GistFiles}">
+                    <TextBlock Text="{Binding GistFiles, Converter={StaticResource GistFilesToFirstFilenameConverter}}"></TextBlock>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type models:GistFile}">
+                    <TextBlock Text="{Binding Filename}"></TextBlock>
+                </DataTemplate>
+            </DockPanel.Resources>
+            
+            <TreeView x:Name="GistsTV"  ItemsSource="{Binding Gists}">
+            </TreeView>
+            
         </DockPanel>
+
+    </DockPanel>
 
 </UserControl>
