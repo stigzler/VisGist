@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -16,10 +17,10 @@ namespace VisGist.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
-            ObservableCollection<GistFileViewModel> gistFiles = (ObservableCollection<GistFileViewModel>) value;
+            BindingList<GistFileViewModel> gistFiles = (BindingList<GistFileViewModel>) value;
             if (gistFiles.Count > 0)
             {
-                return gistFiles.First().Filename;
+                return gistFiles.OrderBy(gf => gf.Filename).First().Filename;
             }
 
             return value;

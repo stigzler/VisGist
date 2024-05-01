@@ -7,7 +7,8 @@
              xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
              xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:behaviours="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviours="clr-namespace:VisGist.Behaviors"
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              xmlns:controls="clr-namespace:VisGist.Controls"
              xmlns:converters="clr-namespace:VisGist.Converters" 
@@ -49,7 +50,7 @@
             <Setter Property="Focusable" Value="False"/>
         </Style>
 
-        <Style x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" TargetType="Button">
+        <Style x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent"/>
         </Style>
 
@@ -70,13 +71,15 @@
     </UserControl.Resources>
 
     <!-- WINDOW ================================================================================= -->
-    <behaviours:Interaction.Triggers>
-        <behaviours:EventTrigger EventName="Loaded" SourceObject ="{Binding ElementName=MyToolWindow}">
-            <behaviours:InvokeCommandAction Command="{Binding DoPostLoadActionsCMD}"/>
-        </behaviours:EventTrigger>
-    </behaviours:Interaction.Triggers>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded" SourceObject ="{Binding ElementName=MyToolWindow}">
+            <i:InvokeCommandAction Command="{Binding DoPostLoadActionsCMD}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
-    <DockPanel x:Name="MainDP" Height="Auto" LastChildFill="False">
+    <DockPanel x:Name="MainDP" Height="Auto">
+
+        <!-- TOP TOOLSTRIP -->
         <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top">
 
             <ToolBarTray x:Name="GreeterTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
@@ -86,7 +89,6 @@
                     <Button x:Name="LoginBT" Command="{Binding GitAuthenticateCMD}" ToolTip="Log In">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}" />
                     </Button>
-
 
                 </controls:ToolBar>
             </ToolBarTray>
@@ -103,29 +105,23 @@
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Refresh}" />
                     </Button>
 
-
                     <Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewTest}" />
                     </Button>
-
-
 
                 </controls:ToolBar>
             </ToolBarTray>
 
         </DockPanel>
 
-        <TextBox x:Name="SearchBox" DockPanel.Dock="Top" Margin="4" Visibility="{Binding IsAuthenticated, 
+
+        <!-- SEARCH TEXTBOX -->
+        <TextBox x:Name="SearchTB" DockPanel.Dock="Top" Margin="4" Visibility="{Binding IsAuthenticated, 
             Converter={StaticResource InverseBoolToVisibilityConverter}}" Text="{Binding HelloWorld}">
         </TextBox>
 
-
-
-
-
-        <!--<StatusBar x:Name="MainSB" DockPanel.Dock="Bottom" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Margin="4" Background="Transparent">-->
-
-        <StatusBar x:Name="MainSB" DockPanel.Dock="Bottom"  Margin="4" 
+        <!-- STATUS BAR -->
+        <StatusBar x:Name="MainSB" DockPanel.Dock="Bottom" Margin="4" 
                    Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Background="Transparent">
 
             <StackPanel Orientation="Horizontal">
@@ -143,8 +139,8 @@
                                 <DataTrigger Binding="{Binding StatusImage}" Value="Success">
                                     <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.StatusOK}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding StatusImage}" Value="Loading">
-                                    <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.Loading}"/>
+                                <DataTrigger Binding="{Binding StatusImage}" Value="GitOperation">
+                                    <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.Git}"/>
                                 </DataTrigger>
 
                             </Style.Triggers>
@@ -160,29 +156,75 @@
             </StackPanel>
         </StatusBar>
 
-        <StackPanel x:Name="GistEditorSP" DockPanel.Dock="Bottom">
-            <TextBlock Text="Gist Editor" HorizontalAlignment="Stretch"></TextBlock>
-        </StackPanel>
 
-        <Grid Margin="5">
-            <Grid.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type viewmodels:GistViewModel}" ItemsSource="{Binding Path=GistFiles}">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Item}"  Margin="4"/>
-                        <TextBlock Text="{Binding GistFiles, Converter={StaticResource GistFilesToFirstFilenameConverter}}"></TextBlock>
-                    </StackPanel>
+        <!-- MAIN CONTENT PANEL -->
+        <Grid x:Name="MainContentSP"  HorizontalAlignment="Stretch"
+                   Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibilityConverter}}" >
 
-                </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type viewmodels:GistFileViewModel}">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}" Margin="4"/>
-                        <TextBlock Text="{Binding Filename}"></TextBlock>
-                    </StackPanel>
-                </DataTemplate>
-            </Grid.Resources>
-            <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}">
-            </TreeView>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <GridSplitter Grid.Row="1" Background="Transparent" BorderThickness="1" BorderBrush="#909090"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          ResizeDirection="{Binding BrowserEditorsSplitterDirection}">
+                
+            </GridSplitter>
+
+            <Grid x:Name="GistBrowserGRD" Grid.Row="0" Margin="5" >
+                <Grid.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type viewmodels:GistViewModel}" ItemsSource="{Binding Path=GistFiles}">
+                        <StackPanel Orientation="Horizontal">
+                            <imaging:CrispImage VerticalAlignment="Center"  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Item}"  Margin="0,2,0,0"/>
+
+                            <TextBlock VerticalAlignment="Center" Margin="4,0,0,2"
+                                       Text="{Binding GistFiles, Converter={StaticResource GistFilesToFirstFilenameConverter}}"></TextBlock>
+
+                            <imaging:CrispImage VerticalAlignment="Center" Margin="4,0,0,0" Width="14" Height="14" Moniker="{x:Static catalog:KnownMonikers.Key}"
+                                            Visibility="{Binding Public, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+
+                            <imaging:CrispImage VerticalAlignment="Center" Width="14" Height="14" Moniker="{x:Static catalog:KnownMonikers.Favorite}"
+                                            Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            
+                            <imaging:CrispImage x:Name="gistsStarredCI" VerticalAlignment="Center" Width="14" Height="14" Moniker="{x:Static catalog:KnownMonikers.Favorite}"
+                                            Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}">
+                            </imaging:CrispImage>
+
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <DataTemplate DataType="{x:Type viewmodels:GistFileViewModel}">
+                        <StackPanel Orientation="Horizontal">
+                            <imaging:CrispImage VerticalAlignment="Center" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}" Margin="0,2,0,0"/>
+                            <TextBlock  VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Filename}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </Grid.Resources>
+                <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}" BorderThickness="0" Background="Transparent">
+                    <i:Interaction.Behaviors>
+                        <behaviours:BindableSelectedItemBehavior SelectedItem="{Binding SelectedGistVmItem, Mode=TwoWay}" />
+                    </i:Interaction.Behaviors>
+                </TreeView>
+            </Grid>
+
+            <!-- Gist Editor -->
+            <StackPanel x:Name="GistEditorSP" Grid.Row="2" Orientation="Vertical"  >
+                <DockPanel x:Name="GistEditorTopRowSP" >
+                    <ToggleButton DockPanel.Dock="Right" Background="Transparent" BorderThickness="0">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Key}"/>
+                    </ToggleButton>
+                    <ToggleButton DockPanel.Dock="Right" Background="Transparent" BorderThickness="0">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Favorite}"/>
+                    </ToggleButton>
+                    <TextBlock x:Name="GistNameTBL" Padding="2" Text="Gist Editor edwedwedwe"></TextBlock>
+                </DockPanel>
+                <TextBox MinHeight="32" Background="Transparent" BorderThickness="1"></TextBox>
+            </StackPanel>
+
         </Grid>
+
+
+
     </DockPanel>
 
 </UserControl>

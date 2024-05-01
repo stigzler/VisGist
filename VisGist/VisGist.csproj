@@ -45,6 +45,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\BindableSelectedItemBehavior.cs" />
     <Compile Include="Controls\ToolBar.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\GistToFirstFilenameConverter.cs" />

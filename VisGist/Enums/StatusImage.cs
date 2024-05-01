@@ -13,6 +13,7 @@ namespace VisGist.Enums
         Information,
         Success,
         Fail,
-        Loading
+        Loading,
+        GitOperation
     }
 }

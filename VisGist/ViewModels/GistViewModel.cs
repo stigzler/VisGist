@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,13 +11,13 @@ namespace VisGist.ViewModels
     internal class GistViewModel : ViewModelBase
     {
 
-        private ObservableCollection<GistFileViewModel> gistFiles = new();
+        private BindingList<GistFileViewModel> gistFiles = new();
         public Octokit.Gist ImportedGist { get; set; }
         public string Id { get => ImportedGist.Id; }
         public string Description { get; set; }
         public bool Public { get; set; }
         public bool Starred { get; set; }
-        public ObservableCollection<GistFileViewModel> GistFiles { get => gistFiles; set => SetProperty(ref gistFiles,value); } 
+        public BindingList<GistFileViewModel> GistFiles { get => gistFiles; set => SetProperty(ref gistFiles,value); } 
 
         public GistViewModel(Octokit.Gist gist)
         {
@@ -28,7 +29,15 @@ namespace VisGist.ViewModels
             {
                 GistFiles.Add(new GistFileViewModel(fileKvp.Value));
             }
+
+            GistFiles.ListChanged += GistFiles_ListChanged;
+
         }
 
+        private void GistFiles_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            GistFiles = new BindingList<GistFileViewModel>(GistFiles.OrderBy(gf => gf.Filename).ToList());
+            OnPropertyChanged(nameof(GistFiles));
+        }
     }
 }

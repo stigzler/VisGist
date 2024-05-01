@@ -2,10 +2,12 @@
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
 using Octokit;
+using Syncfusion.Windows.Tools;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using VisGist.Enums;
 using VisGist.Services;
 
@@ -23,6 +25,12 @@ namespace VisGist.ViewModels
         private string statusText = "Welcome to VisGist";
         private bool statusBarVisible = false;
         private ObservableCollection<GistViewModel> gists = new ObservableCollection<GistViewModel>();
+        private ViewModelBase selectedGistVmItem;
+        private GistViewModel selectedGistViewModel;
+        private GistViewModel selectedGistFileViewModel;
+        public GridResizeDirection browserEditorsSplitterDirection = GridResizeDirection.Rows;
+
+
 
         // Public members
         public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
@@ -30,15 +38,19 @@ namespace VisGist.ViewModels
         public StatusImage StatusImage { get => statusImage; set => SetProperty(ref statusImage, value); }
         public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
         public bool StatusBarVisible { get => statusBarVisible; set => SetProperty(ref statusBarVisible, value); }
-        public string HelloWorld { get; set; } = "Hello World";
-        public ObservableCollection<GistViewModel> Gists
-        {
-            get { return gists; }
-            set
-            {
-                SetProperty(ref gists, value);
-            }
-        }
+
+        // below = ViewMOdelBase because selected item can be GistViewModel or GistFileViewModel (obtained from TreeView)
+        public ViewModelBase SelectedGistVmItem { get => selectedGistVmItem; set => SetProperty(ref selectedGistVmItem, value); }
+        public GistViewModel SelectedGistViewModel { get => selectedGistViewModel; set => SetProperty(ref selectedGistViewModel, value); }
+        public GistViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; 
+                                                        set => SetProperty(ref selectedGistFileViewModel, value); }
+
+        public GridResizeDirection BrowserEditorsSplitterDirection { get => browserEditorsSplitterDirection; 
+                                                                    set => SetProperty(ref  browserEditorsSplitterDirection, value); }
+        public ObservableCollection<GistViewModel> Gists { get => gists; set => SetProperty(ref gists, value); }
+
+
+
 
 
 
@@ -60,6 +72,7 @@ namespace VisGist.ViewModels
         public IAsyncRelayCommand DoPostLoadActionsCMD { get; set; }
         public IAsyncRelayCommand DoTestActionCMD { get; set; }
         public IAsyncRelayCommand GetAllGistsCMD { get; set; }
+        public IRelayCommand ChangeSelectedGistItemCMD { get; set; }
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
@@ -88,8 +101,14 @@ namespace VisGist.ViewModels
             LogOutCMD = new RelayCommand(LogOut);
             DoPostLoadActionsCMD = new AsyncRelayCommand(OnViewLoadedAsync);
             GetAllGistsCMD = new AsyncRelayCommand(GetAllGistsAsync);
+            // ChangeSelectedGistItemCMD = new RelayCommand(ChangeSelectedGistItem,);
 
             DoTestActionCMD = new AsyncRelayCommand(DoTestActionAsync);
+        }
+
+        private void ChangeSelectedGistItem(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task GetAllGistsAsync()
@@ -103,9 +122,11 @@ namespace VisGist.ViewModels
 
         private async Task DoTestActionAsync()
         {
-            gists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
+            //gists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
 
-           //await gitClientService.DoTestActionAsync(this);
+            BrowserEditorsSplitterDirection = GridResizeDirection.Columns;
+
+            //await gitClientService.DoTestActionAsync(this);
         }
 
         private async Task OnViewLoadedAsync()
