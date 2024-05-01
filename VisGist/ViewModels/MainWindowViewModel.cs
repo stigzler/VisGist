@@ -28,8 +28,8 @@ namespace VisGist.ViewModels
         private ViewModelBase selectedGistVmItem;
         private GistViewModel selectedGistViewModel;
         private GistViewModel selectedGistFileViewModel;
-        public GridResizeDirection browserEditorsSplitterDirection = GridResizeDirection.Rows;
-
+        private GridResizeDirection browserEditorsSplitterDirection = GridResizeDirection.Rows;
+        private bool layoutHorizontal = false;
 
 
         // Public members
@@ -40,14 +40,26 @@ namespace VisGist.ViewModels
         public bool StatusBarVisible { get => statusBarVisible; set => SetProperty(ref statusBarVisible, value); }
 
         // below = ViewMOdelBase because selected item can be GistViewModel or GistFileViewModel (obtained from TreeView)
-        public ViewModelBase SelectedGistVmItem { get => selectedGistVmItem; set => SetProperty(ref selectedGistVmItem, value); }
         public GistViewModel SelectedGistViewModel { get => selectedGistViewModel; set => SetProperty(ref selectedGistViewModel, value); }
         public GistViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; 
                                                         set => SetProperty(ref selectedGistFileViewModel, value); }
+        public bool LayoutHorizontal { get => layoutHorizontal; set => SetProperty(ref layoutHorizontal, value); }
+
+
 
         public GridResizeDirection BrowserEditorsSplitterDirection { get => browserEditorsSplitterDirection; 
                                                                     set => SetProperty(ref  browserEditorsSplitterDirection, value); }
         public ObservableCollection<GistViewModel> Gists { get => gists; set => SetProperty(ref gists, value); }
+
+        public ViewModelBase SelectedGistVmItem
+        {
+            get { return selectedGistVmItem; }
+            set
+            {
+                SetProperty(ref selectedGistVmItem, value);
+                OnSelectedGistItemChanged(value);
+            }
+        }
 
 
 
@@ -73,6 +85,7 @@ namespace VisGist.ViewModels
         public IAsyncRelayCommand DoTestActionCMD { get; set; }
         public IAsyncRelayCommand GetAllGistsCMD { get; set; }
         public IRelayCommand ChangeSelectedGistItemCMD { get; set; }
+        public IRelayCommand OnSizeChangedCMD { get; set; }
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
@@ -106,14 +119,20 @@ namespace VisGist.ViewModels
             DoTestActionCMD = new AsyncRelayCommand(DoTestActionAsync);
         }
 
-        private void ChangeSelectedGistItem(object obj)
+  
+
+
+        private void OnSelectedGistItemChanged(ViewModelBase gistItem)
         {
-            throw new NotImplementedException();
+            if (gistItem is GistViewModel)
+            {
+                SelectedGistViewModel = (GistViewModel)gistItem;
+            }
         }
 
         private async Task GetAllGistsAsync()
         {
-            UpdateStatusBar(StatusImage.Loading, $"Loading Gists..", true);
+            UpdateStatusBar(StatusImage.GitOperation, $"Loading Gists..", true);
 
             Gists = await gistManager.LoadGistsAsync();
 
@@ -124,7 +143,9 @@ namespace VisGist.ViewModels
         {
             //gists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
 
-            BrowserEditorsSplitterDirection = GridResizeDirection.Columns;
+            LayoutHorizontal = !LayoutHorizontal;
+
+            //BrowserEditorsSplitterDirection = GridResizeDirection.Columns;
 
             //await gitClientService.DoTestActionAsync(this);
         }

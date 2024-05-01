@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Behaviors\BindableSelectedItemBehavior.cs" />
     <Compile Include="Controls\ToolBar.cs" />
+    <Compile Include="Converters\BoolConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\GistToFirstFilenameConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />

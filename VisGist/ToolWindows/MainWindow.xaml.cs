@@ -70,5 +70,11 @@ namespace VisGist
                 SfSkinManager.RegisterThemeSettings("FluentDark", themeSettings);
             }
         }
+
+        private void MyToolWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this.ActualHeight > ActualWidth) mainWindowVM.LayoutHorizontal = true;
+            else mainWindowVM.LayoutHorizontal = false;
+        }
     }
 }

@@ -12,12 +12,23 @@ namespace VisGist.ViewModels
     {
 
         private BindingList<GistFileViewModel> gistFiles = new();
+        private bool starred = false;
+        private bool @public = false;
         public Octokit.Gist ImportedGist { get; set; }
         public string Id { get => ImportedGist.Id; }
         public string Description { get; set; }
-        public bool Public { get; set; }
-        public bool Starred { get; set; }
+        public bool Public { get => @public; set => SetProperty(ref @public, value); }
+        public bool Starred { get => starred; set => SetProperty(ref starred, value); }
         public BindingList<GistFileViewModel> GistFiles { get => gistFiles; set => SetProperty(ref gistFiles,value); } 
+
+        public string FirstGistFileFilename
+        {
+            get
+            {
+                if (GistFiles.Count == 0) return null;
+                return GistFiles.OrderBy(gf => gf.Filename).FirstOrDefault().Filename;
+            }
+        }
 
         public GistViewModel(Octokit.Gist gist)
         {
@@ -39,5 +50,7 @@ namespace VisGist.ViewModels
             GistFiles = new BindingList<GistFileViewModel>(GistFiles.OrderBy(gf => gf.Filename).ToList());
             OnPropertyChanged(nameof(GistFiles));
         }
+
+        
     }
 }

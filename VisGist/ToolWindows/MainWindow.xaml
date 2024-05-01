@@ -21,7 +21,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
-             Name="MyToolWindow">
+             Name="MyToolWindow" SizeChanged="MyToolWindow_SizeChanged">
 
     <UserControl.DataContext>
         <viewmodels:MainWindowViewModel/>
@@ -33,6 +33,8 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
         <converters:GistFilesVMToFirstFilenameConverter x:Key="GistFilesToFirstFilenameConverter"/>
+        <converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
+
         <!-- STYLES ================================================================================= -->
 
         <!-- TOOLBAR STYLE -->
@@ -54,18 +56,76 @@
             <Setter Property="Background" Value="Transparent"/>
         </Style>
 
-        <!--BUTTON STYLE-->
-        <Style x:Key="ToggleButton" TargetType="ToggleButton">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
+        <!-- TOGGLEBUTTON STYLE-->
+
+        <Style TargetType="{x:Type ToggleButton}" x:Key="TransparentToggleButtonStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"                  
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="Transparent"></Setter>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="False">
+                    <!--<Setter Property="Background" Value="Black" />-->
+                    <Setter Property="Opacity" Value="0.3" />
+                </Trigger>
+                <!--<Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderThickness" Value="2" />
+                </Trigger>-->
+
+            </Style.Triggers>
         </Style>
 
-        <!--LOAD GISTS ICON -->
-        <DataTemplate x:Key="LoadGistsSmallIcon">
-            <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.UpdateListItem}" />
-        </DataTemplate>
 
-        <!-- TREEVIEW ITEMS -->
+
+        <!--<Style x:Key="ToggleButton" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Content" Value="EDIT"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="border"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="contentPresenter"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                  Focusable="False"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  RecognizesAccessKey="True"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Content" Value="Done"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>-->
+
+
+        <!--LOAD GISTS ICON -->
+        <!--<DataTemplate x:Key="LoadGistsSmallIcon">
+            <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.UpdateListItem}" />
+        </DataTemplate>-->
+
+
 
 
     </UserControl.Resources>
@@ -124,9 +184,8 @@
         <StatusBar x:Name="MainSB" DockPanel.Dock="Bottom" Margin="4" 
                    Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Background="Transparent">
 
-            <StackPanel Orientation="Horizontal">
-
-                <imaging:CrispImage Tag="{Binding StatusImage}" Width="16" Height="16">
+            <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
+                <imaging:CrispImage Tag="{Binding StatusImage}" DockPanel.Dock="Left"  Width="16" Height="16">
                     <imaging:CrispImage.Style>
                         <Style TargetType="imaging:CrispImage">
                             <Style.Triggers>
@@ -147,17 +206,76 @@
                         </Style>
                     </imaging:CrispImage.Style>
                 </imaging:CrispImage>
-                <TextBlock Text="{Binding StatusText}" Padding="6,0,2,0"></TextBlock>
+                <TextBlock Text="{Binding StatusText}" DockPanel.Dock="Left" Padding="6,0,2,0"></TextBlock>
                 <!--<ProgressBar Height="2" Foreground="Blue" IsIndeterminate="True"
                              Visibility="{Binding AsyncOperationStatusManager.CurrentOperation.Execution.IsNotCompleted, Converter={StaticResource boolToVisibilityConverter}, FallbackValue=Collapsed}"/>-->
-                <ProgressBar Height="2" Foreground="Orange" IsIndeterminate="True" Width="100" Margin="10,0,2,0"
+                <ProgressBar Height="2" Foreground="Orange" IsIndeterminate="True" Width="100" Margin="10,0,10,0"
                              Visibility="{Binding StatusBarVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-            </StackPanel>
+            </DockPanel>
         </StatusBar>
 
 
         <!-- MAIN CONTENT PANEL -->
+
+        <!--<ContentControl>
+            <ContentControl.Resources>
+                <DataTemplate x:Key="mainTable">
+                    <StackPanel>
+                        <Label Content="MainTable goes here"/>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="childTables">
+                    <Label Content="ChildTables go here"/>
+                </DataTemplate>
+            </ContentControl.Resources>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding LayoutHorizontal}" Value="False">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="2"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <ContentPresenter Grid.Column="0" ContentTemplate="{StaticResource mainTable}"/>
+                                            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                          Foreground="Gray" Opacity="0.5"/>
+                                            <ContentPresenter Grid.Column="2" ContentTemplate="{StaticResource childTables}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding LayoutHorizontal}" Value="True">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition Height="1"/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <ContentPresenter Grid.Row="0" ContentTemplate="{StaticResource mainTable}"/>
+                                            <GridSplitter Grid.Row="1" Height="10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                                          Foreground="Gray" Opacity="0.5"/>
+                                            <ContentPresenter Grid.Row="2" ContentTemplate="{StaticResource childTables}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>-->
+
+
         <Grid x:Name="MainContentSP"  HorizontalAlignment="Stretch"
                    Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibilityConverter}}" >
 
@@ -169,7 +287,7 @@
 
             <GridSplitter Grid.Row="1" Background="Transparent" BorderThickness="1" BorderBrush="#909090"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                           ResizeDirection="{Binding BrowserEditorsSplitterDirection}">
-                
+
             </GridSplitter>
 
             <Grid x:Name="GistBrowserGRD" Grid.Row="0" Margin="5" >
@@ -186,10 +304,6 @@
 
                             <imaging:CrispImage VerticalAlignment="Center" Width="14" Height="14" Moniker="{x:Static catalog:KnownMonikers.Favorite}"
                                             Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}"/>
-            
-                            <imaging:CrispImage x:Name="gistsStarredCI" VerticalAlignment="Center" Width="14" Height="14" Moniker="{x:Static catalog:KnownMonikers.Favorite}"
-                                            Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}">
-                            </imaging:CrispImage>
 
                         </StackPanel>
                     </HierarchicalDataTemplate>
@@ -207,16 +321,27 @@
                 </TreeView>
             </Grid>
 
-            <!-- Gist Editor -->
+            <!--Gist Editor-->
             <StackPanel x:Name="GistEditorSP" Grid.Row="2" Orientation="Vertical"  >
                 <DockPanel x:Name="GistEditorTopRowSP" >
-                    <ToggleButton DockPanel.Dock="Right" Background="Transparent" BorderThickness="0">
+                    
+                    <ToggleButton DockPanel.Dock="Right"  BorderThickness="0" 
+                                  Style="{StaticResource TransparentToggleButtonStyle}"
+                                  IsChecked="{Binding SelectedGistViewModel.Public,
+                                    Converter={StaticResource ReverseBoolConverter},
+                                    Mode=TwoWay}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Key}"/>
                     </ToggleButton>
-                    <ToggleButton DockPanel.Dock="Right" Background="Transparent" BorderThickness="0">
+                    
+                    <ToggleButton DockPanel.Dock="Right" Background="Transparent" BorderThickness="0"
+                                  Style="{StaticResource TransparentToggleButtonStyle}"
+                                    IsChecked="{Binding SelectedGistViewModel.Starred, Mode=TwoWay}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Favorite}"/>
                     </ToggleButton>
-                    <TextBlock x:Name="GistNameTBL" Padding="2" Text="Gist Editor edwedwedwe"></TextBlock>
+                    
+                    <TextBlock x:Name="GistNameTBL" Padding="2" 
+                               Text="{Binding SelectedGistViewModel.FirstGistFileFilename}"></TextBlock>
+                
                 </DockPanel>
                 <TextBox MinHeight="32" Background="Transparent" BorderThickness="1"></TextBox>
             </StackPanel>
