@@ -31,7 +31,8 @@ namespace VisGist.Services
             foreach (Gist octoGist in gistsList)
             {
                 GistViewModel gistVM = new GistViewModel(octoGist);
-                gistVM.Starred = await gitClientService.GistIsStarredAsync(octoGist.Id);
+                gistVM.ReferenceStarred = await gitClientService.GistIsStarredAsync(octoGist.Id);
+                gistVM.Starred = gistVM.ReferenceStarred;
                 gistList.Add(gistVM);
             }
 

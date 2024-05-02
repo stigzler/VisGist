@@ -9,5 +9,8 @@ namespace VisGist.Data
     internal static class Constants
     {
         internal const string GitProductHeaderValue = "VisGist";
+        internal const string GistPropertiesChangedPrefix = "Gist Changes: ";
+        internal const string GistNoPropertiesChangedPrefix = "No Changes";
+
     }
 }

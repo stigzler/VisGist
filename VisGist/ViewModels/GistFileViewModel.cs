@@ -11,20 +11,24 @@ namespace VisGist.ViewModels
     {
         private string filename;
 
-        public Octokit.GistFile ImportedGistFile { get; set; }
+        /// <summary>
+        /// This is either the Gist imported from Gists, or the updated Gist following Gist Save
+        /// Used in tracking changes
+        /// </summary>
+        public Octokit.GistFile ReferenceGistFile { get; set; }
+        public GistViewModel ParentGistViewModel { get; set; }
 
         public string Content { get; set; }
 
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
 
-        public string Language { get; set; }
 
-        public GistFileViewModel(Octokit.GistFile gistFile)
+        public GistFileViewModel(Octokit.GistFile gistFile, GistViewModel parentGistViewModel)
         {
-            ImportedGistFile = gistFile;
-            Content = ImportedGistFile.Content;
-            Filename = ImportedGistFile.Filename;
-            Language = ImportedGistFile.Language;
+            ReferenceGistFile = gistFile;
+            Content = ReferenceGistFile.Content;
+            Filename = ReferenceGistFile.Filename;
+            ParentGistViewModel = parentGistViewModel;
         }
     }
 }

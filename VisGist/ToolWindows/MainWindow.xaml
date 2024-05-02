@@ -34,6 +34,7 @@
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
         <converters:GistFilesVMToFirstFilenameConverter x:Key="GistFilesToFirstFilenameConverter"/>
         <converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
+        <converters:BrushToColorConverter x:Key="BrushToColorConverter"/>
 
         <!-- STYLES ================================================================================= -->
 
@@ -83,7 +84,19 @@
             </Style.Triggers>
         </Style>
 
+        <!-- TEXTBLOCK STYLES -->
 
+        <Style x:Key="SemiTransparentText" TargetType="TextBlock">
+            <Setter Property="Opacity" Value="0.6"/>
+        </Style>
+
+        <!-- SEPARATORSTYLE -->
+        <Style x:Key="SplitterStyle" TargetType="GridSplitter">
+            <Setter Property="BorderBrush" Value="#909090"/>
+            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
 
         <!--<Style x:Key="ToggleButton" TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent" />
@@ -280,51 +293,75 @@
                    Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibilityConverter}}" >
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*" MinHeight="100"></RowDefinition>
                 <RowDefinition Height="3"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="3"></RowDefinition>
+
             </Grid.RowDefinitions>
 
-            <GridSplitter Grid.Row="1" Background="Transparent" BorderThickness="1" BorderBrush="#909090"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                          ResizeDirection="{Binding BrowserEditorsSplitterDirection}">
 
-            </GridSplitter>
 
-            <Grid x:Name="GistBrowserGRD" Grid.Row="0" Margin="5" >
+            <!-- GIST BROWSER -->
+
+            <Grid x:Name="GistBrowserGRD" Grid.Row="0" Margin="2">
                 <Grid.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type viewmodels:GistViewModel}" ItemsSource="{Binding Path=GistFiles}">
                         <StackPanel Orientation="Horizontal">
-                            <imaging:CrispImage VerticalAlignment="Center"  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Item}"  Margin="0,2,0,0"/>
 
-                            <TextBlock VerticalAlignment="Center" Margin="4,0,0,2"
-                                       Text="{Binding GistFiles, Converter={StaticResource GistFilesToFirstFilenameConverter}}"></TextBlock>
+                            <imaging:CrispImage VerticalAlignment="Center"  Width="16" Height="16" Margin="0,0,4,0"
+                                                Moniker="{x:Static catalog:KnownMonikers.Item}"/>
 
-                            <imaging:CrispImage VerticalAlignment="Center" Margin="4,0,0,0" Width="14" Height="14" Moniker="{x:Static catalog:KnownMonikers.Key}"
-                                            Visibility="{Binding Public, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                            <TextBlock VerticalAlignment="Center" Margin="2,0,2,0"
+                                Text="{Binding GistFiles, Converter={StaticResource GistFilesToFirstFilenameConverter}}"></TextBlock>
 
-                            <imaging:CrispImage VerticalAlignment="Center" Width="14" Height="14" Moniker="{x:Static catalog:KnownMonikers.Favorite}"
-                                            Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <imaging:CrispImage VerticalAlignment="Center" Margin="2,0,2,0" Width="14" Height="14"
+                                Moniker="{x:Static catalog:KnownMonikers.Key}"
+                                Visibility="{Binding Public, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+
+                            <imaging:CrispImage VerticalAlignment="Center" Margin="2,0,2,0" Width="14" Height="14" 
+                                Moniker="{x:Static catalog:KnownMonikers.Favorite}"
+                                Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                            <imaging:CrispImage VerticalAlignment="Center" Margin="2,0,2,0" Width="14" Height="14" 
+                                Moniker="{x:Static catalog:KnownMonikers.Save}"
+                                Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisibilityConverter}}"
+                                ToolTip="{Binding PropertiesChanged}"/>
 
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <DataTemplate DataType="{x:Type viewmodels:GistFileViewModel}">
                         <StackPanel Orientation="Horizontal">
-                            <imaging:CrispImage VerticalAlignment="Center" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}" Margin="0,2,0,0"/>
-                            <TextBlock  VerticalAlignment="Center" Margin="4,0,0,0" Text="{Binding Filename}"></TextBlock>
+                            <imaging:CrispImage VerticalAlignment="Center" Width="16" Height="16" Margin="0,0,4,0"
+                                                Moniker="{x:Static catalog:KnownMonikers.Document}" />
+                            <TextBlock  VerticalAlignment="Center" Margin="2,0,2,0" Text="{Binding Filename}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </Grid.Resources>
                 <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}" BorderThickness="0" Background="Transparent">
+                    <TreeView.Resources>
+                        <!-- Style the inactive selection the same as active -->
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                            Color="#808080" Opacity="0.4"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
+                            Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+                    </TreeView.Resources>
                     <i:Interaction.Behaviors>
                         <behaviours:BindableSelectedItemBehavior SelectedItem="{Binding SelectedGistVmItem, Mode=TwoWay}" />
                     </i:Interaction.Behaviors>
                 </TreeView>
             </Grid>
 
-            <!--Gist Editor-->
+            <!-- SPLITTER -->
+
+            <GridSplitter Grid.Row="1" Style="{StaticResource SplitterStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          ResizeDirection="{Binding BrowserEditorsSplitterDirection}" />
+
+            <!--GIST EDITOR -->
+
             <StackPanel x:Name="GistEditorSP" Grid.Row="2" Orientation="Vertical"  >
                 <DockPanel x:Name="GistEditorTopRowSP" >
-                    
+
                     <ToggleButton DockPanel.Dock="Right"  BorderThickness="0" 
                                   Style="{StaticResource TransparentToggleButtonStyle}"
                                   IsChecked="{Binding SelectedGistViewModel.Public,
@@ -332,19 +369,36 @@
                                     Mode=TwoWay}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Key}"/>
                     </ToggleButton>
-                    
+
                     <ToggleButton DockPanel.Dock="Right" Background="Transparent" BorderThickness="0"
                                   Style="{StaticResource TransparentToggleButtonStyle}"
                                     IsChecked="{Binding SelectedGistViewModel.Starred, Mode=TwoWay}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Favorite}"/>
                     </ToggleButton>
-                    
-                    <TextBlock x:Name="GistNameTBL" Padding="2" 
-                               Text="{Binding SelectedGistViewModel.FirstGistFileFilename}"></TextBlock>
-                
+
+                    <ContentControl DockPanel.Dock="Left" Margin="4,0,0,0">
+                        <imaging:CrispImage  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Item}"/>
+                    </ContentControl>
+
+                    <TextBlock x:Name="GistNameTBL" Padding="4" Style="{StaticResource SemiTransparentText}" TextTrimming="CharacterEllipsis"
+                               Text="{Binding SelectedGistViewModel.FirstGistFileFilename}" FontWeight="Bold"></TextBlock>
+
                 </DockPanel>
-                <TextBox MinHeight="32" Background="Transparent" BorderThickness="1"></TextBox>
+                
+                <TextBox x:Name="GistDescriptionTB" MinHeight="32" Background="Transparent" BorderThickness="1" Padding="1" AcceptsReturn="True" 
+                         Text="{Binding SelectedGistViewModel.Description}"
+                         CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"></TextBox>
             </StackPanel>
+
+            <!-- SPLITTER -->
+
+            <GridSplitter Grid.Row="3" Style="{StaticResource SplitterStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          ResizeDirection="{Binding BrowserEditorsSplitterDirection}" />
+
+            <!-- GISTFILE EDITOR -->
+
+
+
 
         </Grid>
 

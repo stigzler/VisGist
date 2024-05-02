@@ -27,7 +27,7 @@ namespace VisGist.ViewModels
         private ObservableCollection<GistViewModel> gists = new ObservableCollection<GistViewModel>();
         private ViewModelBase selectedGistVmItem;
         private GistViewModel selectedGistViewModel;
-        private GistViewModel selectedGistFileViewModel;
+        private GistFileViewModel selectedGistFileViewModel;
         private GridResizeDirection browserEditorsSplitterDirection = GridResizeDirection.Rows;
         private bool layoutHorizontal = false;
 
@@ -41,7 +41,7 @@ namespace VisGist.ViewModels
 
         // below = ViewMOdelBase because selected item can be GistViewModel or GistFileViewModel (obtained from TreeView)
         public GistViewModel SelectedGistViewModel { get => selectedGistViewModel; set => SetProperty(ref selectedGistViewModel, value); }
-        public GistViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; 
+        public GistFileViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; 
                                                         set => SetProperty(ref selectedGistFileViewModel, value); }
         public bool LayoutHorizontal { get => layoutHorizontal; set => SetProperty(ref layoutHorizontal, value); }
 
@@ -84,8 +84,6 @@ namespace VisGist.ViewModels
         public IAsyncRelayCommand DoPostLoadActionsCMD { get; set; }
         public IAsyncRelayCommand DoTestActionCMD { get; set; }
         public IAsyncRelayCommand GetAllGistsCMD { get; set; }
-        public IRelayCommand ChangeSelectedGistItemCMD { get; set; }
-        public IRelayCommand OnSizeChangedCMD { get; set; }
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
@@ -121,12 +119,16 @@ namespace VisGist.ViewModels
 
   
 
-
         private void OnSelectedGistItemChanged(ViewModelBase gistItem)
         {
             if (gistItem is GistViewModel)
             {
                 SelectedGistViewModel = (GistViewModel)gistItem;
+            }
+            else if (gistItem is GistFileViewModel)
+            {
+                SelectedGistFileViewModel = (GistFileViewModel)gistItem;
+                SelectedGistViewModel = SelectedGistFileViewModel.ParentGistViewModel;
             }
         }
 
