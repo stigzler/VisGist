@@ -17,9 +17,7 @@ namespace VisGist.ViewModels
         /// </summary>
         public Octokit.GistFile ReferenceGistFile { get; set; }
         public GistViewModel ParentGistViewModel { get; set; }
-
         public string Content { get; set; }
-
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
 
 

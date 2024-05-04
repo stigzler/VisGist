@@ -44,13 +44,28 @@ namespace VisGist.Services
 
         internal async Task<IReadOnlyList<Gist>> GetAllGistsAsync()
         {
-            var dave = await gitHubClient.Gist.GetAll();
-            return dave;
+            var gists = await gitHubClient.Gist.GetAll();
+            return gists;
         }
 
         internal async Task<bool> GistIsStarredAsync(string gistId)
         {
             return await gitHubClient.Gist.IsStarred(gistId);
+        }
+
+
+        internal async Task<Gist> CreateNewGistAsync(bool @public, string gistDescription, string gistFileFilename, string gistFileContents = null)
+        {
+            NewGist newGist = new NewGist()
+            { Public = @public, Description = gistDescription };
+            newGist.Files.Add(Helpers.String.MakeStringFilenameSafe(gistFileFilename), gistFileContents);
+            Gist gist = await gitHubClient.Gist.Create(newGist);
+            return gist;
+        }
+
+        internal async Task DeleteGistAsync(string gistId)
+        {
+            await gitHubClient.Gist.Delete(gistId);
         }
 
         internal async Task DoTestActionAsync(object obj)

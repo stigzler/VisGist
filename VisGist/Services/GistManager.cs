@@ -39,6 +39,25 @@ namespace VisGist.Services
             return gistList;
         }
 
+        internal async Task<GistViewModel> CreateNewGistAsync(bool @public)
+        {
+            string dateTime = DateTime.Now.ToString();
+
+            Gist gist = await gitClientService.CreateNewGistAsync(@public, 
+                $"New Gist created {dateTime}",
+                $"New Gist created {dateTime}",
+                $"File created by VisGist on {dateTime}");
+
+            GistViewModel gistViewModel = new GistViewModel(gist);
+
+            return gistViewModel;
+        }
+
+        internal async Task DeleteGistAsync(GistViewModel gistViewModel)
+        {
+            await gitClientService.DeleteGistAsync(gistViewModel.Id);
+        }
+
 
 
     }

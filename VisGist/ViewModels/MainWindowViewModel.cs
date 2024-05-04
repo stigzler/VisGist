@@ -6,6 +6,7 @@ using Syncfusion.Windows.Tools;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using VisGist.Enums;
@@ -18,19 +19,21 @@ namespace VisGist.ViewModels
 
         #region PROPERTIES =========================================================================================
 
-        // Private members
+        // Private backing members -----------------------------------------------------------------------------------------
         private bool isDarkMode;
         private bool isAuthenticated = false;
         private StatusImage statusImage = StatusImage.Information;
         private string statusText = "Welcome to VisGist";
         private bool statusBarVisible = false;
+
         private ObservableCollection<GistViewModel> gists = new ObservableCollection<GistViewModel>();
+
         private ViewModelBase selectedGistVmItem;
         private GistViewModel selectedGistViewModel;
         private GistFileViewModel selectedGistFileViewModel;
+
         private GridResizeDirection browserEditorsSplitterDirection = GridResizeDirection.Rows;
         private bool layoutHorizontal = false;
-
 
         // Public members
         public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
@@ -41,14 +44,19 @@ namespace VisGist.ViewModels
 
         // below = ViewMOdelBase because selected item can be GistViewModel or GistFileViewModel (obtained from TreeView)
         public GistViewModel SelectedGistViewModel { get => selectedGistViewModel; set => SetProperty(ref selectedGistViewModel, value); }
-        public GistFileViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; 
-                                                        set => SetProperty(ref selectedGistFileViewModel, value); }
+        public GistFileViewModel SelectedGistFileViewModel
+        {
+            get => selectedGistFileViewModel;
+            set => SetProperty(ref selectedGistFileViewModel, value);
+        }
+
         public bool LayoutHorizontal { get => layoutHorizontal; set => SetProperty(ref layoutHorizontal, value); }
 
-
-
-        public GridResizeDirection BrowserEditorsSplitterDirection { get => browserEditorsSplitterDirection; 
-                                                                    set => SetProperty(ref  browserEditorsSplitterDirection, value); }
+        public GridResizeDirection BrowserEditorsSplitterDirection
+        {
+            get => browserEditorsSplitterDirection;
+            set => SetProperty(ref browserEditorsSplitterDirection, value);
+        }
         public ObservableCollection<GistViewModel> Gists { get => gists; set => SetProperty(ref gists, value); }
 
         public ViewModelBase SelectedGistVmItem
@@ -61,12 +69,15 @@ namespace VisGist.ViewModels
             }
         }
 
-
-
-
-
-
         #endregion End: PROPERTIES ---------------------------------------------------------------------------------
+
+        #region OPERATIONAL PRIVATE VARS ===========================================================================
+
+        private GistClientService gitClientService = new GistClientService();
+        private GistManager gistManager;
+        private General userVsOptions;
+
+        #endregion End: OPERATIONAL PRIVATE VARS 
 
 
         #region EVENTS =========================================================================================
@@ -84,17 +95,12 @@ namespace VisGist.ViewModels
         public IAsyncRelayCommand DoPostLoadActionsCMD { get; set; }
         public IAsyncRelayCommand DoTestActionCMD { get; set; }
         public IAsyncRelayCommand GetAllGistsCMD { get; set; }
+        public IAsyncRelayCommand AddNewGistCMD { get; set; }
+        public IAsyncRelayCommand DeleteGistCMD { get; set; }
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
 
-        #region OPERATIONAL PRIVATE VARS ===========================================================================
-
-        private GistClientService gitClientService = new GistClientService();
-        private GistManager gistManager;
-        private General userVsOptions;
-
-        #endregion End: OPERATIONAL PRIVATE VARS 
 
         public MainWindowViewModel()
         {
@@ -112,12 +118,31 @@ namespace VisGist.ViewModels
             LogOutCMD = new RelayCommand(LogOut);
             DoPostLoadActionsCMD = new AsyncRelayCommand(OnViewLoadedAsync);
             GetAllGistsCMD = new AsyncRelayCommand(GetAllGistsAsync);
-            // ChangeSelectedGistItemCMD = new RelayCommand(ChangeSelectedGistItem,);
-
+            AddNewGistCMD = new AsyncRelayCommand(AddNewGistAsync);
+            DeleteGistCMD = new AsyncRelayCommand(DeleteGistAsync);
             DoTestActionCMD = new AsyncRelayCommand(DoTestActionAsync);
         }
 
-  
+        private async Task DeleteGistAsync()
+        {
+            UpdateStatusBar(StatusImage.GitOperation, "Deleting Gist", true);
+
+            await gistManager.DeleteGistAsync(SelectedGistViewModel);
+
+            UpdateStatusBar(StatusImage.Success, "Gist deleted", false);
+        }
+
+        private async Task AddNewGistAsync()
+        {
+            UpdateStatusBar(StatusImage.GitOperation, "Adding New Gist", true);
+
+            GistViewModel gistViewModel = await gistManager.CreateNewGistAsync(userVsOptions.NewGistPublic);
+
+            gists.Add(gistViewModel);
+
+            UpdateStatusBar(StatusImage.Success, "New Gist added successfully", false);
+
+        }
 
         private void OnSelectedGistItemChanged(ViewModelBase gistItem)
         {
@@ -143,9 +168,9 @@ namespace VisGist.ViewModels
 
         private async Task DoTestActionAsync()
         {
-            //gists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
+            gists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
 
-            LayoutHorizontal = !LayoutHorizontal;
+            // LayoutHorizontal = !LayoutHorizontal;
 
             //BrowserEditorsSplitterDirection = GridResizeDirection.Columns;
 

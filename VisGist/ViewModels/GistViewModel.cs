@@ -35,6 +35,17 @@ namespace VisGist.ViewModels
         public string Id { get => ReferenceGist.Id; }
 
         /// <summary>
+        /// Constructs the FirendlyName from the filename of the alphabetically sorted GistFiles list
+        /// </summary>
+        public string PrimaryGistFilename
+        {
+            get
+            {
+                return GistFiles.OrderBy(gf => gf.Filename).First().Filename;
+            }
+        }
+
+        /// <summary>
         /// This is either the Gist as imported from Github, or the updated Gist following Gist Save
         /// Used in tracking changes
         /// </summary>
@@ -149,7 +160,6 @@ namespace VisGist.ViewModels
             GistFiles = new BindingList<GistFileViewModel>(GistFiles.OrderBy(gf => gf.Filename).ToList());
             OnPropertyChanged(nameof(GistFiles));
         }
-
         private bool GistHasChanges()
         {
             bool hasChanges = false;

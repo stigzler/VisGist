@@ -67,7 +67,7 @@ namespace VisGist
                 SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
                 MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
                 themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
-                SfSkinManager.RegisterThemeSettings("FluentDark", themeSettings);
+                SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);
             }
         }
 

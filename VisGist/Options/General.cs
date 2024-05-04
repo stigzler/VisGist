@@ -38,9 +38,13 @@ namespace VisGist
         [Description("Signs you into VisGist at startup")]
         [DefaultValue(false)]
         public bool AutoLogin { get; set; }
-       
 
 
+        [Category("Github Settings")]
+        [DisplayName("New Gists Public")]
+        [Description("Sets whether to default newly created Gists to Public visibility. If false, new Gists will be private.")]
+        [DefaultValue(true)]
+        public bool NewGistPublic { get; set; }
 
 
     }
