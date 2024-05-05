@@ -1,12 +1,8 @@
-﻿using Microsoft.VisualStudio.PlatformUI;
-using Octokit;
-using Syncfusion.SfSkinManager;
+﻿using Syncfusion.SfSkinManager;
 using Syncfusion.Themes.MaterialDark.WPF;
 using Syncfusion.Themes.MaterialLight.WPF;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using VisGist.Utility;
 using VisGist.ViewModels;
 
 namespace VisGist

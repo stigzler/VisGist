@@ -54,6 +54,7 @@
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Data\Constants.cs" />
     <Compile Include="Enums\StatusImage.cs" />
+    <Compile Include="Extensions\RootObject.cs" />
     <Compile Include="Helpers\DpapiEncrypt.cs" />
     <Compile Include="Helpers\String.cs" />
     <Compile Include="Helpers\UI.cs" />
@@ -141,7 +142,10 @@
     <PackageReference Include="CommunityToolkit.Mvvm">
       <Version>8.2.2</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.9.3168" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.9.3184">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
       <Version>1.1.77</Version>
     </PackageReference>
@@ -149,28 +153,16 @@
       <Version>11.0.1</Version>
     </PackageReference>
     <PackageReference Include="Syncfusion.Edit.WPF">
-      <Version>25.1.41</Version>
+      <Version>25.1.42</Version>
     </PackageReference>
     <PackageReference Include="Syncfusion.SfSkinManager.WPF">
-      <Version>25.1.41</Version>
-    </PackageReference>
-    <PackageReference Include="Syncfusion.Themes.FluentDark.WPF">
-      <Version>25.1.41</Version>
-    </PackageReference>
-    <PackageReference Include="Syncfusion.Themes.FluentLight.WPF">
-      <Version>25.1.41</Version>
+      <Version>25.1.42</Version>
     </PackageReference>
     <PackageReference Include="Syncfusion.Themes.MaterialDark.WPF">
-      <Version>25.1.41</Version>
+      <Version>25.1.42</Version>
     </PackageReference>
     <PackageReference Include="Syncfusion.Themes.MaterialLight.WPF">
-      <Version>25.1.41</Version>
-    </PackageReference>
-    <PackageReference Include="Syncfusion.Themes.Windows11Dark.WPF">
-      <Version>25.1.41</Version>
-    </PackageReference>
-    <PackageReference Include="Syncfusion.Themes.Windows11Light.WPF">
-      <Version>25.1.41</Version>
+      <Version>25.1.42</Version>
     </PackageReference>
     <PackageReference Include="System.Security.Cryptography.ProtectedData">
       <Version>8.0.0</Version>

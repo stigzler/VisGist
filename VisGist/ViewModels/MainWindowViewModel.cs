@@ -1,13 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
-using Octokit;
-using Syncfusion.Windows.Tools;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using VisGist.Enums;
 using VisGist.Services;
@@ -49,7 +43,6 @@ namespace VisGist.ViewModels
             get => selectedGistFileViewModel;
             set => SetProperty(ref selectedGistFileViewModel, value);
         }
-
         public bool LayoutHorizontal { get => layoutHorizontal; set => SetProperty(ref layoutHorizontal, value); }
 
         public GridResizeDirection BrowserEditorsSplitterDirection
@@ -129,6 +122,8 @@ namespace VisGist.ViewModels
 
             await gistManager.DeleteGistAsync(SelectedGistViewModel);
 
+            gists.Remove(SelectedGistViewModel);
+
             UpdateStatusBar(StatusImage.Success, "Gist deleted", false);
         }
 
@@ -138,7 +133,9 @@ namespace VisGist.ViewModels
 
             GistViewModel gistViewModel = await gistManager.CreateNewGistAsync(userVsOptions.NewGistPublic);
 
-            gists.Add(gistViewModel);
+            //gists.Add(gistViewModel);
+
+            gists.Insert(0, gistViewModel);
 
             UpdateStatusBar(StatusImage.Success, "New Gist added successfully", false);
 
