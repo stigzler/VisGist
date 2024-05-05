@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -45,6 +46,14 @@ namespace VisGist
         [Description("Sets whether to default newly created Gists to Public visibility. If false, new Gists will be private.")]
         [DefaultValue(true)]
         public bool NewGistPublic { get; set; }
+
+        private const string MyDefaultFont = "Consolas, 12pt";
+
+        [Category("Appearance")]
+        [DisplayName("Code Font")]
+        [Description("Sets the Font for the Code.")]
+        [DefaultValue(typeof(Font), "Consolas, 12pt")]
+        public Font CodeFont { get; set; } 
 
 
     }

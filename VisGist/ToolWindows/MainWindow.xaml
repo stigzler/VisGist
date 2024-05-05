@@ -37,6 +37,8 @@
         <converters:GistFilesVMToFirstFilenameConverter x:Key="GistFilesToFirstFilenameConverter"/>
         <converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
         <converters:BrushToColorConverter x:Key="BrushToColorConverter"/>
+        <converters:FontToFontFamilyConverter x:Key="FontToFontFamilyConverter"/>
+        <converters:GistHasChangesToCrispImageConverter x:Key="GistHasChangesToCrispImageConverter"/>
 
         <!-- STYLES ================================================================================= -->
 
@@ -93,8 +95,6 @@
             <Setter Property="Opacity" Value="0.6"/>
         </Style>
 
-
-
         <!-- CONTEXTMENU STYLE -->
         <Style x:Key="ContextMenu" TargetType="ContextMenu">
             <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"/>
@@ -125,47 +125,11 @@
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
 
-        <!--<Style x:Key="ToggleButton" TargetType="ToggleButton">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Content" Value="EDIT"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="border"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Background="{TemplateBinding Background}"
-                            SnapsToDevicePixels="True">
-                            <ContentPresenter x:Name="contentPresenter"
-                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  Content="{TemplateBinding Content}"
-                                                  ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                                  Focusable="False"
-                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                  Margin="{TemplateBinding Padding}"
-                                                  RecognizesAccessKey="True"
-                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Content" Value="Done"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>-->
-
-
-        <!--LOAD GISTS ICON -->
-        <!--<DataTemplate x:Key="LoadGistsSmallIcon">
-            <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.UpdateListItem}" />
-        </DataTemplate>-->
-
-
+        <!-- TREEVIEWITEM STYLE -->
+        <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
+            <Setter Property="Margin" Value="0,0,0,1"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
+        </Style>
 
 
     </UserControl.Resources>
@@ -177,7 +141,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <DockPanel x:Name="MainDP" Height="Auto">
+    <DockPanel x:Name="MainDP" Height="Auto" LastChildFill="True">
 
         <!-- TOP TOOLSTRIP -->
         <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top">
@@ -323,48 +287,44 @@
         </ContentControl>-->
 
 
-        <Grid x:Name="MainContentSP"  HorizontalAlignment="Stretch"
+        <Grid x:Name="MainContentGRD"  HorizontalAlignment="Stretch" 
                    Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibilityConverter}}"
-                   d:Visibility="Visible">
+                   d:Visibility="Visible" Margin="2">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" MinHeight="100"></RowDefinition>
+                <RowDefinition Height="*" MinHeight="40"></RowDefinition>
                 <RowDefinition Height="3"></RowDefinition>
-                <!-- Splitter-->
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="3"></RowDefinition>
-                <!-- Splitter-->
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 
             <!-- 0. GIST BROWSER -->
 
-            <Grid x:Name="GistBrowserGRD" Grid.Row="0" Margin="2"
-                  Tag="{Binding ElementName=MyToolWindow, Path=DataContext}">
+            <Grid x:Name="GistBrowserGRD" Grid.Row="0" Tag="{Binding ElementName=MyToolWindow, Path=DataContext}">
                 <Grid.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type viewmodels:GistViewModel}"
-                                              ItemsSource="{Binding Path=GistFiles}">
+
+                    <HierarchicalDataTemplate DataType="{x:Type viewmodels:GistViewModel}" ItemsSource="{Binding Path=GistFiles}">
 
                         <StackPanel Orientation="Horizontal">
 
-                            <imaging:CrispImage VerticalAlignment="Center"  Width="16" Height="16" Margin="0,0,4,0"
-                                                Moniker="{x:Static catalog:KnownMonikers.Item}"/>
+                            <imaging:CrispImage VerticalAlignment="Center" Margin="0,0,4,0"
+                                Moniker="{Binding HasChanges, Converter={StaticResource GistHasChangesToCrispImageConverter}}"
+                                ToolTip="{Binding PropertiesChanged}"/>
 
-                            <TextBlock VerticalAlignment="Center" Margin="2,0,2,0"
+                            <TextBlock VerticalAlignment="Center" Margin="0,0,4,0"
                                 Text="{Binding GistFiles, Converter={StaticResource GistFilesToFirstFilenameConverter}}"></TextBlock>
 
-                            <imaging:CrispImage VerticalAlignment="Center" Margin="2,0,2,0" Width="14" Height="14"
+                            <imaging:CrispImage VerticalAlignment="Center" Margin="0,0,0,0"  Width="14" Height="14"
                                 Moniker="{x:Static catalog:KnownMonikers.Key}"
                                 Visibility="{Binding Public, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
 
-                            <imaging:CrispImage VerticalAlignment="Center" Margin="2,0,2,0" Width="14" Height="14" 
+                            <imaging:CrispImage VerticalAlignment="Center" Margin="1,0,0,0" Width="14" Height="14" 
                                 Moniker="{x:Static catalog:KnownMonikers.Favorite}"
                                 Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-                            <imaging:CrispImage VerticalAlignment="Center" Margin="2,0,2,0" Width="14" Height="14" 
+                            <!--<imaging:CrispImage VerticalAlignment="Center" Margin="1,0,0,0" Width="14" Height="14" 
                                 Moniker="{x:Static catalog:KnownMonikers.Save}"
                                 Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisibilityConverter}}"
-                                ToolTip="{Binding PropertiesChanged}"/>
+                                ToolTip="{Binding PropertiesChanged}"/>-->
 
                             <StackPanel.ContextMenu>
                                 <ContextMenu Style="{StaticResource ContextMenu}" 
@@ -381,15 +341,18 @@
 
                         </StackPanel>
                     </HierarchicalDataTemplate>
+
                     <DataTemplate DataType="{x:Type viewmodels:GistFileViewModel}">
                         <StackPanel Orientation="Horizontal">
-                            <imaging:CrispImage VerticalAlignment="Center" Width="16" Height="16" Margin="0,0,4,0"
+                            <imaging:CrispImage VerticalAlignment="Center" Width="16" Height="16" Margin="0,0,2,0"
                                                 Moniker="{x:Static catalog:KnownMonikers.Document}" />
                             <TextBlock  VerticalAlignment="Center" Margin="2,0,2,0" Text="{Binding Filename}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </Grid.Resources>
-                <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}" BorderThickness="0" Background="Transparent">
+
+                <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}" BorderThickness="0" Background="Transparent"
+                          ItemContainerStyle="{StaticResource TreeViewItemStyle}">
                     <TreeView.Resources>
                         <!-- Style the inactive selection the same as active -->
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
@@ -405,33 +368,30 @@
 
             <!-- 1. SPLITTER -->
 
-            <GridSplitter Grid.Row="1" Style="{StaticResource SplitterStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                          ResizeDirection="{Binding BrowserEditorsSplitterDirection}" />
+            <GridSplitter Grid.Row="1" Style="{StaticResource SplitterStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
-            <!--2. GIST/GISTFILE EDITOR -->
+            <!--2. GIST EDITOR -->
 
-            <Grid x:Name="GistEditorSP" Grid.Row="2"  >
+            <Grid x:Name="GistEditorSP" Grid.Row="2">
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" MinHeight="30" />
                     <RowDefinition Height="3" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
 
-
                 </Grid.RowDefinitions>
-
 
                 <!-- 2.0 Gist Title and Buttons -->
 
-                <DockPanel x:Name="GistEditorTopRowSP" Grid.Row="0">
+                <DockPanel x:Name="GistTitleDP" Grid.Row="0">
 
                     <ToggleButton DockPanel.Dock="Right"  BorderThickness="0" 
                                   Style="{StaticResource TransparentToggleButtonStyle}"
                                   IsChecked="{Binding SelectedGistViewModel.Public,
                                     Converter={StaticResource ReverseBoolConverter},
-                                    Mode=TwoWay}">
+                                    Mode=TwoWay}" Margin="0,0,4,0">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Key}"/>
                     </ToggleButton>
 
@@ -453,46 +413,51 @@
 
                 <!-- 2.1 Gist Description -->
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
-                    <TextBox x:Name="GistDescriptionTB" MinHeight="32" Background="Transparent" Padding="1" AcceptsReturn="True" 
+                <ScrollViewer x:Name="GistDescriptionSV" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                    <TextBox x:Name="GistDescriptionTB" MinHeight="32" Background="Transparent" Padding="1" AcceptsReturn="True"
+                             VerticalAlignment="Top" BorderThickness="0"
                          Text="{Binding SelectedGistViewModel.Description}"
                          CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                          d:Text="Gist Description" d:Foreground="White"></TextBox>
                 </ScrollViewer>
-                
+
                 <!-- 2.2 Splitter -->
 
-                <GridSplitter Grid.Row="2" Style="{StaticResource SplitterStyle}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                          ResizeDirection="{Binding BrowserEditorsSplitterDirection}" />
+                <GridSplitter Grid.Row="2" Style="{StaticResource SplitterStyle}" HorizontalAlignment="Stretch" />
 
-                <!-- 2.3 GistFile Filename -->
+                <!-- 2.3 GistFile Filename Controls -->
 
-                <DockPanel Grid.Row="3">
-                    <ContentControl DockPanel.Dock="Left" Margin="4,0,0,0">
-                        <imaging:CrispImage  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Item}"/>
+                <DockPanel x:Name="GistFileFilenameDP" Grid.Row="3" Height="20" Margin="4,2,0,4" LastChildFill="True">
+
+                    <ContentControl DockPanel.Dock="Left"  VerticalAlignment="Center">
+                        <imaging:CrispImage  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}"/>
                     </ContentControl>
-                    
-                    <TextBox x:Name="GistFileFilenameTB"  MinHeight="32" Background="Transparent" 
-                        BorderThickness="1" Padding="1" AcceptsReturn="True"                     
+
+                    <TextBox x:Name="GistFileFilenameTB" MinHeight="32" Background="Transparent" 
+                        BorderThickness="0" Padding="1" AcceptsReturn="True"                     
                         Text="{Binding SelectedGistFileViewModel.Filename}"
                         CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+                        VerticalAlignment="Center"
                          d:Text="GistFile Filename.cs" d:Foreground="White">
                     </TextBox>
                 </DockPanel>
 
-                <!-- 2.4 Code Editor -->            
-                <syncfusion:EditControl Grid.Row="4" Text="Edit Control" Height="100" />
+                <!-- 2.4 GistFile Filename Controls -->
 
-
-
+                <syncfusion:EditControl x:Name="CodeEditEC" Grid.Row="4" 
+                        LineNumberAreaBackground="Transparent" 
+                        OutliningAreaBackground="Transparent" Background="Transparent"
+                        FontFamily="{Binding CodeFont, Converter={StaticResource FontToFontFamilyConverter}}" FontSize="12"
+                        IsAutoLineNumberAreaWidthEnabled="false"
+                        ChangesIndicatorWidth="2"
+                        ShowLineNumber="False" EnableOutlining="false" 
+                        DocumentLanguage="CSharp" AcceptsTab="True"
+                        Text="{Binding SelectedGistFileViewModel.Content}" />
             </Grid>
 
-
-
-
-
-
         </Grid>
+        <!-- /MainContentGRD -->
+
 
 
 

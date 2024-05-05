@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Windows.Controls;
 using VisGist.Enums;
 using VisGist.Services;
@@ -28,6 +29,7 @@ namespace VisGist.ViewModels
 
         private GridResizeDirection browserEditorsSplitterDirection = GridResizeDirection.Rows;
         private bool layoutHorizontal = false;
+        private Font codeFont = new Font("Consolas", 14);
 
         // Public members
         public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
@@ -62,13 +64,26 @@ namespace VisGist.ViewModels
             }
         }
 
+        public Font CodeFont
+        {
+            get
+            {
+                return codeFont;
+            }
+            private set
+            {
+                if (value == null) SetProperty(ref codeFont, new Font(FontFamily.GenericMonospace, 12));
+                else SetProperty(ref codeFont, value);
+            }
+        }
+
         #endregion End: PROPERTIES ---------------------------------------------------------------------------------
 
         #region OPERATIONAL PRIVATE VARS ===========================================================================
 
         private GistClientService gitClientService = new GistClientService();
         private GistManager gistManager;
-        private General userVsOptions;
+        private General userVsOptions = new General();
 
         #endregion End: OPERATIONAL PRIVATE VARS 
 
@@ -100,9 +115,19 @@ namespace VisGist.ViewModels
             // Detect VisualStudio Theme Changes
             VSColorTheme.ThemeChanged += VSColorTheme_ThemeChanged;
 
+
             gistManager = new GistManager(gitClientService);
 
             SetupCommands();
+        }
+
+        private async Task OnViewLoadedAsync()
+        {
+            userVsOptions = await General.GetLiveInstanceAsync();
+            CodeFont = userVsOptions.CodeFont;
+
+
+            if (userVsOptions.AutoLogin) await AuthenticateUserAsync();
         }
 
         private void SetupCommands()
@@ -174,11 +199,7 @@ namespace VisGist.ViewModels
             //await gitClientService.DoTestActionAsync(this);
         }
 
-        private async Task OnViewLoadedAsync()
-        {
-            userVsOptions = await General.GetLiveInstanceAsync();
-            if (userVsOptions.AutoLogin) await AuthenticateUserAsync();
-        }
+
 
         private void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
         {

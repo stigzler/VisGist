@@ -60,10 +60,11 @@ namespace VisGist
                 // resourceDictionaryManager.ChangeTheme(new Uri("pack://application:,,,/VisGist;component/Resources/Themes/Light.xaml"), this);
 
                 // Syncfusion Theme operations
-                SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
                 MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
                 themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
-                SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);
+                SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);             
+                SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
+
             }
         }
 

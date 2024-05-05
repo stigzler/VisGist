@@ -35,7 +35,7 @@ namespace VisGist.Services
                 gistVM.Starred = gistVM.ReferenceStarred;
                 gistList.Add(gistVM);
             }
-
+            gistList = new ObservableCollection<GistViewModel>(gistList.OrderBy(x => x.Public));
             return gistList;
         }
 
