@@ -1,8 +1,11 @@
 ﻿using Syncfusion.SfSkinManager;
 using Syncfusion.Themes.MaterialDark.WPF;
 using Syncfusion.Themes.MaterialLight.WPF;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using VisGist.ViewModels;
 
 namespace VisGist
@@ -29,6 +32,7 @@ namespace VisGist
         private void SetupVmEventHooks()
         {
             mainWindowVM.PropertyChanged += MainWindowVM_PropertyChanged;
+            mainWindowVM.FilenameChangeDetected += MainWindowVM_FilenameChangeDetected;
         }
 
         private void MainWindowVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -62,7 +66,7 @@ namespace VisGist
                 // Syncfusion Theme operations
                 MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
                 themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
-                SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);             
+                SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);
                 SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
 
             }
@@ -72,6 +76,36 @@ namespace VisGist
         {
             if (this.ActualHeight > ActualWidth) mainWindowVM.LayoutHorizontal = true;
             else mainWindowVM.LayoutHorizontal = false;
+        }
+
+
+
+        // yeah - I know, I know, But might be dead tomorrow. 
+        bool filenameTBinErrorState = false;
+        private void MainWindowVM_FilenameChangeDetected(bool unique)
+        {
+            if (unique)
+            {
+                GistFileFilenameTB.BorderBrush = new SolidColorBrush(Colors.Red);
+                GistFileFilenameTB.BorderThickness = new Thickness(1);
+            }
+            else
+            {
+                GistFileFilenameTB.BorderThickness = new Thickness(0);
+            }
+        }
+
+        private void TestBT_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TestBT_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Right) return;
+            CodeEC.Text += Environment.NewLine + "Hello World";
+
+
         }
     }
 }

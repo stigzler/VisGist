@@ -26,15 +26,21 @@ namespace VisGist.Services
         {
             ObservableCollection<GistViewModel> gistList = new ObservableCollection<GistViewModel>();
 
-            IReadOnlyList<Gist> gistsList = await gitClientService.GetAllGistsAsync();
+            // Note: the below return all details apart from the actual code (GistFile.Contents)
+            // You have to do a separate gistClient.Get(gistId) to get the full gist
+            IReadOnlyList<Gist> gistsSummaryList = await gitClientService.GetAllGistsAsync();
 
-            foreach (Gist octoGist in gistsList)
+            foreach (Gist summaryGist in gistsSummaryList)
             {
-                GistViewModel gistVM = new GistViewModel(octoGist);
-                gistVM.ReferenceStarred = await gitClientService.GistIsStarredAsync(octoGist.Id);
+                // Get full Gist details, including code
+                Gist gist = await gitClientService.GetGistAsync(summaryGist.Id);
+
+                GistViewModel gistVM = new GistViewModel(gist);
+                gistVM.ReferenceStarred = await gitClientService.GistIsStarredAsync(gist.Id);
                 gistVM.Starred = gistVM.ReferenceStarred;
                 gistList.Add(gistVM);
             }
+
             gistList = new ObservableCollection<GistViewModel>(gistList.OrderBy(x => x.Public));
             return gistList;
         }

@@ -35,7 +35,6 @@ namespace VisGist.Services
                 var authTest = await gitHubClient.RateLimit.GetRateLimits(); // have to be authorised to access this. Thus, provides a test.                  
                 return null;
             }
-
             catch (Exception ex)
             {
                 return ex;
@@ -47,6 +46,14 @@ namespace VisGist.Services
             var gists = await gitHubClient.Gist.GetAll();
             return gists;
         }
+        internal async Task<Gist> GetGistAsync(string gistID)
+        {
+            var gist = await gitHubClient.Gist.Get(gistID);
+            return gist;
+        }
+
+
+
 
         internal async Task<bool> GistIsStarredAsync(string gistId)
         {

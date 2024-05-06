@@ -1,5 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -12,19 +14,24 @@ namespace VisGist.ViewModels
 {
     internal class GistViewModel : ViewModelBase, IDisposable
     {
-
-
         #region Private Backing Vars =========================================================================================
 
         private BindingList<GistFileViewModel> gistFiles = new();
         private bool starred = false;
         private bool @public = false;
-        private bool hasChanges = false;
         private string description = string.Empty;
-        private string propertyChanged = string.Empty ;
+
+
+        private bool hasChanges = false;
+        private bool canSave = true;
+        private string propertyChanged = string.Empty;
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+
+
 
         #endregion End: Private Backing Vars
-
 
         #region Properties =========================================================================================
 
@@ -40,6 +47,7 @@ namespace VisGist.ViewModels
         {
             get
             {
+                if (GistFiles.Count == 0) return null;
                 return GistFiles.OrderBy(gf => gf.Filename).First().Filename;
             }
         }
@@ -58,9 +66,15 @@ namespace VisGist.ViewModels
 
         /// <summary>
         /// Whether Gist has changes compared to vanilla Imported Gist, or
-        /// since last save. Leverages ReferenceGist
+        /// since last save. Also, whether any child GistFile has changes. Leverages ReferenceGist
         /// </summary>
         public bool HasChanges { get => hasChanges; set => SetProperty(ref hasChanges, value); }
+
+        public bool CanSave { get => canSave; set => SetProperty(ref canSave, value); }
+
+        public bool HasErrors => gistFiles.Any(gf => gf.HasErrors);
+
+ 
 
         /// <summary>
         /// Holds a string describing which properties have changed. Can be used
@@ -75,6 +89,7 @@ namespace VisGist.ViewModels
             {
                 SetProperty(ref description, value);
                 HasChanges = GistHasChanges();
+
             }
         }
 
@@ -85,6 +100,7 @@ namespace VisGist.ViewModels
             {
                 SetProperty(ref @public, value);
                 HasChanges = GistHasChanges();
+
             }
         }
 
@@ -95,36 +111,34 @@ namespace VisGist.ViewModels
             {
                 SetProperty(ref starred, value);
                 HasChanges = GistHasChanges();
+
             }
         }
 
         public BindingList<GistFileViewModel> GistFiles { get => gistFiles; set => SetProperty(ref gistFiles, value); }
-        public string FirstGistFileFilename
-        {
-            get
-            {
-                if (GistFiles.Count == 0) return null;
-                return GistFiles.OrderBy(gf => gf.Filename).FirstOrDefault().Filename;
-            }
-        }
+
 
         #endregion End: Properties
 
 
 
         #region Commands =========================================================================================
-        public ICommand RegisterGistEditsCmd { get; set; }
+
 
 
         private void RegisterCommands()
         {
-            RegisterGistEditsCmd = new RelayCommand(RegisterGistEdits);
         }
 
-        private void RegisterGistEdits()
+
+        private async Task SaveGistAsync()
         {
-            throw new NotImplementedException();
+            await Task.Delay(TimeSpan.FromSeconds(2));
         }
+
+
+
+
 
         #endregion End: Commands
 
@@ -159,7 +173,8 @@ namespace VisGist.ViewModels
             GistFiles = new BindingList<GistFileViewModel>(GistFiles.OrderBy(gf => gf.Filename).ToList());
             OnPropertyChanged(nameof(GistFiles));
         }
-        private bool GistHasChanges()
+
+        internal bool GistHasChanges()
         {
             bool hasChanges = false;
 
@@ -168,6 +183,7 @@ namespace VisGist.ViewModels
             if (starred != ReferenceStarred) { hasChanges = true; PropertiesChanged += "Starred, "; }
             if (Public != ReferenceGist.Public) { hasChanges = true; PropertiesChanged += "Public, "; }
             if (Description != ReferenceGist.Description) { hasChanges = true; PropertiesChanged += "Description, "; }
+            if (GistFiles.Any(gf => gf.HasChanges)) { hasChanges = true; PropertiesChanged += "File/s, "; }
 
             // if items have been added, remove the trailing ", "
             if (PropertiesChanged != Data.Constants.GistPropertiesChangedPrefix)
@@ -180,6 +196,7 @@ namespace VisGist.ViewModels
             }
 
             return hasChanges;
+
         }
 
         #endregion End: Private Methods
@@ -190,5 +207,7 @@ namespace VisGist.ViewModels
         {
             GistFiles.ListChanged -= GistFiles_ListChanged;
         }
+
+
     }
 }

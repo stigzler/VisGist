@@ -38,7 +38,9 @@
         <converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
         <converters:BrushToColorConverter x:Key="BrushToColorConverter"/>
         <converters:FontToFontFamilyConverter x:Key="FontToFontFamilyConverter"/>
-        <converters:GistHasChangesToCrispImageConverter x:Key="GistHasChangesToCrispImageConverter"/>
+        <converters:GistToIndicatorIconConverter x:Key="GistToIndicatorIconConverter"/>
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+        <converters:FilenameToLanguageConverter x:Key="FilenameToLanguageConverter" />
 
         <!-- STYLES ================================================================================= -->
 
@@ -131,6 +133,32 @@
             <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
         </Style>
 
+        <!-- TEXTBOX STYLES -->
+        <!-- Filename Textbox (red highlighted border to provide user feedback for invalid filenames-->
+        <Style x:Key="FilenameTextBox" TargetType="TextBox">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <StackPanel>
+                            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                    Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                            </Border>
+                            <ItemsControl ItemsSource="{TemplateBinding Validation.Errors}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" FontStyle="Italic"  Text="{Binding ErrorContent}" Padding="4,0,0,2"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
 
     </UserControl.Resources>
 
@@ -162,6 +190,25 @@
                 Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible">
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true">
 
+                    <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Gist" IsEnabled="{Binding SelectedGistViewModel.CanSave}">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Save}" 
+                                            Opacity="{Binding SelectedGistViewModel.CanSave, Converter={StaticResource BoolToOpacityConverter}}"/>
+                    </Button>
+
+                    <Button x:Name="NewGistBT" Command="{Binding AddNewGistCMD}" ToolTip="New Gist">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewListItem}" />
+                    </Button>
+
+                    <Separator></Separator>
+
+                    <ToggleButton x:Name="SyntaxHighlightBT" ToolTip="Toggle Syntax Highlighting" 
+                                  Command="{Binding SetSyntaxHighlightingCMD}" 
+                                  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CommentCode}" />
+                    </ToggleButton>
+
+                    <Separator></Separator>
+
                     <Button x:Name="LogoutBT" Command="{Binding LogOutCMD}" ToolTip="Log Out">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.UserError}" />
                     </Button>
@@ -170,11 +217,7 @@
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Refresh}" />
                     </Button>
 
-                    <Button x:Name="NewGistBT" Command="{Binding AddNewGistCMD}" ToolTip="New Gist">
-                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewListItem}" />
-                    </Button>
-
-                    <Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test">
+                    <Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test" MouseDown="TestBT_Click">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewTest}" />
                     </Button>
 
@@ -194,9 +237,20 @@
         <StatusBar x:Name="MainSB" DockPanel.Dock="Bottom" Margin="4" 
                    Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Background="Transparent"
                    d:Foreground="White">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
 
-            <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
-                <imaging:CrispImage Tag="{Binding StatusImage}" DockPanel.Dock="Left"  Width="16" Height="16">
+            <StatusBarItem Grid.Column="0" VerticalContentAlignment="Center">
+                <imaging:CrispImage Tag="{Binding StatusImage}" Width="16" Height="16" VerticalAlignment="Center">
                     <imaging:CrispImage.Style>
                         <Style TargetType="imaging:CrispImage">
                             <Style.Triggers>
@@ -212,18 +266,27 @@
                                 <DataTrigger Binding="{Binding StatusImage}" Value="GitOperation">
                                     <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.Git}"/>
                                 </DataTrigger>
-
                             </Style.Triggers>
                         </Style>
                     </imaging:CrispImage.Style>
                 </imaging:CrispImage>
-                <TextBlock Text="{Binding StatusText}" DockPanel.Dock="Left" Padding="6,0,2,0"></TextBlock>
-                <!--<ProgressBar Height="2" Foreground="Blue" IsIndeterminate="True"
-                             Visibility="{Binding AsyncOperationStatusManager.CurrentOperation.Execution.IsNotCompleted, Converter={StaticResource boolToVisibilityConverter}, FallbackValue=Collapsed}"/>-->
-                <ProgressBar Height="2" Foreground="Orange" IsIndeterminate="True" Width="100" Margin="10,0,10,0"
-                             Visibility="{Binding StatusBarVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </StatusBarItem>
 
-            </DockPanel>
+            <StatusBarItem Grid.Column="1">
+                <TextBlock  Text="{Binding StatusText}"  Padding="6,0,2,0" VerticalAlignment="Center"></TextBlock>
+            </StatusBarItem>
+            <!--<ProgressBar Height="2" Foreground="Blue" IsIndeterminate="True"
+                             Visibility="{Binding AsyncOperationStatusManager.CurrentOperation.Execution.IsNotCompleted, Converter={StaticResource boolToVisibilityConverter}, FallbackValue=Collapsed}"/>-->
+
+            <StatusBarItem Grid.Column="2" HorizontalContentAlignment="Stretch" >
+                <ProgressBar  Height="2" Foreground="Orange" IsIndeterminate="True" Margin="10,0,10,0" VerticalAlignment="Center"
+                             HorizontalContentAlignment="Stretch" 
+                             Visibility="{Binding StatusBarVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                             d:Visibility="Visible"/>
+
+            </StatusBarItem>
+
+
         </StatusBar>
 
 
@@ -306,9 +369,36 @@
 
                         <StackPanel Orientation="Horizontal">
 
-                            <imaging:CrispImage VerticalAlignment="Center" Margin="0,0,4,0"
-                                Moniker="{Binding HasChanges, Converter={StaticResource GistHasChangesToCrispImageConverter}}"
-                                ToolTip="{Binding PropertiesChanged}"/>
+                            <!--<imaging:CrispImage VerticalAlignment="Center" Margin="0,0,4,0" ToolTip="{Binding PropertiesChanged}">
+                                <imaging:CrispImage.Moniker>
+                                    <MultiBinding Converter="{StaticResource GistToIndicatorIconConverter}">
+                                        <Binding Path="CanSave"/>
+                                        <Binding Path="HasChanges"/>
+                                    </MultiBinding>
+                                </imaging:CrispImage.Moniker>
+                            </imaging:CrispImage>-->
+
+                            <imaging:CrispImage VerticalAlignment="Center" Margin="0,0,4,0" ToolTip="{Binding PropertiesChanged}">
+                                <imaging:CrispImage.Resources>
+                                    <Style TargetType="ToolTip">
+                                        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+                                    </Style>
+                                </imaging:CrispImage.Resources>
+                                <imaging:CrispImage.Style>
+                                    <Style TargetType="imaging:CrispImage">
+                                        <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.Item}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                                <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.Save}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding CanSave}" Value="False">
+                                                <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.ExclamationPoint}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </imaging:CrispImage.Style>
+                            </imaging:CrispImage>
 
                             <TextBlock VerticalAlignment="Center" Margin="0,0,4,0"
                                 Text="{Binding GistFiles, Converter={StaticResource GistFilesToFirstFilenameConverter}}"></TextBlock>
@@ -344,11 +434,25 @@
 
                     <DataTemplate DataType="{x:Type viewmodels:GistFileViewModel}">
                         <StackPanel Orientation="Horizontal">
-                            <imaging:CrispImage VerticalAlignment="Center" Width="16" Height="16" Margin="0,0,2,0"
-                                                Moniker="{x:Static catalog:KnownMonikers.Document}" />
+                            <!--<imaging:CrispImage VerticalAlignment="Center" Width="16" Height="16" Margin="0,0,2,0"
+                                                Moniker="{x:Static catalog:KnownMonikers.Document}" />-->
+                            <imaging:CrispImage VerticalAlignment="Center" Margin="0,0,2,0">
+                                <imaging:CrispImage.Style>
+                                    <Style TargetType="imaging:CrispImage">
+                                        <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.Document}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasChanges}" Value="True">
+                                                <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.Save}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </imaging:CrispImage.Style>
+                            </imaging:CrispImage>
+
                             <TextBlock  VerticalAlignment="Center" Margin="2,0,2,0" Text="{Binding Filename}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
+
                 </Grid.Resources>
 
                 <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}" BorderThickness="0" Background="Transparent"
@@ -364,6 +468,7 @@
                         <behaviours:BindableSelectedItemBehavior SelectedItem="{Binding SelectedGistVmItem, Mode=TwoWay}" />
                     </i:Interaction.Behaviors>
                 </TreeView>
+
             </Grid>
 
             <!-- 1. SPLITTER -->
@@ -378,7 +483,7 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" MinHeight="30" />
                     <RowDefinition Height="3" />
-                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="*" />
 
                 </Grid.RowDefinitions>
@@ -406,7 +511,7 @@
                     </ContentControl>
 
                     <TextBlock x:Name="GistNameTBL" Padding="4" Style="{StaticResource SemiTransparentText}" TextTrimming="CharacterEllipsis"
-                               Text="{Binding SelectedGistViewModel.FirstGistFileFilename}" FontWeight="Bold"
+                               Text="{Binding SelectedGistViewModel.PrimaryGistFilename}" FontWeight="Bold"
                                    d:Text="Gist Name">
                     </TextBlock>
                 </DockPanel>
@@ -415,7 +520,7 @@
 
                 <ScrollViewer x:Name="GistDescriptionSV" VerticalScrollBarVisibility="Auto" Grid.Row="1">
                     <TextBox x:Name="GistDescriptionTB" MinHeight="32" Background="Transparent" Padding="1" AcceptsReturn="True"
-                             VerticalAlignment="Top" BorderThickness="0"
+                             TabIndex="0" VerticalAlignment="Top" IsTabStop="True" BorderThickness="0"
                          Text="{Binding SelectedGistViewModel.Description}"
                          CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                          d:Text="Gist Description" d:Foreground="White"></TextBox>
@@ -427,32 +532,44 @@
 
                 <!-- 2.3 GistFile Filename Controls -->
 
-                <DockPanel x:Name="GistFileFilenameDP" Grid.Row="3" Height="20" Margin="4,2,0,4" LastChildFill="True">
+                <DockPanel x:Name="GistFileFilenameDP" Grid.Row="3" Margin="4,4,0,8" LastChildFill="True" >
 
-                    <ContentControl DockPanel.Dock="Left"  VerticalAlignment="Center">
+                    <ContentControl DockPanel.Dock="Left"  VerticalAlignment="Top">
                         <imaging:CrispImage  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}"/>
                     </ContentControl>
 
-                    <TextBox x:Name="GistFileFilenameTB" MinHeight="32" Background="Transparent" 
-                        BorderThickness="0" Padding="1" AcceptsReturn="True"                     
-                        Text="{Binding SelectedGistFileViewModel.Filename}"
+                    <TextBox x:Name="GistFileFilenameTB"  Background="Transparent" Style="{StaticResource FilenameTextBox}"
+                        BorderThickness="0" Padding="1"                    
+                        Text="{Binding SelectedGistFileViewModel.Filename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
-                        VerticalAlignment="Center"
-                         d:Text="GistFile Filename.cs" d:Foreground="White">
+                        TabIndex="1" IsTabStop="True" VerticalAlignment="Center" 
+                        d:Text="GistFile Filename.cs" d:Foreground="White"
+                             >
+                        <!--<i:Interaction.Triggers>
+                            <i:EventTrigger EventName="TextChanged" SourceObject ="{Binding ElementName=GistFileFilenameTB}">
+                                <i:InvokeCommandAction Command="{Binding CheckNewFilenameCMD}" CommandParameter="{Binding Text, ElementName=GistFileFilenameTB}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>-->
                     </TextBox>
                 </DockPanel>
 
                 <!-- 2.4 GistFile Filename Controls -->
 
-                <syncfusion:EditControl x:Name="CodeEditEC" Grid.Row="4" 
+                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
                         LineNumberAreaBackground="Transparent" 
                         OutliningAreaBackground="Transparent" Background="Transparent"
                         FontFamily="{Binding CodeFont, Converter={StaticResource FontToFontFamilyConverter}}" FontSize="12"
-                        IsAutoLineNumberAreaWidthEnabled="false"
+                        IsAutoLineNumberAreaWidthEnabled="True"
                         ChangesIndicatorWidth="2"
-                        ShowLineNumber="False" EnableOutlining="false" 
-                        DocumentLanguage="CSharp" AcceptsTab="True"
-                        Text="{Binding SelectedGistFileViewModel.Content}" />
+                        ShowLineNumber="False" EnableOutlining="false"
+                        AcceptsTab="True"
+                        TabIndex="2" IsTabStop="True"
+                        Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
+                                FallbackValue='GistFile code here'}"
+                        DocumentLanguage="{Binding SelectedGistFileViewModel.Filename, 
+                                            Converter={StaticResource FilenameToLanguageConverter}}" >
+                </syncfusion:EditControl>
+
             </Grid>
 
         </Grid>
