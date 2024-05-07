@@ -40,6 +40,12 @@ namespace VisGist
         [DefaultValue(false)]
         public bool AutoLogin { get; set; }
 
+        [Category("Github Settings")]
+        [DisplayName("Auto Load Gists")]
+        [Description("Loads all Gists at startup")]
+        [DefaultValue(false)]
+        public bool AutoLoadGists { get; set; }
+
 
         [Category("Github Settings")]
         [DisplayName("New Gists Public")]

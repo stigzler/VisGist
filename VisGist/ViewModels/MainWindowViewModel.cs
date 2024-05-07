@@ -1,13 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using EnvDTE;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.RpcContracts.FileSystem;
 using Microsoft.VisualStudio.Threading;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Controls;
 using VisGist.Enums;
 using VisGist.Services;
+using Syncfusion.Windows.Edit;
+using Languages = Syncfusion.Windows.Edit.Languages;
 
 namespace VisGist.ViewModels
 {
@@ -23,6 +28,7 @@ namespace VisGist.ViewModels
         private string statusText = "Welcome to VisGist";
         private bool statusBarVisible = false;
         private bool syntaxHighlightingEnabled = false;
+        private Languages selectedLanguage = Syncfusion.Windows.Edit.Languages.Text;
 
         private ObservableCollection<GistViewModel> gists = new ObservableCollection<GistViewModel>();
 
@@ -46,6 +52,8 @@ namespace VisGist.ViewModels
         public GistViewModel SelectedGistViewModel { get => selectedGistViewModel; set => SetProperty(ref selectedGistViewModel, value); }
         public GistFileViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; set => SetProperty(ref selectedGistFileViewModel, value); }
         public bool LayoutHorizontal { get => layoutHorizontal; set => SetProperty(ref layoutHorizontal, value); }
+        public IEnumerable<Languages> Languages { get => Enum.GetValues(typeof(Languages)).Cast<Languages>(); }
+        public Languages SelectedLanguage { get => selectedLanguage; set => SetProperty(ref selectedLanguage, value); }
         public GridResizeDirection BrowserEditorsSplitterDirection
         {
             get => browserEditorsSplitterDirection;
@@ -131,7 +139,10 @@ namespace VisGist.ViewModels
         {
             userVsOptions = await General.GetLiveInstanceAsync();
             CodeFont = userVsOptions.CodeFont;
+
             if (userVsOptions.AutoLogin) await AuthenticateUserAsync();
+
+            if (userVsOptions.AutoLoadGists) await GetAllGistsAsync();
         }
 
         private void SetupCommands()

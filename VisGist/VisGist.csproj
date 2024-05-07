@@ -162,6 +162,12 @@
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Avalonia.AvaloniaEdit">
+      <Version>11.0.6</Version>
+    </PackageReference>
+    <PackageReference Include="AvaloniaEdit.TextMate">
+      <Version>11.0.6</Version>
+    </PackageReference>
     <PackageReference Include="Community.VisualStudio.VSCT" Version="16.0.29.6" PrivateAssets="all" />
     <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.507" ExcludeAssets="Runtime" />
     <PackageReference Include="CommunityToolkit.Mvvm">

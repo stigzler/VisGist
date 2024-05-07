@@ -1,11 +1,13 @@
 ﻿using Syncfusion.SfSkinManager;
 using Syncfusion.Themes.MaterialDark.WPF;
 using Syncfusion.Themes.MaterialLight.WPF;
+using Syncfusion.Windows.Edit;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using AvaloniaEdit;
 using VisGist.ViewModels;
 
 namespace VisGist
@@ -27,6 +29,10 @@ namespace VisGist
             mainWindowVM = (MainWindowViewModel)this.DataContext;
 
             SetupVmEventHooks();
+
+            
+
+
         }
 
         private void SetupVmEventHooks()
@@ -68,7 +74,6 @@ namespace VisGist
                 themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
                 SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);
                 SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
-
             }
         }
 
@@ -95,17 +100,12 @@ namespace VisGist
             }
         }
 
-        private void TestBT_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void TestBT_Click(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Right) return;
-            CodeEC.Text += Environment.NewLine + "Hello World";
-
-
+           // CodeEC.Text += Environment.NewLine + "Hello World";
         }
+
+
     }
 }

@@ -155,7 +155,7 @@ namespace VisGist.ViewModels
             {
                 GistFiles.Add(new GistFileViewModel(fileKvp.Value, this));
             }
-
+            
             GistFiles.ListChanged += GistFiles_ListChanged;
 
             RegisterCommands();

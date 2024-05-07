@@ -10,12 +10,16 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviours="clr-namespace:VisGist.Behaviors"
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+             xmlns:syncfusionEdit="clr-namespace:Syncfusion.Windows.Edit.Interfaces;assembly=Syncfusion.Edit.Wpf"
              xmlns:controls="clr-namespace:VisGist.Controls"
              xmlns:converters="clr-namespace:VisGist.Converters" 
+             xmlns:behaviors="clr-namespace:VisGist.Behaviors"
              xmlns:views="clr-namespace:VisGist.Views"
              xmlns:viewmodels="clr-namespace:VisGist.ViewModels" 
              xmlns:models="clr-namespace:VisGist.Models"     
              xmlns:exts="clr-namespace:VisGist.Extensions"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"    
+xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"  
              toolkit:Themes.UseVsTheme="True"
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" 
@@ -41,6 +45,10 @@
         <converters:GistToIndicatorIconConverter x:Key="GistToIndicatorIconConverter"/>
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <converters:FilenameToLanguageConverter x:Key="FilenameToLanguageConverter" />
+
+
+
+
 
         <!-- STYLES ================================================================================= -->
 
@@ -206,6 +214,10 @@
                                   CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CommentCode}" />
                     </ToggleButton>
+
+                    <ComboBox x:Name="LanguageSelectorCB" Width="80" ItemsSource="{Binding Languages}"
+                              SelectedItem="{Binding SelectedLanguage}">
+                    </ComboBox>
 
                     <Separator></Separator>
 
@@ -555,7 +567,9 @@
 
                 <!-- 2.4 GistFile Filename Controls -->
 
-                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
+                
+                
+                <!--<syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
                         LineNumberAreaBackground="Transparent" 
                         OutliningAreaBackground="Transparent" Background="Transparent"
                         FontFamily="{Binding CodeFont, Converter={StaticResource FontToFontFamilyConverter}}" FontSize="12"
@@ -566,10 +580,12 @@
                         TabIndex="2" IsTabStop="True"
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
                                 FallbackValue='GistFile code here'}"
-                        DocumentLanguage="{Binding SelectedGistFileViewModel.Filename, 
-                                            Converter={StaticResource FilenameToLanguageConverter}}" >
-                </syncfusion:EditControl>
+                        DocumentLanguage="{Binding SelectedLanguage}">
+                </syncfusion:EditControl>-->
 
+                <AvaloniaEdit:TextEditor></AvaloniaEdit:TextEditor>
+                
+                
             </Grid>
 
         </Grid>
