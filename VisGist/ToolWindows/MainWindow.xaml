@@ -19,7 +19,6 @@
              xmlns:models="clr-namespace:VisGist.Models"     
              xmlns:exts="clr-namespace:VisGist.Extensions"
              xmlns:System="clr-namespace:System;assembly=mscorlib"    
-xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"  
              toolkit:Themes.UseVsTheme="True"
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" 
@@ -568,24 +567,22 @@ xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
                 <!-- 2.4 GistFile Filename Controls -->
 
                 
-                
-                <!--<syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
+                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
                         LineNumberAreaBackground="Transparent" 
                         OutliningAreaBackground="Transparent" Background="Transparent"
                         FontFamily="{Binding CodeFont, Converter={StaticResource FontToFontFamilyConverter}}" FontSize="12"
                         IsAutoLineNumberAreaWidthEnabled="True"
                         ChangesIndicatorWidth="2"
-                        ShowLineNumber="False" EnableOutlining="false"
+                        ShowLineNumber="True" EnableOutlining="false"
                         AcceptsTab="True"
                         TabIndex="2" IsTabStop="True"
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
                                 FallbackValue='GistFile code here'}"
                         DocumentLanguage="{Binding SelectedLanguage}">
-                </syncfusion:EditControl>-->
+                </syncfusion:EditControl>
 
-                <AvaloniaEdit:TextEditor></AvaloniaEdit:TextEditor>
-                
-                
+
+                                
             </Grid>
 
         </Grid>

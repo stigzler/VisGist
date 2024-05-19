@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using AvaloniaEdit;
 using VisGist.ViewModels;
 
 namespace VisGist
@@ -28,11 +27,7 @@ namespace VisGist
 
             mainWindowVM = (MainWindowViewModel)this.DataContext;
 
-            SetupVmEventHooks();
-
-            
-
-
+            SetupVmEventHooks();         
         }
 
         private void SetupVmEventHooks()
@@ -82,8 +77,6 @@ namespace VisGist
             if (this.ActualHeight > ActualWidth) mainWindowVM.LayoutHorizontal = true;
             else mainWindowVM.LayoutHorizontal = false;
         }
-
-
 
         // yeah - I know, I know, But might be dead tomorrow. 
         bool filenameTBinErrorState = false;
