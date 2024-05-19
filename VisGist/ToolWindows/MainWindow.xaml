@@ -45,10 +45,6 @@
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <converters:FilenameToLanguageConverter x:Key="FilenameToLanguageConverter" />
 
-
-
-
-
         <!-- STYLES ================================================================================= -->
 
         <!-- TOOLBAR STYLE -->
@@ -65,6 +61,10 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Focusable" Value="False"/>
 
+        </Style>
+
+        <Style x:Key="{x:Static ToolBar.SeparatorStyleKey}" TargetType="Separator">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
         </Style>
 
         <Style x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" TargetType="ToggleButton">
@@ -208,14 +208,25 @@
 
                     <Separator></Separator>
 
-                    <ToggleButton x:Name="SyntaxHighlightBT" ToolTip="Toggle Syntax Highlighting" 
+                    <!--<ToggleButton x:Name="SyntaxHighlightBT" ToolTip="Toggle Syntax Highlighting" 
                                   Command="{Binding SetSyntaxHighlightingCMD}" 
                                   CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CommentCode}" />
-                    </ToggleButton>
+                    </ToggleButton>-->
 
-                    <ComboBox x:Name="LanguageSelectorCB" Width="80" ItemsSource="{Binding Languages}"
-                              SelectedItem="{Binding SelectedLanguage}">
+                    <ToggleButton x:Name="CodeNumberVisibleBT" ToolTip="Toggle Code Numbers" 
+                                     IsChecked="{Binding CodeNumberingVisible}">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.OrderedList}" />
+                    </ToggleButton>
+                    
+                    <!--<ToggleButton x:Name="CodeOutliningVisibleBT" ToolTip="Toggle Code Outlining" Command="{Binding TestRCCommand}" CommandParameter="true">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.OrderedList}" />
+                    </ToggleButton>-->
+
+                    <ComboBox x:Name="LanguageSelectorCB" Width="80" ItemsSource="{Binding Languages}" Margin="4,0,4,0" BorderThickness="1"
+                              SelectedValue="{Binding SelectedLanguage}"
+                              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
+                              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}">
                     </ComboBox>
 
                     <Separator></Separator>
@@ -566,14 +577,15 @@
 
                 <!-- 2.4 GistFile Filename Controls -->
 
-                
+
                 <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
-                        LineNumberAreaBackground="Transparent" 
-                        OutliningAreaBackground="Transparent" Background="Transparent"
+                      
                         FontFamily="{Binding CodeFont, Converter={StaticResource FontToFontFamilyConverter}}" FontSize="12"
                         IsAutoLineNumberAreaWidthEnabled="True"
-                        ChangesIndicatorWidth="2"
-                        ShowLineNumber="True" EnableOutlining="false"
+                        Background="Transparent"
+                        LineNumberAreaBackground="Transparent"
+                        OutliningAreaWidth="0"
+                        ShowLineNumber="{Binding CodeNumberingVisible}"
                         AcceptsTab="True"
                         TabIndex="2" IsTabStop="True"
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
@@ -582,7 +594,7 @@
                 </syncfusion:EditControl>
 
 
-                                
+
             </Grid>
 
         </Grid>
