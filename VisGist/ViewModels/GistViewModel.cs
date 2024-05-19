@@ -28,9 +28,6 @@ namespace VisGist.ViewModels
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-
-
-
         #endregion End: Private Backing Vars
 
         #region Properties =========================================================================================
@@ -126,9 +123,6 @@ namespace VisGist.ViewModels
 
 
 
-        private void RegisterCommands()
-        {
-        }
 
 
         private async Task SaveGistAsync()
@@ -157,8 +151,6 @@ namespace VisGist.ViewModels
             }
             
             GistFiles.ListChanged += GistFiles_ListChanged;
-
-            RegisterCommands();
         }
 
         #endregion End: Constructors

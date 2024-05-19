@@ -78,6 +78,7 @@
     <Compile Include="Enums\StatusImage.cs" />
     <Compile Include="Extensions\ConverterBindableParameter.cs" />
     <Compile Include="Extensions\Dictionary.cs" />
+    <Compile Include="Extensions\FocusExtension.cs" />
     <Compile Include="Extensions\RootObject.cs" />
     <Compile Include="Helpers\DpapiEncrypt.cs" />
     <Compile Include="Helpers\String.cs" />

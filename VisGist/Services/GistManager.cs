@@ -22,6 +22,45 @@ namespace VisGist.Services
             this.gitClientService = gitClientService;
         }
 
+
+        internal async Task<GistFileViewModel> CreateNewGistFileAsync(GistViewModel gistVm)
+        {
+            string dateTime = DateTime.Now.ToString();
+
+            GistFile gistFile = new GistFile(size: 0,
+                                            filename: Helpers.String.MakeStringFilenameSafe($"New GistFile created {dateTime}"),
+                                            type: "",
+                                            language: "",
+                                            content: $"New GistFile contents created {dateTime}",
+                                            rawUrl: "");
+
+            GistFileViewModel gistFileViewModel = new GistFileViewModel(gistFile, gistVm);
+            return gistFileViewModel;
+        }
+
+        internal async Task SaveGistAsync(GistViewModel gistViewModel)
+        {
+            //Dictionary<string, GistFileUpdate> gistFileUpdates = new Dictionary<string, GistFileUpdate>();
+
+            GistUpdate gistUpdate = new GistUpdate()
+            {
+                Description = gistViewModel.Description
+            };
+
+            foreach (GistFileViewModel gistFileViewModel in gistViewModel.GistFiles)
+            {
+                GistFileUpdate gistFileUpdate = new GistFileUpdate()
+                {
+                    Content = gistFileViewModel.Content,
+                    NewFileName = gistFileViewModel.Filename
+                };
+                gistUpdate.Files.Add(gistFileViewModel.ReferenceGistFile.Filename, gistFileUpdate);
+            }
+
+            var dave = await gitClientService.EditGistAsync(gistViewModel.Id, gistUpdate);
+
+        }
+
         internal async Task<ObservableCollection<GistViewModel>> LoadGistsAsync()
         {
             ObservableCollection<GistViewModel> gistList = new ObservableCollection<GistViewModel>();
@@ -49,7 +88,7 @@ namespace VisGist.Services
         {
             string dateTime = DateTime.Now.ToString();
 
-            Gist gist = await gitClientService.CreateNewGistAsync(@public, 
+            Gist gist = await gitClientService.CreateNewGistAsync(@public,
                 $"New Gist created {dateTime}",
                 $"New Gist created {dateTime}",
                 $"File created by VisGist on {dateTime}");

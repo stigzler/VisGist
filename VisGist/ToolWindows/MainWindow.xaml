@@ -60,7 +60,6 @@
         <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Focusable" Value="False"/>
-
         </Style>
 
         <Style x:Key="{x:Static ToolBar.SeparatorStyleKey}" TargetType="Separator">
@@ -214,13 +213,12 @@
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CommentCode}" />
                     </ToggleButton>-->
 
-                    <ToggleButton x:Name="CodeNumberVisibleBT" ToolTip="Toggle Code Numbers" 
-                                     IsChecked="{Binding CodeNumberingVisible}">
+                    <Button x:Name="CodeNumberVisibleBT" ToolTip="Toggle Code Numbers" Command="{Binding SetCodeNumberingVisibleCMD}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.OrderedList}" />
-                    </ToggleButton>
-                    
-                    <!--<ToggleButton x:Name="CodeOutliningVisibleBT" ToolTip="Toggle Code Outlining" Command="{Binding TestRCCommand}" CommandParameter="true">
-                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.OrderedList}" />
+                    </Button>
+
+                    <!--<ToggleButton x:Name="CodeOutliningVisibleBT" Content="Dave" ToolTip="Toggle Code Outlining" Command="{Binding TestRCCommand}"
+                                  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
                     </ToggleButton>-->
 
                     <ComboBox x:Name="LanguageSelectorCB" Width="80" ItemsSource="{Binding Languages}" Margin="4,0,4,0" BorderThickness="1"
@@ -387,18 +385,12 @@
             <Grid x:Name="GistBrowserGRD" Grid.Row="0" Tag="{Binding ElementName=MyToolWindow, Path=DataContext}">
                 <Grid.Resources>
 
+                    <!-- GIST LEVEL -->
+
+
                     <HierarchicalDataTemplate DataType="{x:Type viewmodels:GistViewModel}" ItemsSource="{Binding Path=GistFiles}">
 
                         <StackPanel Orientation="Horizontal">
-
-                            <!--<imaging:CrispImage VerticalAlignment="Center" Margin="0,0,4,0" ToolTip="{Binding PropertiesChanged}">
-                                <imaging:CrispImage.Moniker>
-                                    <MultiBinding Converter="{StaticResource GistToIndicatorIconConverter}">
-                                        <Binding Path="CanSave"/>
-                                        <Binding Path="HasChanges"/>
-                                    </MultiBinding>
-                                </imaging:CrispImage.Moniker>
-                            </imaging:CrispImage>-->
 
                             <imaging:CrispImage VerticalAlignment="Center" Margin="0,0,4,0" ToolTip="{Binding PropertiesChanged}">
                                 <imaging:CrispImage.Resources>
@@ -432,15 +424,12 @@
                             <imaging:CrispImage VerticalAlignment="Center" Margin="1,0,0,0" Width="14" Height="14" 
                                 Moniker="{x:Static catalog:KnownMonikers.Favorite}"
                                 Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
-                            <!--<imaging:CrispImage VerticalAlignment="Center" Margin="1,0,0,0" Width="14" Height="14" 
-                                Moniker="{x:Static catalog:KnownMonikers.Save}"
-                                Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisibilityConverter}}"
-                                ToolTip="{Binding PropertiesChanged}"/>-->
+          
 
                             <StackPanel.ContextMenu>
                                 <ContextMenu Style="{StaticResource ContextMenu}" 
                                              DataContext="{Binding DataContext, Source={exts:RootObject}}">
+                                    <!-- Delete Gist -->
                                     <MenuItem Header="Delete Gist" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
                                               Style="{StaticResource MenuItem}"                                               
                                               Command="{Binding DeleteGistCMD}">
@@ -448,12 +437,24 @@
                                             <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.DeleteListItem}"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
+                                    
+                                    <!-- New GistFile -->
+                                    <MenuItem Header="New GistFile" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+                                              Style="{StaticResource MenuItem}"                                               
+                                              Command="{Binding AddNewGistFileCMD}">
+                                        <MenuItem.Icon>
+                                            <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.NewDocument}"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
 
                         </StackPanel>
                     </HierarchicalDataTemplate>
 
+                    <!-- GIST FILE LEVEL -->
+                    
                     <DataTemplate DataType="{x:Type viewmodels:GistFileViewModel}">
                         <StackPanel Orientation="Horizontal">
                             <!--<imaging:CrispImage VerticalAlignment="Center" Width="16" Height="16" Margin="0,0,2,0"
@@ -472,6 +473,7 @@
                             </imaging:CrispImage>
 
                             <TextBlock  VerticalAlignment="Center" Margin="2,0,2,0" Text="{Binding Filename}"></TextBlock>
+                            
                         </StackPanel>
                     </DataTemplate>
 
@@ -581,7 +583,8 @@
                 <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
                       
                         FontFamily="{Binding CodeFont, Converter={StaticResource FontToFontFamilyConverter}}" FontSize="12"
-                        IsAutoLineNumberAreaWidthEnabled="True"
+                        exts:FocusExtension.IsFocused="{Binding CodeFocused}"
+                        IsAutoLineNumberAreaWidthEnabled="True"                        
                         Background="Transparent"
                         LineNumberAreaBackground="Transparent"
                         OutliningAreaWidth="0"

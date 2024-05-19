@@ -21,7 +21,8 @@ namespace VisGist.Converters
 
             if (ext != null)
             {
-                var languageKvp = Data.Constants.CodeLanguageMappings.Where(x => x.Key.Contains(ext)).FirstOrDefault();
+                var languageKvp = Data.
+                    Constants.CodeLanguageMappings.Where(x => x.Key.Contains(ext)).FirstOrDefault();
                 if (!languageKvp.Equals(default(KeyValuePair<List<string>, Languages>)))
                 {
                     return languageKvp.Value;

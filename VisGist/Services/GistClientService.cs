@@ -20,9 +20,8 @@ namespace VisGist.Services
 
         internal void Logout()
         {
-           gitHubClient.Credentials = new Credentials("NULLED - FORCE LOGOUT ON ANY MORE REQUESTS");
+            gitHubClient.Credentials = new Credentials("NULLED - FORCE LOGOUT ON ANY MORE REQUESTS");
         }
-
         internal async Task<Exception> AuthenticateAsync()
         {
             var userVsOptions = await General.GetLiveInstanceAsync();
@@ -40,7 +39,6 @@ namespace VisGist.Services
                 return ex;
             }
         }
-
         internal async Task<IReadOnlyList<Gist>> GetAllGistsAsync()
         {
             var gists = await gitHubClient.Gist.GetAll();
@@ -51,16 +49,15 @@ namespace VisGist.Services
             var gist = await gitHubClient.Gist.Get(gistID);
             return gist;
         }
-
-
-
-
         internal async Task<bool> GistIsStarredAsync(string gistId)
         {
             return await gitHubClient.Gist.IsStarred(gistId);
         }
-
-
+        internal async Task<Gist> EditGistAsync(string gistId, GistUpdate gistUpdate)
+        {
+            Gist gist = await gitHubClient.Gist.Edit(gistId, gistUpdate);
+            return gist;
+        }
         internal async Task<Gist> CreateNewGistAsync(bool @public, string gistDescription, string gistFileFilename, string gistFileContents = null)
         {
             NewGist newGist = new NewGist()
@@ -69,12 +66,10 @@ namespace VisGist.Services
             Gist gist = await gitHubClient.Gist.Create(newGist);
             return gist;
         }
-
         internal async Task DeleteGistAsync(string gistId)
         {
             await gitHubClient.Gist.Delete(gistId);
         }
-
         internal async Task DoTestActionAsync(object obj)
         {
             var user = await gitHubClient.User.Get("stigzler");

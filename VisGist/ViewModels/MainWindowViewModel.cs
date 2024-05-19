@@ -14,6 +14,8 @@ using VisGist.Services;
 using Syncfusion.Windows.Edit;
 using Languages = Syncfusion.Windows.Edit.Languages;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows.Input;
 
 namespace VisGist.ViewModels
 {
@@ -23,7 +25,6 @@ namespace VisGist.ViewModels
         #region PROPERTIES =========================================================================================
 
         // Private backing members -----------------------------------------------------------------------------------------
-        private bool trueValue = true;
         private bool isDarkMode;
         private bool isAuthenticated = false;
         private StatusImage statusImage = StatusImage.Information;
@@ -33,6 +34,7 @@ namespace VisGist.ViewModels
         private Languages selectedLanguage = Syncfusion.Windows.Edit.Languages.Text;
         private bool codeNumberingVisible = false;
         private bool codeOutliningVisible = false;
+        private bool codeFocused = false;
 
         private ObservableCollection<GistViewModel> gists = new ObservableCollection<GistViewModel>();
 
@@ -48,7 +50,7 @@ namespace VisGist.ViewModels
         public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
         public bool IsAuthenticated { get => isAuthenticated; set => SetProperty(ref isAuthenticated, value); }
 
-
+        public bool CodeFocused { get => codeFocused; set => SetProperty(ref codeFocused, value) ; }
         public bool CodeNumberingVisible { get => codeNumberingVisible; set => SetProperty(ref codeNumberingVisible, value); }
         public bool CodeOutliningVisible { get => codeOutliningVisible; set => SetProperty(ref codeOutliningVisible, value); }
         public StatusImage StatusImage { get => statusImage; set => SetProperty(ref statusImage, value); }
@@ -57,8 +59,6 @@ namespace VisGist.ViewModels
         public bool SyntaxHighlightingEnabled { get => syntaxHighlightingEnabled; set => SetProperty(ref syntaxHighlightingEnabled, value); }
         public bool LayoutHorizontal { get => layoutHorizontal; set => SetProperty(ref layoutHorizontal, value); }
         public IEnumerable<Languages> Languages { get => Enum.GetValues(typeof(Languages)).Cast<Languages>(); }
-
-
         public GistViewModel SelectedGistViewModel { get => selectedGistViewModel; set => SetProperty(ref selectedGistViewModel, value); }
         public GistFileViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; set => SetProperty(ref selectedGistFileViewModel, value); }
         public Languages SelectedLanguage { get => selectedLanguage; set => SetProperty(ref selectedLanguage, value); }
@@ -106,7 +106,6 @@ namespace VisGist.ViewModels
 
         #endregion End: OPERATIONAL PRIVATE VARS 
 
-
         #region EVENTS =========================================================================================
 
         internal delegate void VSThemeChanged(bool aDarkModeTheme);
@@ -117,7 +116,6 @@ namespace VisGist.ViewModels
 
         #endregion End: EVENTS ---------------------------------------------------------------------------------
 
-
         #region COMMANDS =========================================================================================
 
         public IAsyncRelayCommand GitAuthenticateCMD { get; set; }
@@ -127,6 +125,7 @@ namespace VisGist.ViewModels
         public IAsyncRelayCommand GetAllGistsCMD { get; set; }
         public IAsyncRelayCommand AddNewGistCMD { get; set; }
         public IAsyncRelayCommand DeleteGistCMD { get; set; }
+        public IAsyncRelayCommand AddNewGistFileCMD {  get; set; }
         public IAsyncRelayCommand SaveGistCMD { get; set; }
         public IRelayCommand SetSyntaxHighlightingCMD { get; set; }
         public IRelayCommand SetCodeNumberingVisibleCMD { get; set; }
@@ -165,24 +164,38 @@ namespace VisGist.ViewModels
             DoPostLoadActionsCMD = new AsyncRelayCommand(OnViewLoadedAsync);
             GetAllGistsCMD = new AsyncRelayCommand(GetAllGistsAsync);
             AddNewGistCMD = new AsyncRelayCommand(AddNewGistAsync);
+            AddNewGistFileCMD = new AsyncRelayCommand(AddNewGistFileAsync);
             DeleteGistCMD = new AsyncRelayCommand(DeleteGistAsync);
             DoTestActionCMD = new AsyncRelayCommand(DoTestActionAsync);
             SaveGistCMD = new AsyncRelayCommand(SaveGistAsync);
             SetSyntaxHighlightingCMD = new RelayCommand<bool>(SetSyntaxHighlighting);
-            SetCodeNumberingVisibleCMD = new RelayCommand<bool>(SetCodeNumberingVisible);
+            SetCodeNumberingVisibleCMD = new RelayCommand(SetCodeNumberingVisible);
         }
 
-
-        public bool TrueValue { get; set; }
-        [RelayCommand(CanExecute = nameof(TrueValue))]
-        private void TestRC(bool boolean)
+        private async Task AddNewGistFileAsync()
         {
-            Debug.WriteLine($"TestRC woz ere: {boolean}");
+            UpdateStatusBar(StatusImage.GitOperation, "Adding New GistFile", true);
+            GistFileViewModel gistFileViewModel = await gistManager.CreateNewGistFileAsync(SelectedGistViewModel);
+            SelectedGistViewModel.GistFiles.Add(gistFileViewModel);
+            UpdateStatusBar(StatusImage.Success, "New GistFile added successfully", false);
+
         }
 
-        private void SetCodeNumberingVisible(bool visible)
+        private async Task AddNewGistAsync()
         {
-            CodeNumberingVisible = visible;
+            UpdateStatusBar(StatusImage.GitOperation, "Adding New Gist", true);
+
+            GistViewModel gistViewModel = await gistManager.CreateNewGistAsync(userVsOptions.NewGistPublic);
+
+            gists.Insert(0, gistViewModel);
+
+            UpdateStatusBar(StatusImage.Success, "New Gist added successfully", false);
+
+        } 
+
+        private void SetCodeNumberingVisible()
+        {
+            CodeNumberingVisible = !CodeNumberingVisible;
         }
 
         private void SetSyntaxHighlighting(bool obj)
@@ -192,7 +205,14 @@ namespace VisGist.ViewModels
 
         private async Task SaveGistAsync()
         {
-            throw new NotImplementedException();
+            UpdateStatusBar(StatusImage.GitOperation, "Saving Gist", true);
+
+            CodeFocused = false;
+
+            await gistManager.SaveGistAsync(SelectedGistViewModel);
+
+            UpdateStatusBar(StatusImage.GitOperation, "Gist Saved.", false);
+
         }
 
         private async Task DeleteGistAsync()
@@ -206,19 +226,7 @@ namespace VisGist.ViewModels
             UpdateStatusBar(StatusImage.Success, "Gist deleted", false);
         }
 
-        private async Task AddNewGistAsync()
-        {
-            UpdateStatusBar(StatusImage.GitOperation, "Adding New Gist", true);
 
-            GistViewModel gistViewModel = await gistManager.CreateNewGistAsync(userVsOptions.NewGistPublic);
-
-            //gists.Add(gistViewModel);
-
-            gists.Insert(0, gistViewModel);
-
-            UpdateStatusBar(StatusImage.Success, "New Gist added successfully", false);
-
-        }
 
         private void OnSelectedGistItemChanged(ViewModelBase gistItem)
         {

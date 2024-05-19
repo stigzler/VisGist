@@ -17,7 +17,6 @@ namespace VisGist.ViewModels
         private string filename;
         private string content;
 
-
         private bool hasChanges;
 
         private string propertyChanged = string.Empty;
@@ -90,6 +89,7 @@ namespace VisGist.ViewModels
                 else HasChanges = false;
 
                 SetProperty(ref filename, value);
+                base.OnPropertyChanged(nameof(Filename));
                 ParentGistViewModel.HasChanges = ParentGistViewModel.GistHasChanges();
             }
         }
