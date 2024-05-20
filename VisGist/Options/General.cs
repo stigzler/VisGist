@@ -49,8 +49,8 @@ namespace VisGist
 
         [Category("Github Settings")]
         [DisplayName("New Gists Public")]
-        [Description("Sets whether to default newly created Gists to Public visibility. If false, new Gists will be private.")]
-        [DefaultValue(true)]
+        [Description("Sets whether to default newly created Gists to Public visibility. If false, new Gists will be private. Warning: Private Gists can be set to Public, but not vice-versa.")]
+        [DefaultValue(false)]
         public bool NewGistPublic { get; set; }
 
         private const string MyDefaultFont = "Consolas, 12pt";

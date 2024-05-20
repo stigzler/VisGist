@@ -164,6 +164,30 @@
             </Setter>
         </Style>
 
+        <!-- Code Editor (red highlighted border to provide user feedback for invalid filenames-->
+        <Style x:Key="CodeEditor" TargetType="syncfusion:EditControl">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type syncfusion:EditControl}">
+                        <StackPanel>
+                            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                    Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                            </Border>
+                            <ItemsControl ItemsSource="{TemplateBinding Validation.Errors}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" FontStyle="Italic"  Text="{Binding ErrorContent}" Padding="4,0,0,2"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
 
 
     </UserControl.Resources>
@@ -196,7 +220,8 @@
                 Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible">
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true">
 
-                    <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Gist" IsEnabled="{Binding SelectedGistViewModel.CanSave}">
+                    <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Gist" Click="SaveBT_Click"
+                            IsEnabled="{Binding SelectedGistViewModel.CanSave}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Save}" 
                                             Opacity="{Binding SelectedGistViewModel.CanSave, Converter={StaticResource BoolToOpacityConverter}}"/>
                     </Button>
@@ -580,8 +605,9 @@
                 <!-- 2.4 GistFile Filename Controls -->
 
 
-                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
-                      
+                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4"  Style="{StaticResource CodeEditor}"
+                        Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
+                        FallbackValue='GistFile code here'}"
                         FontFamily="{Binding CodeFont, Converter={StaticResource FontToFontFamilyConverter}}" FontSize="12"
                         exts:FocusExtension.IsFocused="{Binding CodeFocused}"
                         IsAutoLineNumberAreaWidthEnabled="True"                        
@@ -591,8 +617,6 @@
                         ShowLineNumber="{Binding CodeNumberingVisible}"
                         AcceptsTab="True"
                         TabIndex="2" IsTabStop="True"
-                        Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
-                                FallbackValue='GistFile code here'}"
                         DocumentLanguage="{Binding SelectedLanguage}">
                 </syncfusion:EditControl>
 

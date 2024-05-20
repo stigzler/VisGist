@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.VCProjectEngine;
+using Syncfusion.Windows.Shared;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,14 +49,23 @@ namespace VisGist.ViewModels
             get { return  content; }
             set
             {
+                ClearErrors(nameof(Content));
+                if (value == null || value.Length == 0 || value == String.Empty || value=="\r\n\r\n" || value == "\r\n")
+                {
+                    AddError(nameof(Filename), "The Code cannot be null");
+                    ParentGistViewModel.CanSave = false;
+                }
+                else
+                {
+                    ParentGistViewModel.CanSave = true;
+                }
+
                 if (value != ReferenceGistFile.Content) HasChanges = true;
                 else HasChanges = false;
 
                 SetProperty(ref content, value);
                 ParentGistViewModel.HasChanges = ParentGistViewModel.GistHasChanges();
             }
-
-
         }
 
         public string Filename

@@ -38,10 +38,12 @@ namespace VisGist.Services
             return gistFileViewModel;
         }
 
-        internal async Task SaveGistAsync(GistViewModel gistViewModel)
+        internal async Task<Gist> SaveGistAsync(GistViewModel gistViewModel)
         {
-            //Dictionary<string, GistFileUpdate> gistFileUpdates = new Dictionary<string, GistFileUpdate>();
+            // First, update starred status
+            await gitClientService.SetGistIsStarredAsync(gistViewModel.Id, gistViewModel.Starred);
 
+            // Construct Gist Update
             GistUpdate gistUpdate = new GistUpdate()
             {
                 Description = gistViewModel.Description
@@ -57,7 +59,14 @@ namespace VisGist.Services
                 gistUpdate.Files.Add(gistFileViewModel.ReferenceGistFile.Filename, gistFileUpdate);
             }
 
-            var dave = await gitClientService.EditGistAsync(gistViewModel.Id, gistUpdate);
+            // Update Gist
+            Gist updatedGist = await gitClientService.EditGistAsync(gistViewModel.Id, gistUpdate);
+
+            // Now update Public/Private
+
+            // Now update Starred
+
+            return updatedGist;
 
         }
 
@@ -75,14 +84,23 @@ namespace VisGist.Services
                 Gist gist = await gitClientService.GetGistAsync(summaryGist.Id);
 
                 GistViewModel gistVM = new GistViewModel(gist);
-                gistVM.ReferenceStarred = await gitClientService.GistIsStarredAsync(gist.Id);
-                gistVM.Starred = gistVM.ReferenceStarred;
+                //gistVM.ReferenceStarred = await gitClientService.GistIsStarredAsync(gist.Id);
+                //gistVM.Starred = gistVM.ReferenceStarred;
+                await UpdateGistVmStarredStatusAsync(gistVM, gist);
                 gistList.Add(gistVM);
             }
 
             gistList = new ObservableCollection<GistViewModel>(gistList.OrderBy(x => x.Public));
             return gistList;
         }
+
+        internal async Task UpdateGistVmStarredStatusAsync(GistViewModel gistVM, Gist gist)
+        {
+            gistVM.ReferenceStarred = await gitClientService.GistIsStarredAsync(gist.Id);
+            gistVM.Starred = gistVM.ReferenceStarred;
+        }
+
+      
 
         internal async Task<GistViewModel> CreateNewGistAsync(bool @public)
         {

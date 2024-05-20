@@ -53,6 +53,13 @@ namespace VisGist.Services
         {
             return await gitHubClient.Gist.IsStarred(gistId);
         }
+
+        internal async Task<bool> SetGistIsStarredAsync(string gistId, bool isStarred)
+        {
+            if (isStarred)  await gitHubClient.Gist.Star(gistId);
+            else await gitHubClient.Gist.Unstar(gistId);
+            return true;
+        }
         internal async Task<Gist> EditGistAsync(string gistId, GistUpdate gistUpdate)
         {
             Gist gist = await gitHubClient.Gist.Edit(gistId, gistUpdate);

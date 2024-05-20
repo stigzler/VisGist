@@ -3,8 +3,10 @@ using Syncfusion.Themes.MaterialDark.WPF;
 using Syncfusion.Themes.MaterialLight.WPF;
 using Syncfusion.Windows.Edit;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using VisGist.ViewModels;
@@ -99,6 +101,10 @@ namespace VisGist
            // CodeEC.Text += Environment.NewLine + "Hello World";
         }
 
-
+        private void SaveBT_Click(object sender, RoutedEventArgs e)
+        {
+            BindingExpression expr = CodeEC.GetBindingExpression(EditControl.TextProperty);
+            expr.UpdateSource();
+        }
     }
 }

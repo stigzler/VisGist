@@ -16,6 +16,7 @@ using Languages = Syncfusion.Windows.Edit.Languages;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Windows.Input;
+using Octokit;
 
 namespace VisGist.ViewModels
 {
@@ -176,9 +177,9 @@ namespace VisGist.ViewModels
         {
             UpdateStatusBar(StatusImage.GitOperation, "Adding New GistFile", true);
             GistFileViewModel gistFileViewModel = await gistManager.CreateNewGistFileAsync(SelectedGistViewModel);
-            SelectedGistViewModel.GistFiles.Add(gistFileViewModel);
+            SelectedGistViewModel.AddGistFile(gistFileViewModel);
+            SelectedGistViewModel.SortGistFiles();
             UpdateStatusBar(StatusImage.Success, "New GistFile added successfully", false);
-
         }
 
         private async Task AddNewGistAsync()
@@ -190,7 +191,6 @@ namespace VisGist.ViewModels
             gists.Insert(0, gistViewModel);
 
             UpdateStatusBar(StatusImage.Success, "New Gist added successfully", false);
-
         } 
 
         private void SetCodeNumberingVisible()
@@ -209,10 +209,13 @@ namespace VisGist.ViewModels
 
             CodeFocused = false;
 
-            await gistManager.SaveGistAsync(SelectedGistViewModel);
+            Gist updatedGist =  await gistManager.SaveGistAsync(SelectedGistViewModel);
+
+            SelectedGistViewModel.UpdateGistFile(updatedGist);
+
+            await gistManager.UpdateGistVmStarredStatusAsync(SelectedGistViewModel, updatedGist);
 
             UpdateStatusBar(StatusImage.GitOperation, "Gist Saved.", false);
-
         }
 
         private async Task DeleteGistAsync()

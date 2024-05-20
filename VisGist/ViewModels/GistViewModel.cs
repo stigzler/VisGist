@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,6 @@ namespace VisGist.ViewModels
         private bool starred = false;
         private bool @public = false;
         private string description = string.Empty;
-
 
         private bool hasChanges = false;
         private bool canSave = true;
@@ -71,13 +71,13 @@ namespace VisGist.ViewModels
 
         public bool HasErrors => gistFiles.Any(gf => gf.HasErrors);
 
- 
+
 
         /// <summary>
         /// Holds a string describing which properties have changed. Can be used
         /// with Tooltips etc.
         /// </summary>
-        public string PropertiesChanged { get => propertyChanged; set => SetProperty(ref propertyChanged,value); }
+        public string PropertiesChanged { get => propertyChanged; set => SetProperty(ref propertyChanged, value); }
 
         public string Description
         {
@@ -86,7 +86,6 @@ namespace VisGist.ViewModels
             {
                 SetProperty(ref description, value);
                 HasChanges = GistHasChanges();
-
             }
         }
 
@@ -97,10 +96,13 @@ namespace VisGist.ViewModels
             {
                 SetProperty(ref @public, value);
                 HasChanges = GistHasChanges();
-
             }
         }
 
+        /// <summary>
+        /// Note: This needs to be updated via gitClientService.GistIsStarredAsync - not a property of Gist
+        /// Thus, this needs to be updated externally - through a ViewModel or wherever adding/updating GistViewModel. 
+        /// </summary>
         public bool Starred
         {
             get { return starred; }
@@ -108,53 +110,24 @@ namespace VisGist.ViewModels
             {
                 SetProperty(ref starred, value);
                 HasChanges = GistHasChanges();
-
             }
         }
 
-        public BindingList<GistFileViewModel> GistFiles { get => gistFiles; set => SetProperty(ref gistFiles, value); }
+        public BindingList<GistFileViewModel> GistFiles { get => gistFiles; }
 
 
         #endregion End: Properties
-
-
-
-        #region Commands =========================================================================================
-
-
-
-
-
-        private async Task SaveGistAsync()
-        {
-            await Task.Delay(TimeSpan.FromSeconds(2));
-        }
-
-
-
-
-
-        #endregion End: Commands
-
 
         #region Constructors =========================================================================================
 
         public GistViewModel(Octokit.Gist gist)
         {
-            ReferenceGist = gist;
-            description = gist.Description;
-            @public = gist.Public;
-
-            foreach (KeyValuePair<string, Octokit.GistFile> fileKvp in gist.Files)
-            {
-                GistFiles.Add(new GistFileViewModel(fileKvp.Value, this));
-            }
-            
-            GistFiles.ListChanged += GistFiles_ListChanged;
+            UpdateGistFile(gist);
         }
 
-        #endregion End: Constructors
 
+
+        #endregion End: Constructors
 
         #region Private Methods =========================================================================================
 
@@ -162,9 +135,10 @@ namespace VisGist.ViewModels
 
         private void GistFiles_ListChanged(object sender, ListChangedEventArgs e)
         {
-            GistFiles = new BindingList<GistFileViewModel>(GistFiles.OrderBy(gf => gf.Filename).ToList());
-            OnPropertyChanged(nameof(GistFiles));
+            Debug.WriteLine("GistFiles List Changed");
+            SortGistFiles();
         }
+
 
         internal bool GistHasChanges()
         {
@@ -188,18 +162,46 @@ namespace VisGist.ViewModels
             }
 
             return hasChanges;
-
         }
 
         #endregion End: Private Methods
 
+        #region Public Methods =========================================================================================
+        
+        internal void UpdateGistFile(Octokit.Gist gist)
+        {
+            GistFiles.ListChanged -= GistFiles_ListChanged; // shot for nothing + guarantee of no stray handles
 
+            GistFiles.Clear();
 
+            ReferenceGist = gist;
+            description = gist.Description;
+            @public = gist.Public;
+
+            foreach (KeyValuePair<string, Octokit.GistFile> fileKvp in gist.Files)
+            {
+                GistFiles.Add(new GistFileViewModel(fileKvp.Value, this));
+            }
+
+            GistFiles.ListChanged += GistFiles_ListChanged;
+        }
+
+        internal void SortGistFiles()
+        {
+            GistFiles.OrderBy(gf => gf.Filename);
+            OnPropertyChanged(nameof(GistFiles));
+        }
+
+        internal void AddGistFile(GistFileViewModel gistFile)
+        {
+            GistFiles.Add(gistFile);
+        }
         public void Dispose()
         {
             GistFiles.ListChanged -= GistFiles_ListChanged;
         }
 
+        #endregion End: Public Methods
 
     }
 }
