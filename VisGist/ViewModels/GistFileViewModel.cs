@@ -32,6 +32,7 @@ namespace VisGist.ViewModels
         public GistViewModel ParentGistViewModel { get; set; }
         public bool HasChanges { get => hasChanges; set => SetProperty(ref hasChanges, value); }
         public bool HasErrors => propertyErrors.Any();
+        public bool MarkedForDeletion { get; set; } = false;
 
         /// <summary>
         /// Holds a string describing which properties have changed. Can be used
@@ -50,15 +51,15 @@ namespace VisGist.ViewModels
             set
             {
                 ClearErrors(nameof(Content));
-                if (value == null || value.Length == 0 || value == String.Empty || value=="\r\n\r\n" || value == "\r\n")
-                {
-                    AddError(nameof(Filename), "The Code cannot be null");
-                    ParentGistViewModel.CanSave = false;
-                }
-                else
-                {
-                    ParentGistViewModel.CanSave = true;
-                }
+                //if (value == null || value.Length == 0 || value == String.Empty || value=="\r\n\r\n" || value == "\r\n")
+                //{
+                //    AddError(nameof(Content), "The Code cannot be null");
+                //    ParentGistViewModel.CanSave = false;
+                //}
+                //else
+                //{
+                //    ParentGistViewModel.CanSave = true;
+                //}
 
                 if (value != ReferenceGistFile.Content) HasChanges = true;
                 else HasChanges = false;

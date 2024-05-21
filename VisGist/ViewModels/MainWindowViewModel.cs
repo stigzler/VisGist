@@ -17,6 +17,7 @@ using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Windows.Input;
 using Octokit;
+using System.Media;
 
 namespace VisGist.ViewModels
 {
@@ -51,7 +52,7 @@ namespace VisGist.ViewModels
         public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
         public bool IsAuthenticated { get => isAuthenticated; set => SetProperty(ref isAuthenticated, value); }
 
-        public bool CodeFocused { get => codeFocused; set => SetProperty(ref codeFocused, value) ; }
+        public bool CodeFocused { get => codeFocused; set => SetProperty(ref codeFocused, value); }
         public bool CodeNumberingVisible { get => codeNumberingVisible; set => SetProperty(ref codeNumberingVisible, value); }
         public bool CodeOutliningVisible { get => codeOutliningVisible; set => SetProperty(ref codeOutliningVisible, value); }
         public StatusImage StatusImage { get => statusImage; set => SetProperty(ref statusImage, value); }
@@ -126,7 +127,8 @@ namespace VisGist.ViewModels
         public IAsyncRelayCommand GetAllGistsCMD { get; set; }
         public IAsyncRelayCommand AddNewGistCMD { get; set; }
         public IAsyncRelayCommand DeleteGistCMD { get; set; }
-        public IAsyncRelayCommand AddNewGistFileCMD {  get; set; }
+        public IAsyncRelayCommand DeleteGistFileCMD { get; set; }
+        public IAsyncRelayCommand AddNewGistFileCMD { get; set; }
         public IAsyncRelayCommand SaveGistCMD { get; set; }
         public IRelayCommand SetSyntaxHighlightingCMD { get; set; }
         public IRelayCommand SetCodeNumberingVisibleCMD { get; set; }
@@ -167,10 +169,25 @@ namespace VisGist.ViewModels
             AddNewGistCMD = new AsyncRelayCommand(AddNewGistAsync);
             AddNewGistFileCMD = new AsyncRelayCommand(AddNewGistFileAsync);
             DeleteGistCMD = new AsyncRelayCommand(DeleteGistAsync);
+            DeleteGistFileCMD = new AsyncRelayCommand(DeleteGistFileAsync);
             DoTestActionCMD = new AsyncRelayCommand(DoTestActionAsync);
             SaveGistCMD = new AsyncRelayCommand(SaveGistAsync);
             SetSyntaxHighlightingCMD = new RelayCommand<bool>(SetSyntaxHighlighting);
             SetCodeNumberingVisibleCMD = new RelayCommand(SetCodeNumberingVisible);
+        }
+
+        private async Task DeleteGistFileAsync()
+        {
+            if (SelectedGistViewModel.GistFiles.Count == 1)
+            {
+                SystemSounds.Exclamation.Play();
+                UpdateStatusBar(StatusImage.Warning, "Cannot delete last file. Delete Gist instead.", false);
+                return;
+            }
+
+            SelectedGistFileViewModel.MarkedForDeletion = true;
+            await SaveGistAsync();
+            SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
         }
 
         private async Task AddNewGistFileAsync()
@@ -178,6 +195,7 @@ namespace VisGist.ViewModels
             UpdateStatusBar(StatusImage.GitOperation, "Adding New GistFile", true);
             GistFileViewModel gistFileViewModel = await gistManager.CreateNewGistFileAsync(SelectedGistViewModel);
             SelectedGistViewModel.AddGistFile(gistFileViewModel);
+            await SaveGistAsync();
             SelectedGistViewModel.SortGistFiles();
             UpdateStatusBar(StatusImage.Success, "New GistFile added successfully", false);
         }
@@ -191,7 +209,7 @@ namespace VisGist.ViewModels
             gists.Insert(0, gistViewModel);
 
             UpdateStatusBar(StatusImage.Success, "New Gist added successfully", false);
-        } 
+        }
 
         private void SetCodeNumberingVisible()
         {
@@ -207,13 +225,24 @@ namespace VisGist.ViewModels
         {
             UpdateStatusBar(StatusImage.GitOperation, "Saving Gist", true);
 
-            CodeFocused = false;
+            // store the name of the selected gist file as update essentially creates new gistfile object
+            // breaking the link between the UI gistfile and the dataobject one
+            string gistFilename = SelectedGistFileViewModel?.Filename;
 
-            Gist updatedGist =  await gistManager.SaveGistAsync(SelectedGistViewModel);
+            // Save (update) gist in git server
+            Gist updatedGist = await gistManager.SaveGistAsync(SelectedGistViewModel);
 
+            // Now update the GistViewModel (populates any properties figured server side like filesize etc)
             SelectedGistViewModel.UpdateGistFile(updatedGist);
 
+            // Now update starred status of GistViewModel (as this isn't stored in the Gist data object)
             await gistManager.UpdateGistVmStarredStatusAsync(SelectedGistViewModel, updatedGist);
+
+            // Finally try and re-select the original GistFile
+            if (gistFilename != null)
+            {
+                SelectedGistFileViewModel = SelectedGistViewModel.GistFiles.Where(gf => gf.Filename == gistFilename).FirstOrDefault();
+            }
 
             UpdateStatusBar(StatusImage.GitOperation, "Gist Saved.", false);
         }
@@ -249,6 +278,12 @@ namespace VisGist.ViewModels
             UpdateStatusBar(StatusImage.GitOperation, $"Loading Gists..", true);
 
             Gists = await gistManager.LoadGistsAsync();
+
+            if (Gists.Count > 0 )
+            {
+                SelectedGistViewModel = Gists[0];
+                SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
+            }
 
             UpdateStatusBar(StatusImage.Success, $"Gists Loaded Successfully", false);
         }

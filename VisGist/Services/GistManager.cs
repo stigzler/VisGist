@@ -1,4 +1,5 @@
 ﻿using Octokit;
+using Syncfusion.Windows.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,8 +34,10 @@ namespace VisGist.Services
                                             language: "",
                                             content: $"New GistFile contents created {dateTime}",
                                             rawUrl: "");
-
+            
             GistFileViewModel gistFileViewModel = new GistFileViewModel(gistFile, gistVm);
+            gistFileViewModel.HasChanges = true;
+            gistVm.HasChanges = true;
             return gistFileViewModel;
         }
 
@@ -51,11 +54,19 @@ namespace VisGist.Services
 
             foreach (GistFileViewModel gistFileViewModel in gistViewModel.GistFiles)
             {
+                if (gistFileViewModel.MarkedForDeletion) gistFileViewModel.Content = null; // this essentially deletes the gistfile
+                // if not sched for deletion and is blank code, need to add a placeholder so doesn't get deleted
+                else if (gistFileViewModel.Content.IsNullOrWhiteSpace()) 
+                {
+                    gistFileViewModel.Content = $"{{Code blank at last VisGist save on {DateTime.Now}}}";
+                }
+
                 GistFileUpdate gistFileUpdate = new GistFileUpdate()
                 {
                     Content = gistFileViewModel.Content,
                     NewFileName = gistFileViewModel.Filename
                 };
+
                 gistUpdate.Files.Add(gistFileViewModel.ReferenceGistFile.Filename, gistFileUpdate);
             }
 
@@ -99,8 +110,6 @@ namespace VisGist.Services
             gistVM.ReferenceStarred = await gitClientService.GistIsStarredAsync(gist.Id);
             gistVM.Starred = gistVM.ReferenceStarred;
         }
-
-      
 
         internal async Task<GistViewModel> CreateNewGistAsync(bool @public)
         {

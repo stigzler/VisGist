@@ -412,7 +412,6 @@
 
                     <!-- GIST LEVEL -->
 
-
                     <HierarchicalDataTemplate DataType="{x:Type viewmodels:GistViewModel}" ItemsSource="{Binding Path=GistFiles}">
 
                         <StackPanel Orientation="Horizontal">
@@ -449,7 +448,7 @@
                             <imaging:CrispImage VerticalAlignment="Center" Margin="1,0,0,0" Width="14" Height="14" 
                                 Moniker="{x:Static catalog:KnownMonikers.Favorite}"
                                 Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}"/>
-          
+
 
                             <StackPanel.ContextMenu>
                                 <ContextMenu Style="{StaticResource ContextMenu}" 
@@ -462,7 +461,7 @@
                                             <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.DeleteListItem}"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    
+
                                     <!-- New GistFile -->
                                     <MenuItem Header="New GistFile" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
                                               Style="{StaticResource MenuItem}"                                               
@@ -479,7 +478,7 @@
                     </HierarchicalDataTemplate>
 
                     <!-- GIST FILE LEVEL -->
-                    
+
                     <DataTemplate DataType="{x:Type viewmodels:GistFileViewModel}">
                         <StackPanel Orientation="Horizontal">
                             <!--<imaging:CrispImage VerticalAlignment="Center" Width="16" Height="16" Margin="0,0,2,0"
@@ -498,14 +497,30 @@
                             </imaging:CrispImage>
 
                             <TextBlock  VerticalAlignment="Center" Margin="2,0,2,0" Text="{Binding Filename}"></TextBlock>
-                            
+
+                            <StackPanel.ContextMenu>
+                                <ContextMenu Style="{StaticResource ContextMenu}" 
+                                             DataContext="{Binding DataContext, Source={exts:RootObject}}">
+                                    <!-- Delete GistFile -->
+                                    <MenuItem Header="Delete GistFile" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+                                              Style="{StaticResource MenuItem}"                                               
+                                              Command="{Binding DeleteGistFileCMD}">
+                                        <MenuItem.Icon>
+                                            <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.DeleteDocument}"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>    
+
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
+
+
                         </StackPanel>
                     </DataTemplate>
 
                 </Grid.Resources>
 
                 <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}" BorderThickness="0" Background="Transparent"
-                          ItemContainerStyle="{StaticResource TreeViewItemStyle}">
+                          ItemContainerStyle="{StaticResource TreeViewItemStyle}" PreviewMouseRightButtonDown="GistsTV_PreviewMouseRightButtonDown">
                     <TreeView.Resources>
                         <!-- Style the inactive selection the same as active -->
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
@@ -541,13 +556,14 @@
 
                 <DockPanel x:Name="GistTitleDP" Grid.Row="0">
 
-                    <ToggleButton DockPanel.Dock="Right"  BorderThickness="0" 
+                    <!-- below removed due to not being able to change Gist Visibility via the GitClient -->
+                    <!--<ToggleButton DockPanel.Dock="Right"  BorderThickness="0" 
                                   Style="{StaticResource TransparentToggleButtonStyle}"
                                   IsChecked="{Binding SelectedGistViewModel.Public,
                                     Converter={StaticResource ReverseBoolConverter},
                                     Mode=TwoWay}" Margin="0,0,4,0">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Key}"/>
-                    </ToggleButton>
+                    </ToggleButton>-->
 
                     <ToggleButton DockPanel.Dock="Right" Background="Transparent" BorderThickness="0"
                                   Style="{StaticResource TransparentToggleButtonStyle}"
@@ -605,7 +621,7 @@
                 <!-- 2.4 GistFile Filename Controls -->
 
 
-                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4"  Style="{StaticResource CodeEditor}"
+                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
                         FallbackValue='GistFile code here'}"
                         FontFamily="{Binding CodeFont, Converter={StaticResource FontToFontFamilyConverter}}" FontSize="12"

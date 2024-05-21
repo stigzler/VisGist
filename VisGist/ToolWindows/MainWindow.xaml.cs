@@ -81,7 +81,6 @@ namespace VisGist
         }
 
         // yeah - I know, I know, But might be dead tomorrow. 
-        bool filenameTBinErrorState = false;
         private void MainWindowVM_FilenameChangeDetected(bool unique)
         {
             if (unique)
@@ -98,13 +97,37 @@ namespace VisGist
         private void TestBT_Click(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Right) return;
-           // CodeEC.Text += Environment.NewLine + "Hello World";
         }
 
         private void SaveBT_Click(object sender, RoutedEventArgs e)
         {
             BindingExpression expr = CodeEC.GetBindingExpression(EditControl.TextProperty);
             expr.UpdateSource();
+        }
+
+        private void GistsTV_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            TreeViewItem item = sender as TreeViewItem;
+            if (item != null) {  item.IsSelected = true; }
+        }
+
+        private void GistsTV_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+
+            if (treeViewItem != null)
+            {
+                treeViewItem.Focus();
+                e.Handled = true;
+            }
+        }
+
+        static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        {
+            while (source != null && !(source is TreeViewItem))
+                source = VisualTreeHelper.GetParent(source);
+
+            return source as TreeViewItem;
         }
     }
 }
