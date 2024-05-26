@@ -26,7 +26,7 @@
              d:DesignHeight="300"
              d:DesignWidth="300"
              d:Foreground="white"
-             Name="MyToolWindow" SizeChanged="MyToolWindow_SizeChanged">
+             Name="MyToolWindow" SizeChanged="MyToolWindow_SizeChanged" Loaded="MyToolWindow_Loaded">
 
     <UserControl.DataContext>
         <viewmodels:MainWindowViewModel/>
@@ -44,7 +44,7 @@
         <converters:GistToIndicatorIconConverter x:Key="GistToIndicatorIconConverter"/>
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <converters:FilenameToLanguageConverter x:Key="FilenameToLanguageConverter" />
-
+        <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
         <!-- STYLES ================================================================================= -->
 
         <!-- TOOLBAR STYLE -->
@@ -274,8 +274,29 @@
 
         <!-- SEARCH TEXTBOX -->
         <TextBox x:Name="SearchTB" DockPanel.Dock="Top" Margin="2" Height="auto"
-                 Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibilityConverter}}" Text="{Binding HelloWorld}" 
-                 d:Text="Search Terms" d:Visibility="Visible" d:Background="Transparent" d:Foreground="White">
+                 Text="{Binding SearchExpression, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibilityConverter}}" 
+                  d:Visibility="Visible" d:Background="Transparent" d:Foreground="White">
+            <TextBox.Template>
+                <ControlTemplate>
+                    <Border Background="Transparent" BorderBrush="Gray" CornerRadius="2" BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ScrollViewer Margin="2" x:Name="PART_ContentHost" Grid.Column="0" VerticalAlignment="Center"/>
+                            <Label x:Name="searchLabel" Foreground="Gray" Margin="2" Grid.Column="0"  Content="Search" Padding="2,0,0,0" FontStyle="Italic" 
+                                       VerticalAlignment="Center" Visibility="{Binding SearchExpression, Converter={StaticResource EmptyStringToVisibilityConverter}}" />
+                            <Border Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="2">
+                                <!--<Image Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Resources/search.png" RenderOptions.BitmapScalingMode="Fant" />-->
+                                <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Search}" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </TextBox.Template>
         </TextBox>
 
         <!-- STATUS BAR -->
@@ -400,7 +421,7 @@
                    d:Visibility="Visible" Margin="2">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" MinHeight="40"></RowDefinition>
+                <RowDefinition Height="*" MinHeight="40" x:Name="GistBrowserRow"></RowDefinition>
                 <RowDefinition Height="3"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
@@ -508,7 +529,7 @@
                                         <MenuItem.Icon>
                                             <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.DeleteDocument}"/>
                                         </MenuItem.Icon>
-                                    </MenuItem>    
+                                    </MenuItem>
 
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
@@ -519,8 +540,9 @@
 
                 </Grid.Resources>
 
-                <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}" BorderThickness="0" Background="Transparent"
-                          ItemContainerStyle="{StaticResource TreeViewItemStyle}" PreviewMouseRightButtonDown="GistsTV_PreviewMouseRightButtonDown">
+                <TreeView x:Name="GistsTV" ItemsSource="{Binding GistsView}" BorderThickness="0" Background="Transparent"
+                          ItemContainerStyle="{StaticResource TreeViewItemStyle}" PreviewMouseRightButtonDown="GistsTV_PreviewMouseRightButtonDown"
+                          SizeChanged="GistsTV_SizeChanged">
                     <TreeView.Resources>
                         <!-- Style the inactive selection the same as active -->
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
@@ -545,7 +567,7 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" MinHeight="30" />
+                    <RowDefinition x:Name="GistDescriptionRow" Height="auto" MinHeight="30" />
                     <RowDefinition Height="3" />
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*" />
@@ -583,7 +605,7 @@
 
                 <!-- 2.1 Gist Description -->
 
-                <ScrollViewer x:Name="GistDescriptionSV" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                <ScrollViewer x:Name="GistDescriptionSV" Grid.Row="1" VerticalScrollBarVisibility="Auto" SizeChanged="GistDescriptionSV_SizeChanged">
                     <TextBox x:Name="GistDescriptionTB" MinHeight="32" Background="Transparent" Padding="1" AcceptsReturn="True"
                              TabIndex="0" VerticalAlignment="Top" IsTabStop="True" BorderThickness="0"
                          Text="{Binding SelectedGistViewModel.Description}"

@@ -2,6 +2,7 @@
 using Syncfusion.Themes.MaterialDark.WPF;
 using Syncfusion.Themes.MaterialLight.WPF;
 using Syncfusion.Windows.Edit;
+using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -27,9 +28,20 @@ namespace VisGist
 
             InitializeComponent();
 
+            // Set MainWindowViewModel as data context
             mainWindowVM = (MainWindowViewModel)this.DataContext;
 
-            SetupVmEventHooks();         
+            // Setup any MainWindowViewModel event handlers
+            SetupVmEventHooks();
+
+            // Set Theme
+            SetTheme(Helpers.UI.IsDarkMode());
+
+            // Do any UI Layout tasks
+            GridLengthConverter converter = new GridLengthConverter();
+            GistDescriptionRow.Height = (GridLength)converter.ConvertFromString(Properties.Settings.Default.SplitterGistDescription);
+            GistBrowserRow.Height = (GridLength)converter.ConvertFromString(Properties.Settings.Default.SplitterGistTree);
+
         }
 
         private void SetupVmEventHooks()
@@ -108,7 +120,7 @@ namespace VisGist
         private void GistsTV_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             TreeViewItem item = sender as TreeViewItem;
-            if (item != null) {  item.IsSelected = true; }
+            if (item != null) { item.IsSelected = true; }
         }
 
         private void GistsTV_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -128,6 +140,29 @@ namespace VisGist
                 source = VisualTreeHelper.GetParent(source);
 
             return source as TreeViewItem;
+        }
+
+        private void GistsTV_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            SaveUiLayoutPersistance();
+        }
+
+        private void GistDescriptionSV_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            SaveUiLayoutPersistance();
+        }
+
+        private void SaveUiLayoutPersistance()
+        {
+            GridLengthConverter converter = new GridLengthConverter();
+            Properties.Settings.Default.SplitterGistTree = converter.ConvertToString(GistBrowserRow.Height);
+            Properties.Settings.Default.SplitterGistDescription = converter.ConvertToString(GistDescriptionRow.Height);
+            Properties.Settings.Default.Save();
+        }
+
+        private void MyToolWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            mainWindowVM.ViewLoaded = true;
         }
     }
 }

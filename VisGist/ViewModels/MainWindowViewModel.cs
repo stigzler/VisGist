@@ -18,6 +18,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using System.Windows.Input;
 using Octokit;
 using System.Media;
+using System.ComponentModel;
+using System.Windows.Navigation;
+using System.Windows.Data;
+using System.Net.NetworkInformation;
 
 namespace VisGist.ViewModels
 {
@@ -37,6 +41,7 @@ namespace VisGist.ViewModels
         private bool codeNumberingVisible = false;
         private bool codeOutliningVisible = false;
         private bool codeFocused = false;
+        private string searchExpression = String.Empty;
 
         private ObservableCollection<GistViewModel> gists = new ObservableCollection<GistViewModel>();
 
@@ -51,7 +56,7 @@ namespace VisGist.ViewModels
         // Public members
         public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
         public bool IsAuthenticated { get => isAuthenticated; set => SetProperty(ref isAuthenticated, value); }
-
+        public bool ViewLoaded { get; set; } = false;
         public bool CodeFocused { get => codeFocused; set => SetProperty(ref codeFocused, value); }
         public bool CodeNumberingVisible { get => codeNumberingVisible; set => SetProperty(ref codeNumberingVisible, value); }
         public bool CodeOutliningVisible { get => codeOutliningVisible; set => SetProperty(ref codeOutliningVisible, value); }
@@ -70,7 +75,7 @@ namespace VisGist.ViewModels
             set => SetProperty(ref browserEditorsSplitterDirection, value);
         }
         public ObservableCollection<GistViewModel> Gists { get => gists; set => SetProperty(ref gists, value); }
-
+        public ICollectionView GistsView { get => CollectionViewSource.GetDefaultView(Gists); }
         public ViewModelBase SelectedGistVmItem
         {
             get { return selectedGistVmItem; }
@@ -91,6 +96,11 @@ namespace VisGist.ViewModels
                 if (value == null) SetProperty(ref codeFont, new Font(System.Drawing.FontFamily.GenericMonospace, 12));
                 else SetProperty(ref codeFont, value);
             }
+        }
+        public string SearchExpression //{ get => searchExpression; set => { SetProperty(ref searchExpression, value); GistsView.Refresh(); } }
+        {
+            get { return searchExpression; }
+            set { SetProperty(ref searchExpression, value); GistsView.Refresh(); }
         }
 
         // Commands ----------------------------------------------------------------------------------------------
@@ -145,9 +155,17 @@ namespace VisGist.ViewModels
 
             // Setup Managers
             gistManager = new GistManager(gitClientService);
-            //codeEditorManager = new CodeEditorManager()
 
             SetupCommands();
+
+            GistsView.Filter = new Predicate<object>(o => Filter(o as GistViewModel));
+
+        }
+
+        private bool Filter(GistViewModel gist)
+        {
+            return SearchExpression == null
+                || gist.PrimaryGistFilename.IndexOf(SearchExpression, StringComparison.OrdinalIgnoreCase) != -1;
         }
 
         private async Task OnViewLoadedAsync()
@@ -244,7 +262,7 @@ namespace VisGist.ViewModels
                 SelectedGistFileViewModel = SelectedGistViewModel.GistFiles.Where(gf => gf.Filename == gistFilename).FirstOrDefault();
             }
 
-            UpdateStatusBar(StatusImage.GitOperation, "Gist Saved.", false);
+            UpdateStatusBar(StatusImage.Success, "Gist Saved.", false);
         }
 
         private async Task DeleteGistAsync()
@@ -278,12 +296,15 @@ namespace VisGist.ViewModels
             UpdateStatusBar(StatusImage.GitOperation, $"Loading Gists..", true);
 
             Gists = await gistManager.LoadGistsAsync();
+            GistsView.Refresh();
 
             if (Gists.Count > 0 )
             {
                 SelectedGistViewModel = Gists[0];
                 SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
             }
+
+
 
             UpdateStatusBar(StatusImage.Success, $"Gists Loaded Successfully", false);
         }
@@ -303,6 +324,7 @@ namespace VisGist.ViewModels
 
         private void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
         {
+            if (!ViewLoaded) return;
             IsDarkMode = Helpers.UI.IsDarkMode();
         }
 

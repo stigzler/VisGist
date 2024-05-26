@@ -16,14 +16,18 @@ namespace VisGist.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            BindingList<GistFileViewModel> gistFiles = (BindingList<GistFileViewModel>) value;
+            BindingList<GistFileViewModel> gistFiles = (BindingList<GistFileViewModel>)value;
             if (gistFiles.Count > 0)
             {
                 return gistFiles.OrderBy(gf => gf.Filename).First().Filename;
             }
 
+            //GistViewModel gistViewModel = (GistViewModel) value;
+            //return gistViewModel.PrimaryGistFilename;
+
             return value;
         }
+
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
