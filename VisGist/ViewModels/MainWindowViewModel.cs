@@ -1,27 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using EnvDTE;
 using Microsoft.VisualStudio.PlatformUI;
-using Microsoft.VisualStudio.RpcContracts.FileSystem;
 using Microsoft.VisualStudio.Threading;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Controls;
 using VisGist.Enums;
 using VisGist.Services;
-using Syncfusion.Windows.Edit;
 using Languages = Syncfusion.Windows.Edit.Languages;
-using System.Windows.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Windows.Input;
 using Octokit;
 using System.Media;
 using System.ComponentModel;
-using System.Windows.Navigation;
 using System.Windows.Data;
-using System.Net.NetworkInformation;
 
 namespace VisGist.ViewModels
 {
@@ -75,6 +66,8 @@ namespace VisGist.ViewModels
             set => SetProperty(ref browserEditorsSplitterDirection, value);
         }
         public ObservableCollection<GistViewModel> Gists { get => gists; set => SetProperty(ref gists, value); }
+        public ObservableCollection<GistViewModel> AllGists { get => gists; set => SetProperty(ref gists, value); }
+
         public ICollectionView GistsView { get => CollectionViewSource.GetDefaultView(Gists); }
         public ViewModelBase SelectedGistVmItem
         {
@@ -158,7 +151,8 @@ namespace VisGist.ViewModels
 
             SetupCommands();
 
-            GistsView.Filter = new Predicate<object>(o => Filter(o as GistViewModel));
+            //GistsView.Filter = o => String.IsNullOrEmpty(SearchExpression) ? true : ((string)o).Contains(SearchExpression);
+            
 
         }
 
@@ -295,16 +289,23 @@ namespace VisGist.ViewModels
         {
             UpdateStatusBar(StatusImage.GitOperation, $"Loading Gists..", true);
 
+
             Gists = await gistManager.LoadGistsAsync();
-            GistsView.Refresh();
 
-            if (Gists.Count > 0 )
-            {
-                SelectedGistViewModel = Gists[0];
-                SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
-            }
+            //IEnumerable<GistViewModel> apiGists = await gistManager.LoadGistsAsync();
 
+            //if (Gists.Count > 0 )
+            //{
+            //    // Update the existing instance to significantly improve the responsiveness of the UI
+            //    this.Gists.Clear();
+            //    foreach (GistViewModel gist in apiGists)
+            //    {
+            //        this.Gists.Add(gist);
+            //    }
 
+            //    SelectedGistViewModel = Gists[0];
+            //    SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
+            //}
 
             UpdateStatusBar(StatusImage.Success, $"Gists Loaded Successfully", false);
         }

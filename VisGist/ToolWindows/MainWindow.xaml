@@ -45,6 +45,7 @@
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <converters:FilenameToLanguageConverter x:Key="FilenameToLanguageConverter" />
         <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
+        
         <!-- STYLES ================================================================================= -->
 
         <!-- TOOLBAR STYLE -->
@@ -540,7 +541,7 @@
 
                 </Grid.Resources>
 
-                <TreeView x:Name="GistsTV" ItemsSource="{Binding GistsView}" BorderThickness="0" Background="Transparent"
+                <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}" BorderThickness="0" Background="Transparent"
                           ItemContainerStyle="{StaticResource TreeViewItemStyle}" PreviewMouseRightButtonDown="GistsTV_PreviewMouseRightButtonDown"
                           SizeChanged="GistsTV_SizeChanged">
                     <TreeView.Resources>
