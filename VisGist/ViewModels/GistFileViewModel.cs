@@ -25,7 +25,7 @@ namespace VisGist.ViewModels
         private readonly Dictionary<string, List<string>> propertyErrors = new Dictionary<string, List<string>>();
 
         /// <summary>
-        /// This is either the Gist imported from Gists, or the updated Gist following Gist Save
+        /// This is either the Gist imported from CollatedGists, or the updated Gist following Gist Save
         /// Used in tracking changes
         /// </summary>
         public Octokit.GistFile ReferenceGistFile { get; set; }
@@ -118,7 +118,7 @@ namespace VisGist.ViewModels
 
         internal bool IsUniqueFilename(string candidateFilename)
         {
-            // Tests Gists files for matching Filename and also excludes itself form the comparisons
+            // Tests CollatedGists files for matching Filename and also excludes itself form the comparisons
             if (ParentGistViewModel.GistFiles.Any(gf => gf.Id != Id && gf.Filename.ToLower() == candidateFilename.ToLower()))
             {
                 return false;

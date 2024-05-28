@@ -24,6 +24,7 @@ namespace VisGist.ViewModels
 
         private bool hasChanges = false;
         private bool canSave = true;
+        private bool nodeExpanded = false;
         private string propertyChanged = string.Empty;
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
@@ -56,7 +57,7 @@ namespace VisGist.ViewModels
         public Octokit.Gist ReferenceGist { get; set; }
 
         /// <summary>
-        /// Gists does not store 'Starred' as a property in Octocat.Gist. Thus,
+        /// CollatedGists does not store 'Starred' as a property in Octocat.Gist. Thus,
         /// have to monitor it state separately. 
         /// </summary>
         public bool ReferenceStarred { get; set; }
@@ -68,6 +69,8 @@ namespace VisGist.ViewModels
         public bool HasChanges { get => hasChanges; set => SetProperty(ref hasChanges, value); }
 
         public bool CanSave { get => canSave; set => SetProperty(ref canSave, value); }
+
+        public bool NodeExpanded { get => nodeExpanded; set => SetProperty(ref nodeExpanded, value); }
 
         public bool HasErrors => gistFiles.Any(gf => gf.HasErrors);
 

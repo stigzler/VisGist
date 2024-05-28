@@ -34,7 +34,9 @@ namespace VisGist.ViewModels
         private bool codeFocused = false;
         private string searchExpression = String.Empty;
 
-        private ObservableCollection<GistViewModel> gists = new ObservableCollection<GistViewModel>();
+        private ObservableCollection<GistViewModel> collatedGists = new ObservableCollection<GistViewModel>();
+        private ObservableCollection<GistViewModel> allGists = new ObservableCollection<GistViewModel>();
+
 
         private ViewModelBase selectedGistVmItem;
         private GistViewModel selectedGistViewModel;
@@ -65,10 +67,10 @@ namespace VisGist.ViewModels
             get => browserEditorsSplitterDirection;
             set => SetProperty(ref browserEditorsSplitterDirection, value);
         }
-        public ObservableCollection<GistViewModel> Gists { get => gists; set => SetProperty(ref gists, value); }
-        public ObservableCollection<GistViewModel> AllGists { get => gists; set => SetProperty(ref gists, value); }
+        public ObservableCollection<GistViewModel> CollatedGists { get => collatedGists; set => SetProperty(ref collatedGists, value); }
+        public ObservableCollection<GistViewModel> AllGists { get => allGists; set => SetProperty(ref allGists, value); }
 
-        public ICollectionView GistsView { get => CollectionViewSource.GetDefaultView(Gists); }
+        public ICollectionView GistsView { get => CollectionViewSource.GetDefaultView(CollatedGists); }
         public ViewModelBase SelectedGistVmItem
         {
             get { return selectedGistVmItem; }
@@ -93,7 +95,7 @@ namespace VisGist.ViewModels
         public string SearchExpression //{ get => searchExpression; set => { SetProperty(ref searchExpression, value); GistsView.Refresh(); } }
         {
             get { return searchExpression; }
-            set { SetProperty(ref searchExpression, value); GistsView.Refresh(); }
+            set { SetProperty(ref searchExpression, value); SearchGists(); }
         }
 
         // Commands ----------------------------------------------------------------------------------------------
@@ -156,10 +158,44 @@ namespace VisGist.ViewModels
 
         }
 
-        private bool Filter(GistViewModel gist)
+        private void SearchGists()
         {
-            return SearchExpression == null
-                || gist.PrimaryGistFilename.IndexOf(SearchExpression, StringComparison.OrdinalIgnoreCase) != -1;
+            //return SearchExpression == null
+            //    || gist.PrimaryGistFilename.IndexOf(SearchExpression, StringComparison.OrdinalIgnoreCase) != -1;
+
+            if (AllGists.Count > 0)
+            {
+                // Update the existing instance to significantly improve the responsiveness of the UI
+                CollatedGists.Clear();
+                SelectedGistViewModel = null;
+                SelectedGistFileViewModel = null;
+
+                foreach (GistViewModel gistVm in AllGists)
+                {
+                    gistVm.NodeExpanded = false;
+                    if (gistVm.PrimaryGistFilename.ToLower().Contains(SearchExpression.ToLower())
+                        || gistVm.GistFiles.Any(gf => gf.Filename.ToLower().Contains(SearchExpression.ToLower())))                       
+                    {
+                       if (!CollatedGists.Any(cg => cg.Id == gistVm.Id)) CollatedGists.Add(gistVm);
+                    }
+
+
+                    if (gistVm.GistFiles.Any(gf => gf.Filename.ToLower().Contains(SearchExpression.ToLower())))
+                    {
+                        gistVm.NodeExpanded = true;
+                        if (!CollatedGists.Any(cg => cg.Id == gistVm.Id)) CollatedGists.Add(gistVm);
+                    }
+
+                }
+
+
+
+                if (CollatedGists.Count > 0)
+                {
+                    SelectedGistViewModel = CollatedGists[0];
+                    SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
+                }
+            }
         }
 
         private async Task OnViewLoadedAsync()
@@ -218,7 +254,7 @@ namespace VisGist.ViewModels
 
             GistViewModel gistViewModel = await gistManager.CreateNewGistAsync(userVsOptions.NewGistPublic);
 
-            gists.Insert(0, gistViewModel);
+            collatedGists.Insert(0, gistViewModel);
 
             UpdateStatusBar(StatusImage.Success, "New Gist added successfully", false);
         }
@@ -265,7 +301,7 @@ namespace VisGist.ViewModels
 
             await gistManager.DeleteGistAsync(SelectedGistViewModel);
 
-            gists.Remove(SelectedGistViewModel);
+            collatedGists.Remove(SelectedGistViewModel);
 
             UpdateStatusBar(StatusImage.Success, "Gist deleted", false);
         }
@@ -290,29 +326,29 @@ namespace VisGist.ViewModels
             UpdateStatusBar(StatusImage.GitOperation, $"Loading Gists..", true);
 
 
-            Gists = await gistManager.LoadGistsAsync();
+            AllGists = await gistManager.LoadGistsAsync();
 
             //IEnumerable<GistViewModel> apiGists = await gistManager.LoadGistsAsync();
 
-            //if (Gists.Count > 0 )
-            //{
-            //    // Update the existing instance to significantly improve the responsiveness of the UI
-            //    this.Gists.Clear();
-            //    foreach (GistViewModel gist in apiGists)
-            //    {
-            //        this.Gists.Add(gist);
-            //    }
+            if (AllGists.Count > 0)
+            {
+                // Update the existing instance to significantly improve the responsiveness of the UI
+                CollatedGists.Clear();
+                foreach (GistViewModel gist in AllGists)
+                {
+                    CollatedGists.Add(gist);
+                }
 
-            //    SelectedGistViewModel = Gists[0];
-            //    SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
-            //}
+                SelectedGistViewModel = CollatedGists[0];
+                SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
+            }
 
             UpdateStatusBar(StatusImage.Success, $"Gists Loaded Successfully", false);
         }
 
         private async Task DoTestActionAsync()
         {
-            gists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
+            collatedGists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
 
             // LayoutHorizontal = !LayoutHorizontal;
 

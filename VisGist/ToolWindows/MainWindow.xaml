@@ -23,9 +23,8 @@
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" 
              mc:Ignorable="d"
-             d:DesignHeight="300"
-             d:DesignWidth="300"
-             d:Foreground="white"
+             d:DesignHeight="300" d:DesignWidth="300" d:Foreground="white"
+             AllowDrop="True"
              Name="MyToolWindow" SizeChanged="MyToolWindow_SizeChanged" Loaded="MyToolWindow_Loaded">
 
     <UserControl.DataContext>
@@ -45,7 +44,8 @@
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <converters:FilenameToLanguageConverter x:Key="FilenameToLanguageConverter" />
         <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
-        
+        <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+
         <!-- STYLES ================================================================================= -->
 
         <!-- TOOLBAR STYLE -->
@@ -200,7 +200,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <DockPanel x:Name="MainDP" Height="Auto" LastChildFill="True">
+    <DockPanel x:Name="MainDP" Height="Auto" LastChildFill="True" AllowDrop="True">
 
         <!-- TOP TOOLSTRIP -->
         <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top">
@@ -418,8 +418,8 @@
 
 
         <Grid x:Name="MainContentGRD"  HorizontalAlignment="Stretch" 
-                   Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibilityConverter}}"
-                   d:Visibility="Visible" Margin="2">
+                   Visibility="{Binding CollatedGists.Count, Converter={StaticResource IntToVisibilityConverter}}"
+                   d:Visibility="Visible" Margin="2" AllowDrop="True">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" MinHeight="40" x:Name="GistBrowserRow"></RowDefinition>
@@ -435,6 +435,12 @@
                     <!-- GIST LEVEL -->
 
                     <HierarchicalDataTemplate DataType="{x:Type viewmodels:GistViewModel}" ItemsSource="{Binding Path=GistFiles}">
+
+                        <HierarchicalDataTemplate.Resources>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsExpanded" Value="{Binding NodeExpanded}"/>
+                            </Style>
+                        </HierarchicalDataTemplate.Resources>
 
                         <StackPanel Orientation="Horizontal">
 
@@ -457,6 +463,7 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
+
                                 </imaging:CrispImage.Style>
                             </imaging:CrispImage>
 
@@ -470,7 +477,6 @@
                             <imaging:CrispImage VerticalAlignment="Center" Margin="1,0,0,0" Width="14" Height="14" 
                                 Moniker="{x:Static catalog:KnownMonikers.Favorite}"
                                 Visibility="{Binding Starred, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
 
                             <StackPanel.ContextMenu>
                                 <ContextMenu Style="{StaticResource ContextMenu}" 
@@ -534,16 +540,21 @@
 
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
-
-
                         </StackPanel>
                     </DataTemplate>
 
                 </Grid.Resources>
 
-                <TreeView x:Name="GistsTV" ItemsSource="{Binding Gists}" BorderThickness="0" Background="Transparent"
-                          ItemContainerStyle="{StaticResource TreeViewItemStyle}" PreviewMouseRightButtonDown="GistsTV_PreviewMouseRightButtonDown"
+                <TreeView x:Name="GistsTV" ItemsSource="{Binding CollatedGists}" BorderThickness="0" Background="Transparent"
+                          PreviewMouseRightButtonDown="GistsTV_PreviewMouseRightButtonDown"
                           SizeChanged="GistsTV_SizeChanged">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded" Value="{Binding NodeExpanded, Mode=TwoWay}"/>
+                            <Setter Property="Margin" Value="0,0,0,1"/>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                     <TreeView.Resources>
                         <!-- Style the inactive selection the same as active -->
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
@@ -643,7 +654,6 @@
 
                 <!-- 2.4 GistFile Filename Controls -->
 
-
                 <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4" 
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
                         FallbackValue='GistFile code here'}"
@@ -656,10 +666,9 @@
                         ShowLineNumber="{Binding CodeNumberingVisible}"
                         AcceptsTab="True"
                         TabIndex="2" IsTabStop="True"
-                        DocumentLanguage="{Binding SelectedLanguage}">
+                        DocumentLanguage="{Binding SelectedLanguage}"
+                        AllowDragDrop="True" AllowDrop="True">
                 </syncfusion:EditControl>
-
-
 
             </Grid>
 
