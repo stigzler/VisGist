@@ -13,6 +13,10 @@ using Octokit;
 using System.Media;
 using System.ComponentModel;
 using System.Windows.Data;
+using Syncfusion.Windows.Shared;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using Microsoft.VisualStudio.VCProjectEngine;
 
 namespace VisGist.ViewModels
 {
@@ -44,7 +48,7 @@ namespace VisGist.ViewModels
 
         private GridResizeDirection browserEditorsSplitterDirection = GridResizeDirection.Rows;
         private bool layoutHorizontal = false;
-        private Font codeFont = new Font("Consolas", 14);
+        private System.Windows.Media.FontFamily codeFont = new System.Windows.Media.FontFamily("Consolas");
 
         // Public members
         public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
@@ -69,7 +73,6 @@ namespace VisGist.ViewModels
         }
         public ObservableCollection<GistViewModel> CollatedGists { get => collatedGists; set => SetProperty(ref collatedGists, value); }
         public ObservableCollection<GistViewModel> AllGists { get => allGists; set => SetProperty(ref allGists, value); }
-
         public ICollectionView GistsView { get => CollectionViewSource.GetDefaultView(CollatedGists); }
         public ViewModelBase SelectedGistVmItem
         {
@@ -80,16 +83,12 @@ namespace VisGist.ViewModels
                 OnSelectedGistItemChanged(value);
             }
         }
-        public Font CodeFont
+
+        public System.Windows.Media.FontFamily CodeFont
         {
             get
             {
-                return codeFont;
-            }
-            private set
-            {
-                if (value == null) SetProperty(ref codeFont, new Font(System.Drawing.FontFamily.GenericMonospace, 12));
-                else SetProperty(ref codeFont, value);
+                return userVsOptions.CodeFont;
             }
         }
         public string SearchExpression //{ get => searchExpression; set => { SetProperty(ref searchExpression, value); GistsView.Refresh(); } }
@@ -154,7 +153,6 @@ namespace VisGist.ViewModels
             SetupCommands();
 
             //GistsView.Filter = o => String.IsNullOrEmpty(SearchExpression) ? true : ((string)o).Contains(SearchExpression);
-            
 
         }
 
@@ -173,22 +171,19 @@ namespace VisGist.ViewModels
                 foreach (GistViewModel gistVm in AllGists)
                 {
                     gistVm.NodeExpanded = false;
-                    if (gistVm.PrimaryGistFilename.ToLower().Contains(SearchExpression.ToLower())
-                        || gistVm.GistFiles.Any(gf => gf.Filename.ToLower().Contains(SearchExpression.ToLower())))                       
+                    if (gistVm.PrimaryGistFilename.ToLower().Contains(SearchExpression.ToLower()))
                     {
-                       if (!CollatedGists.Any(cg => cg.Id == gistVm.Id)) CollatedGists.Add(gistVm);
-                    }
-
-
-                    if (gistVm.GistFiles.Any(gf => gf.Filename.ToLower().Contains(SearchExpression.ToLower())))
-                    {
-                        gistVm.NodeExpanded = true;
                         if (!CollatedGists.Any(cg => cg.Id == gistVm.Id)) CollatedGists.Add(gistVm);
                     }
 
+                    if (!SearchExpression.IsNullOrWhiteSpace()
+                        && gistVm.GistFiles.Any(gf => gf.Filename.ToLower().Contains(SearchExpression.ToLower())))
+                    {
+                        if (!CollatedGists.Any(cg => cg.Id == gistVm.Id)) CollatedGists.Add(gistVm);
+                        gistVm.NodeExpanded = true;
+
+                    }
                 }
-
-
 
                 if (CollatedGists.Count > 0)
                 {
@@ -201,16 +196,22 @@ namespace VisGist.ViewModels
         private async Task OnViewLoadedAsync()
         {
             userVsOptions = await General.GetLiveInstanceAsync();
-            CodeFont = userVsOptions.CodeFont;
 
-            if (userVsOptions.AutoLogin) await AuthenticateUserAsync();
+            if (userVsOptions.PersonalAccessToken.IsNullOrWhiteSpace())
+                UpdateStatusBar(StatusImage.Warning, "Please set Access Token in Options>VisGist", false);
+            else
+                await AuthenticateAndLoadGistsAsync();
+        }
 
-            if (userVsOptions.AutoLoadGists) await GetAllGistsAsync();
+        private async Task AuthenticateAndLoadGistsAsync()
+        {
+            await AuthenticateUserAsync();
+            if (IsAuthenticated) await GetAllGistsAsync();
         }
 
         private void SetupCommands()
         {
-            GitAuthenticateCMD = new AsyncRelayCommand(AuthenticateUserAsync);
+            GitAuthenticateCMD = new AsyncRelayCommand(AuthenticateAndLoadGistsAsync);
             LogOutCMD = new RelayCommand(LogOut);
             DoPostLoadActionsCMD = new AsyncRelayCommand(OnViewLoadedAsync);
             GetAllGistsCMD = new AsyncRelayCommand(GetAllGistsAsync);
@@ -313,11 +314,16 @@ namespace VisGist.ViewModels
             if (gistItem is GistViewModel)
             {
                 SelectedGistViewModel = (GistViewModel)gistItem;
+                SelectedGistFileViewModel = null;
             }
             else if (gistItem is GistFileViewModel)
             {
                 SelectedGistFileViewModel = (GistFileViewModel)gistItem;
                 SelectedGistViewModel = SelectedGistFileViewModel.ParentGistViewModel;
+                if (userVsOptions.AutoLanguageSelect)
+                {
+                    SelectedLanguage = Helpers.String.FilenameToLanguage(SelectedGistFileViewModel.Filename);
+                }
             }
         }
 
@@ -369,6 +375,8 @@ namespace VisGist.ViewModels
 
         private async Task AuthenticateUserAsync()
         {
+            if (userVsOptions.PersonalAccessToken.IsNullOrWhiteSpace()) return;
+
             var authenitcationResult = await gitClientService.AuthenticateAsync();
 
             if (authenitcationResult == null)

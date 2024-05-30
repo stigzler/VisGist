@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Windows.Media;
 using VisGist.Helpers;
 using VisGist.TypeConverters;
 
@@ -33,18 +34,17 @@ namespace VisGist
             set => personalAccessToken = DpapiEncrypt.EncryptString(DpapiEncrypt.ToSecureString(value));
         }
 
+        //[Category("Github Settings")]
+        //[DisplayName("Auto Log-In")]
+        //[Description("Signs you into VisGist at startup")]
+        //[DefaultValue(false)]
+        //public bool AutoLogin { get; set; }
 
-        [Category("Github Settings")]
-        [DisplayName("Auto Log-In")]
-        [Description("Signs you into VisGist at startup")]
-        [DefaultValue(false)]
-        public bool AutoLogin { get; set; }
-
-        [Category("Github Settings")]
-        [DisplayName("Auto Load Gists")]
-        [Description("Loads all Gists at startup")]
-        [DefaultValue(false)]
-        public bool AutoLoadGists { get; set; }
+        //[Category("Github Settings")]
+        //[DisplayName("Auto Load Gists")]
+        //[Description("Loads all Gists at startup")]
+        //[DefaultValue(false)]
+        //public bool AutoLoadGists { get; set; }
 
 
         [Category("Github Settings")]
@@ -55,11 +55,18 @@ namespace VisGist
 
         private const string MyDefaultFont = "Consolas, 12pt";
 
+        [Category("Code Settings")]
+        [DisplayName("Auto Language Select")]
+        [Description("Tries to automatically select the code language from the file extension")]
+        [DefaultValue(false)]
+        public bool AutoLanguageSelect { get; set; }
+
+
         [Category("Appearance")]
         [DisplayName("Code Font")]
         [Description("Sets the Font for the Code.")]
         [DefaultValue(typeof(Font), "Consolas, 12pt")]
-        public Font CodeFont { get; set; } 
+        public System.Windows.Media.FontFamily CodeFont { get; set; }
 
 
     }

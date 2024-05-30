@@ -70,7 +70,7 @@ namespace VisGist.ViewModels
 
         public bool CanSave { get => canSave; set => SetProperty(ref canSave, value); }
 
-        public bool NodeExpanded { get => nodeExpanded; set => SetProperty(ref nodeExpanded, value); }
+        public bool NodeExpanded { get => nodeExpanded; set =>SetProperty(ref nodeExpanded, value); }
 
         public bool HasErrors => gistFiles.Any(gf => gf.HasErrors);
 

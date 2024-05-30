@@ -164,5 +164,27 @@ namespace VisGist
         {
             mainWindowVM.ViewLoaded = true;
         }
+
+
+
+        private void SortDropdownButton_Click(object sender, RoutedEventArgs e)
+        {
+            var sortButton = sender as Button;
+            if (sortButton != null)
+            {
+                sortButton.ContextMenu.IsOpen = true;
+            }
+
+            //SortDropdownButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            //e.Handled = true;
+        }
+
+        private void SortDropdownButton_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //SortDropdownButton.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice,
+            //    Environment.TickCount, MouseButton.Right) { RoutedEvent = Button.Mouse });
+            //e.Handled = true;
+
+        }
     }
 }
