@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -170,10 +171,24 @@ namespace VisGist
         private void SortDropdownButton_Click(object sender, RoutedEventArgs e)
         {
             var sortButton = sender as Button;
+
+            //sortButton.ContextMenu.BringIntoView();
+
             if (sortButton != null)
             {
                 sortButton.ContextMenu.IsOpen = true;
             }
+
+  
+            //var cm = ContextMenuService.GetContextMenu(sender as DependencyObject);
+            //if (cm == null)
+            //{
+            //    return;
+            //}
+            //cm.Placement = PlacementMode.Top;
+            //cm.PlacementTarget = sender as UIElement;
+            //cm.IsOpen = true;
+
 
             //SortDropdownButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             //e.Handled = true;

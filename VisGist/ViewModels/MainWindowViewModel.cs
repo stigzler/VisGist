@@ -314,7 +314,7 @@ namespace VisGist.ViewModels
             if (gistItem is GistViewModel)
             {
                 SelectedGistViewModel = (GistViewModel)gistItem;
-                SelectedGistFileViewModel = null;
+                SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
             }
             else if (gistItem is GistFileViewModel)
             {

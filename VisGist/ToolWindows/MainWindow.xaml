@@ -79,6 +79,83 @@
             <Setter Property="OverridesDefaultStyle" Value="True"/>
         </Style>
 
+        
+        <!-- DROPDOWNBUTTON -->
+        <Style x:Key="DropDownButton" TargetType="MenuItem">
+            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
+            <Setter Property="Width" Value="22" />
+            <Setter Property="Height" Value="22" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Grid SnapsToDevicePixels="true" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" >
+                            <Border x:Name="Bd" BorderBrush="Transparent" BorderThickness="1">
+                                <DockPanel>
+                                    <ContentPresenter x:Name="Icon" Width="16" Height="16" Margin="2" ContentSource="Icon" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <Path x:Name="GlyphPanel" Fill="{TemplateBinding Foreground}" FlowDirection="LeftToRight" Margin="7,0,0,0" Visibility="Collapsed" VerticalAlignment="Center" />
+                                    <ContentPresenter x:Name="content" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </DockPanel>
+                            </Border>
+                            <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" HorizontalOffset="1" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Bottom" VerticalOffset="-1">
+                                <Border BorderThickness="1" BorderBrush="Gray" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
+                                    <ScrollViewer x:Name="SubMenuScrollViewer"  CanContentScroll="true" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                        <Grid RenderOptions.ClearTypeHint="Enabled">
+                                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="true" Margin="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle" />
+                                        </Grid>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>                            
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" TargetName="Bd" Value="#2000A2Ed"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="Gray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DropDownButtonChild" TargetType="{x:Type MenuItem}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Grid SnapsToDevicePixels="true" Background="Purple">
+                            <Border BorderBrush="Red" BorderThickness="1">
+                                <DockPanel>
+                                    <ContentPresenter x:Name="Icon" ContentSource="Icon" Margin="4,0,6,0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
+                                    <Path x:Name="GlyphPanel" Fill="{TemplateBinding Foreground}" FlowDirection="LeftToRight" Margin="7,0,0,0" Visibility="Collapsed" VerticalAlignment="Center" />
+                                    <ContentPresenter x:Name="content" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </DockPanel>
+                            </Border>
+                            <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" HorizontalOffset="1" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Bottom" VerticalOffset="-1">
+
+                                <Border BorderThickness="2" BorderBrush="Black" Background="Black">
+                                    <ScrollViewer x:Name="SubMenuScrollViewer" Background="Green" CanContentScroll="true" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                        <Grid RenderOptions.ClearTypeHint="Enabled">
+                                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="true" Margin="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle" />
+                                        </Grid>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="TextBlock.Foreground" Value="LightCyan" TargetName="content" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--<Style x:Key="DropDownButtonChild" TargetType="MenuItem">
+            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
+        </Style>-->
 
         <!-- TOGGLEBUTTON STYLE-->
 
@@ -134,6 +211,7 @@
             <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
         </Style>
+
 
         <!-- SEPARATORSTYLE -->
         <Style x:Key="SplitterStyle" TargetType="GridSplitter">
@@ -212,7 +290,7 @@
     <DockPanel x:Name="MainDP" Height="Auto" LastChildFill="True" AllowDrop="True">
 
         <!-- TOP TOOLSTRIP -->
-        <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top">
+        <DockPanel x:Name="TopToolbarDP" DockPanel.Dock="Top" LastChildFill="True">
 
             <ToolBarTray x:Name="GreeterTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
                 Converter={StaticResource InverseBoolToVisibilityConverter}}" Background="Transparent">
@@ -228,7 +306,8 @@
 
             <ToolBarTray x:Name="MainTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
                 Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible">
-                <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true">
+                
+                <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true" HorizontalAlignment="Stretch">
 
                     <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Gist" Click="SaveBT_Click"
                             IsEnabled="{Binding SelectedGistViewModel.CanSave}">
@@ -264,7 +343,20 @@
 
                     <Separator></Separator>
 
-                    <Button x:Name="SortDropdownButton" Click="SortDropdownButton_Click" ToolTip="Sort Gists" DockPanel.Dock="Right"
+                    <Menu d:Background="Transparent" ToolTip="Sort Gists">
+                        <MenuItem Style="{StaticResource DropDownButton}">
+                            <MenuItem.Icon>
+                                <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
+                            </MenuItem.Icon>
+                            <MenuItem Header="Alphabetical">
+                                <MenuItem.Icon>
+                                    <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
+                    </Menu>
+
+                    <!--<Button x:Name="SortDropdownButton" Click="SortDropdownButton_Click" ToolTip="Sort Gists" DockPanel.Dock="Right"
                      Width="28" Background="Transparent">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SortByColumn}" />
                         <Button.ContextMenu>
@@ -279,14 +371,7 @@
                                 <MenuItem Header="Add 3"/>
                             </ContextMenu>
                         </Button.ContextMenu>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger  EventName="Click">
-                                <i:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=SortDropdownButton}" PropertyName="PlacementTarget" Value="{Binding ElementName=ConvertVideoButton, Mode=OneWay}"/>
-                                <i:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=SortDropdownButton}" PropertyName="IsOpen" Value="True"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-
-                    </Button>
+                    </Button>-->
 
                     <!--<Button Content="Open Context Menu">
                         <Button.Style>
