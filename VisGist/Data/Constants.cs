@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VisGist.Enums;
 
 namespace VisGist.Data
 {
@@ -29,6 +30,15 @@ namespace VisGist.Data
             {new List<string>() {"xaml" }, Languages.XAML },
             {new List<string>() {"xml" }, Languages.XML },
         };
+
+        internal static readonly Dictionary<GistFileHeadingChar, char> GistFileHeadingChars = new Dictionary<GistFileHeadingChar, char>()
+        {
+            {GistFileHeadingChar.Dot, '.' },
+            {GistFileHeadingChar.Exclamation , '!' },
+            {GistFileHeadingChar.Hash, '#' },
+            {GistFileHeadingChar.Minus, '-' }
+        };
+
 
     }
 }

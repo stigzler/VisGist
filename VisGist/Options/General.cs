@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Windows.Media;
+using VisGist.Enums;
 using VisGist.Helpers;
 using VisGist.TypeConverters;
 
@@ -47,7 +48,7 @@ namespace VisGist
         //public bool AutoLoadGists { get; set; }
 
 
-        [Category("Github Settings")]
+        [Category("General")]
         [DisplayName("New Gists Public")]
         [Description("Sets whether to default newly created Gists to Public visibility. If false, new Gists will be private. Warning: Private Gists can be set to Public, but not vice-versa.")]
         [DefaultValue(false)]
@@ -55,19 +56,22 @@ namespace VisGist
 
         private const string MyDefaultFont = "Consolas, 12pt";
 
-        [Category("Code Settings")]
+        [Category("General")]
         [DisplayName("Auto Language Select")]
         [Description("Tries to automatically select the code language from the file extension")]
         [DefaultValue(false)]
         public bool AutoLanguageSelect { get; set; }
 
-
-        [Category("Appearance")]
+        [Category("General")]
         [DisplayName("Code Font")]
         [Description("Sets the Font for the Code.")]
         [DefaultValue(typeof(Font), "Consolas, 12pt")]
         public System.Windows.Media.FontFamily CodeFont { get; set; }
 
+        [Category("General")]
+        [DisplayName("Gist File Heading")]
+        [Description("Chooses which character to use as the Heading character.")]
+        public GistFileHeadingChar GistFileHeadingCharacter { get; set; } = GistFileHeadingChar.Dot;
 
     }
 }

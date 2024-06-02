@@ -10,6 +10,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:interactivity="schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviours="clr-namespace:VisGist.Behaviors"
+             xmlns:enums="clr-namespace:VisGist.Enums"
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              xmlns:controls="clr-namespace:VisGist.Controls"
              xmlns:converters="clr-namespace:VisGist.Converters" 
@@ -348,9 +349,19 @@
                             <MenuItem.Icon>
                                 <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
                             </MenuItem.Icon>
-                            <MenuItem Header="Alphabetical">
+                            <MenuItem Header="Alphabetical" Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Alphabetical}">
                                 <MenuItem.Icon>
                                     <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Starred" Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Starred}">
+                                <MenuItem.Icon>
+                                    <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.Favorite}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Private" Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Public}">
+                                <MenuItem.Icon>
+                                    <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.Key}" />
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuItem>
@@ -679,6 +690,14 @@
                                               Command="{Binding DeleteGistFileCMD}">
                                         <MenuItem.Icon>
                                             <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.DeleteDocument}"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+
+                                    <MenuItem Header="Make Title Gist" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+                                              Style="{StaticResource MenuItem}"                                               
+                                              Command="{Binding MakeGistTitleCMD}">
+                                        <MenuItem.Icon>
+                                            <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.HeadingOne}"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
 

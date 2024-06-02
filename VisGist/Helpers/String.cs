@@ -38,6 +38,8 @@ namespace VisGist.Helpers
         /// <returns>Matched Language or Languages.Text if no match found</returns>
         internal static Languages FilenameToLanguage(string filename)
         {
+            if (ContainsIllegalFilenameChars(filename)) return Languages.Text;
+
             string ext = Path.GetExtension(filename).Replace(".", "");
 
             if (ext != null)

@@ -17,6 +17,7 @@ using Syncfusion.Windows.Shared;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Microsoft.VisualStudio.VCProjectEngine;
+using VisGist.Data;
 
 namespace VisGist.ViewModels
 {
@@ -37,6 +38,7 @@ namespace VisGist.ViewModels
         private bool codeOutliningVisible = false;
         private bool codeFocused = false;
         private string searchExpression = String.Empty;
+        private GistSortMethod sortMethod = GistSortMethod.Alphabetical;
 
         private ObservableCollection<GistViewModel> collatedGists = new ObservableCollection<GistViewModel>();
         private ObservableCollection<GistViewModel> allGists = new ObservableCollection<GistViewModel>();
@@ -94,7 +96,13 @@ namespace VisGist.ViewModels
         public string SearchExpression //{ get => searchExpression; set => { SetProperty(ref searchExpression, value); GistsView.Refresh(); } }
         {
             get { return searchExpression; }
-            set { SetProperty(ref searchExpression, value); SearchGists(); }
+            set { SetProperty(ref searchExpression, value); SortAndSerachGists(); }
+        }
+
+        public GistSortMethod SortMethod
+        {
+            get { return sortMethod; }
+            set { SetProperty(ref sortMethod, value); SortAndSerachGists(); }
         }
 
         // Commands ----------------------------------------------------------------------------------------------
@@ -136,6 +144,8 @@ namespace VisGist.ViewModels
         public IAsyncRelayCommand SaveGistCMD { get; set; }
         public IRelayCommand SetSyntaxHighlightingCMD { get; set; }
         public IRelayCommand SetCodeNumberingVisibleCMD { get; set; }
+        public IRelayCommand SortGistsCMD { get; set; }
+        public IRelayCommand MakeGistTitleCMD { get; set; }
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
@@ -156,7 +166,7 @@ namespace VisGist.ViewModels
 
         }
 
-        private void SearchGists()
+        private void SortAndSerachGists()
         {
             //return SearchExpression == null
             //    || gist.PrimaryGistFilename.IndexOf(SearchExpression, StringComparison.OrdinalIgnoreCase) != -1;
@@ -168,7 +178,22 @@ namespace VisGist.ViewModels
                 SelectedGistViewModel = null;
                 SelectedGistFileViewModel = null;
 
-                foreach (GistViewModel gistVm in AllGists)
+                ObservableCollection<GistViewModel> sortedGists = new ObservableCollection<GistViewModel>();
+
+                switch (sortMethod)
+                {
+                    case GistSortMethod.Alphabetical:
+                        sortedGists = new ObservableCollection<GistViewModel>(AllGists.OrderBy(g => g.PrimaryGistFilename));
+                        break;
+                    case GistSortMethod.Starred:
+                        sortedGists = new ObservableCollection<GistViewModel>(AllGists.OrderByDescending(g => g.Starred));
+                        break;
+                    case GistSortMethod.Public:
+                        sortedGists = new ObservableCollection<GistViewModel>(AllGists.OrderBy(g => g.Public));
+                        break;
+                }
+
+                foreach (GistViewModel gistVm in sortedGists)
                 {
                     gistVm.NodeExpanded = false;
                     if (gistVm.PrimaryGistFilename.ToLower().Contains(SearchExpression.ToLower()))
@@ -223,6 +248,29 @@ namespace VisGist.ViewModels
             SaveGistCMD = new AsyncRelayCommand(SaveGistAsync);
             SetSyntaxHighlightingCMD = new RelayCommand<bool>(SetSyntaxHighlighting);
             SetCodeNumberingVisibleCMD = new RelayCommand(SetCodeNumberingVisible);
+            SortGistsCMD = new RelayCommand<GistSortMethod>((param) => SortGists(param));
+            MakeGistTitleCMD = new RelayCommand(MakeGistTitle);
+        }
+
+        private void MakeGistTitle()
+        {
+            char headingChar = Constants.GistFileHeadingChars[userVsOptions.GistFileHeadingCharacter];
+
+            foreach (GistFileViewModel gistFileViewModel in SelectedGistViewModel.GistFiles)
+            {
+                if (gistFileViewModel.Filename[0] == headingChar)
+                    gistFileViewModel.Filename = gistFileViewModel.Filename.Remove(0, 1);
+
+                //gistFileViewModel.Filename.Replace(headingChar, "");
+            }
+
+            SelectedGistFileViewModel.Filename= headingChar + SelectedGistFileViewModel.Filename;
+
+        }
+
+        private void SortGists(GistSortMethod gistSortMethod)
+        {
+            SortMethod = gistSortMethod;
         }
 
         private async Task DeleteGistFileAsync()
@@ -306,15 +354,15 @@ namespace VisGist.ViewModels
 
             UpdateStatusBar(StatusImage.Success, "Gist deleted", false);
         }
-
-
-
         private void OnSelectedGistItemChanged(ViewModelBase gistItem)
         {
             if (gistItem is GistViewModel)
             {
                 SelectedGistViewModel = (GistViewModel)gistItem;
-                SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
+
+                if (SelectedGistViewModel.GistFiles.Count() > 0)
+                    SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
+
             }
             else if (gistItem is GistFileViewModel)
             {
