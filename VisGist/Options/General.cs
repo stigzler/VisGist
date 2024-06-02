@@ -52,15 +52,20 @@ namespace VisGist
         [DisplayName("New Gists Public")]
         [Description("Sets whether to default newly created Gists to Public visibility. If false, new Gists will be private. Warning: Private Gists can be set to Public, but not vice-versa.")]
         [DefaultValue(false)]
-        public bool NewGistPublic { get; set; }
-
-        private const string MyDefaultFont = "Consolas, 12pt";
+        public bool NewGistPublic { get; set; } = false;
 
         [Category("General")]
         [DisplayName("Auto Language Select")]
         [Description("Tries to automatically select the code language from the file extension")]
         [DefaultValue(false)]
-        public bool AutoLanguageSelect { get; set; }
+        public bool AutoLanguageSelect { get; set; } = false;
+
+
+        [Category("General")]
+        [DisplayName("Confirm Delete")]
+        [Description("Asks for confirmation when deleting items.")]
+        [DefaultValue(true)]
+        public bool ConfirmDelete { get; set; } = true;
 
         [Category("General")]
         [DisplayName("Code Font")]

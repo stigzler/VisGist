@@ -8,17 +8,13 @@
              xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:interactivity="schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviours="clr-namespace:VisGist.Behaviors"
              xmlns:enums="clr-namespace:VisGist.Enums"
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              xmlns:controls="clr-namespace:VisGist.Controls"
              xmlns:converters="clr-namespace:VisGist.Converters" 
-             xmlns:views="clr-namespace:VisGist.Views"
              xmlns:viewmodels="clr-namespace:VisGist.ViewModels" 
-             xmlns:models="clr-namespace:VisGist.Models"     
              xmlns:exts="clr-namespace:VisGist.Extensions"
-             xmlns:System="clr-namespace:System;assembly=mscorlib"    
              toolkit:Themes.UseVsTheme="True"
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" 
@@ -415,6 +411,11 @@
                     <Button x:Name="RefreshBT" Command="{Binding GetAllGistsCMD}" ToolTip="Get Gists from Github">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Refresh}" />
                     </Button>
+
+                    <Button x:Name="TEstBT" Command="{Binding DoTestActionCMD}" ToolTip="Run Test">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.RunTest}" />
+                    </Button>
+
 
                     <!--<Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test" MouseDown="TestBT_Click">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewTest}" />

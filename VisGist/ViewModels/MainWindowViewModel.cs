@@ -18,6 +18,8 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Microsoft.VisualStudio.VCProjectEngine;
 using VisGist.Data;
+using VisGist.Views;
+using System.Diagnostics;
 
 namespace VisGist.ViewModels
 {
@@ -162,7 +164,6 @@ namespace VisGist.ViewModels
 
             SetupCommands();
 
-            //GistsView.Filter = o => String.IsNullOrEmpty(SearchExpression) ? true : ((string)o).Contains(SearchExpression);
 
         }
 
@@ -282,6 +283,14 @@ namespace VisGist.ViewModels
                 return;
             }
 
+
+            if (userVsOptions.ConfirmDelete)
+            {
+                string dialogRepsonse = GetDialogRepsonse("Delete GistFile?", $"Delete GistFile \"{SelectedGistFileViewModel.Filename}\"?", "Yes", "No");
+                if (dialogRepsonse != "Yes") return;
+            }
+
+
             SelectedGistFileViewModel.MarkedForDeletion = true;
             await SaveGistAsync();
             SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
@@ -346,6 +355,12 @@ namespace VisGist.ViewModels
 
         private async Task DeleteGistAsync()
         {
+            if (userVsOptions.ConfirmDelete)
+            {
+                string dialogRepsonse = GetDialogRepsonse("Delete Gist?", $"Delete Gist \"{SelectedGistViewModel.PrimaryGistFilename}\"?", "Yes", "No");
+                if (dialogRepsonse != "Yes") return;
+            }
+
             UpdateStatusBar(StatusImage.GitOperation, "Deleting Gist", true);
 
             await gistManager.DeleteGistAsync(SelectedGistViewModel);
@@ -402,13 +417,37 @@ namespace VisGist.ViewModels
 
         private async Task DoTestActionAsync()
         {
-            collatedGists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
+            ModalDialogViewModel modalDialogViewModel = new ModalDialogViewModel();
+            modalDialogViewModel.Button1Text = "Yes";
+            modalDialogViewModel.Button2Text = "No";
+            modalDialogViewModel.DialogText = @"Are you sure you wish to delete the Gist 'DaveWozEre.md'?";
+
+            ModalDialogView modalDialog = new ModalDialogView(modalDialogViewModel);
+            modalDialog.ShowModal();
+
+            Debug.WriteLine(modalDialogViewModel.SelectedButtonText);
+
+            //collatedGists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
 
             // LayoutHorizontal = !LayoutHorizontal;
 
             //BrowserEditorsSplitterDirection = GridResizeDirection.Columns;
 
             //await gitClientService.DoTestActionAsync(this);
+        }
+
+        private string GetDialogRepsonse(string windowTitle, string dialogText, string button1Text, string  button2Text)
+        {
+            ModalDialogViewModel modalDialogViewModel = new ModalDialogViewModel();
+            modalDialogViewModel.Button1Text = button1Text;
+            modalDialogViewModel.Button2Text = button2Text;
+            modalDialogViewModel.DialogText = dialogText;
+            modalDialogViewModel.WindowTitle = windowTitle;
+
+            ModalDialogView modalDialog = new ModalDialogView(modalDialogViewModel);
+            modalDialog.ShowModal();
+
+            return modalDialogViewModel.SelectedButtonText;
         }
 
 

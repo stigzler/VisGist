@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace VisGist.ViewModels
 {
-    internal class ViewModelBase : ObservableObject, INotifyPropertyChanged
+    public class ViewModelBase : ObservableObject, INotifyPropertyChanged
     {
     }
 }

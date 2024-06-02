@@ -32,6 +32,7 @@ namespace VisGist
             // Set MainWindowViewModel as data context
             mainWindowVM = (MainWindowViewModel)this.DataContext;
 
+
             // Setup any MainWindowViewModel event handlers
             SetupVmEventHooks();
 
