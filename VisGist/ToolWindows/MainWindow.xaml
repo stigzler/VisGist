@@ -340,6 +340,12 @@
 
                     <Separator></Separator>
 
+
+                    <Button x:Name="CollapseTreeBT" Command="{Binding CollapseTreeCMD}" CommandParameter="{Binding ElementName=GistsTV}"  ToolTip="Collapse All Gists">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CollapseAll}" />
+                    </Button>
+                    
+
                     <Menu d:Background="Transparent" ToolTip="Sort Gists">
                         <MenuItem Style="{StaticResource DropDownButton}">
                             <MenuItem.Icon>
@@ -711,7 +717,7 @@
 
                 <TreeView x:Name="GistsTV" ItemsSource="{Binding CollatedGists}" BorderThickness="0" Background="Transparent"
                           PreviewMouseRightButtonDown="GistsTV_PreviewMouseRightButtonDown"
-                          SizeChanged="GistsTV_SizeChanged">
+                          SizeChanged="GistsTV_SizeChanged"   >
                     <TreeView.ItemContainerStyle>
                         <Style TargetType="{x:Type TreeViewItem}">
                             <!--<Setter Property="IsExpanded" Value="{Binding NodeExpanded, Mode=TwoWay}"/>-->

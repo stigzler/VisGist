@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Input;
 using VisGist.Enums;
 using VisGist.Services;
 using Languages = Syncfusion.Windows.Edit.Languages;
@@ -148,6 +149,9 @@ namespace VisGist.ViewModels
         public IRelayCommand SetCodeNumberingVisibleCMD { get; set; }
         public IRelayCommand SortGistsCMD { get; set; }
         public IRelayCommand MakeGistTitleCMD { get; set; }
+        public IRelayCommand CollapseTreeCMD { get; set; }
+
+
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
@@ -165,6 +169,16 @@ namespace VisGist.ViewModels
             SetupCommands();
 
 
+        }
+
+        private void CollapseTree(TreeView treeView)
+        {
+            foreach (GistViewModel tvi in treeView.Items)
+            {
+                TreeViewItem treeItem = treeView.ItemContainerGenerator.ContainerFromItem(tvi) as TreeViewItem;
+                if (treeItem != null)
+                    treeItem.IsExpanded = false;
+            }
         }
 
         private void SortAndSerachGists()
@@ -251,6 +265,7 @@ namespace VisGist.ViewModels
             SetCodeNumberingVisibleCMD = new RelayCommand(SetCodeNumberingVisible);
             SortGistsCMD = new RelayCommand<GistSortMethod>((param) => SortGists(param));
             MakeGistTitleCMD = new RelayCommand(MakeGistTitle);
+            CollapseTreeCMD = new RelayCommand<TreeView>(CollapseTree);
         }
 
         private void MakeGistTitle()
@@ -497,6 +512,7 @@ namespace VisGist.ViewModels
             UpdateStatusBar(StatusImage.Information, $"Logged Out Successfully");
             IsAuthenticated = false;
         }
+
 
 
     }
