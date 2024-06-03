@@ -73,10 +73,15 @@
             <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
             <Setter Property="BorderBrush" Value="Gray"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                </Trigger>
+            </Style.Triggers>
+            <!--<Setter Property="OverridesDefaultStyle" Value="True"/>-->
         </Style>
 
-        
+
         <!-- DROPDOWNBUTTON -->
         <Style x:Key="DropDownButton" TargetType="MenuItem">
             <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
@@ -102,7 +107,7 @@
                                         </Grid>
                                     </ScrollViewer>
                                 </Border>
-                            </Popup>                            
+                            </Popup>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
@@ -303,7 +308,7 @@
 
             <ToolBarTray x:Name="MainTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
                 Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible">
-                
+
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true" HorizontalAlignment="Stretch">
 
                     <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Gist" Click="SaveBT_Click"
@@ -344,7 +349,7 @@
                     <Button x:Name="CollapseTreeBT" Command="{Binding CollapseTreeCMD}" CommandParameter="{Binding ElementName=GistsTV}"  ToolTip="Collapse All Gists">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CollapseAll}" />
                     </Button>
-                    
+
 
                     <Menu d:Background="Transparent" ToolTip="Sort Gists">
                         <MenuItem Style="{StaticResource DropDownButton}">
@@ -605,7 +610,6 @@
                         </HierarchicalDataTemplate.Resources>
 
                         <StackPanel Orientation="Horizontal">
-
                             <imaging:CrispImage VerticalAlignment="Center" Margin="0,0,4,0" ToolTip="{Binding PropertiesChanged}">
                                 <imaging:CrispImage.Resources>
                                     <Style TargetType="ToolTip">
@@ -625,7 +629,6 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-
                                 </imaging:CrispImage.Style>
                             </imaging:CrispImage>
 
@@ -717,7 +720,7 @@
 
                 <TreeView x:Name="GistsTV" ItemsSource="{Binding CollatedGists}" BorderThickness="0" Background="Transparent"
                           PreviewMouseRightButtonDown="GistsTV_PreviewMouseRightButtonDown"
-                          SizeChanged="GistsTV_SizeChanged"   >
+                          SizeChanged="GistsTV_SizeChanged">
                     <TreeView.ItemContainerStyle>
                         <Style TargetType="{x:Type TreeViewItem}">
                             <!--<Setter Property="IsExpanded" Value="{Binding NodeExpanded, Mode=TwoWay}"/>-->
@@ -748,29 +751,22 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                     <RowDefinition x:Name="GistDescriptionRow" Height="auto" MinHeight="30" />
                     <RowDefinition Height="3" />
                     <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
 
                 </Grid.RowDefinitions>
 
-                <!-- 2.0 Gist Title and Buttons -->
-
+                <!-- Gist Title and Buttons -->
                 <DockPanel x:Name="GistTitleDP" Grid.Row="0">
 
-                    <!-- below removed due to not being able to change Gist Visibility via the GitClient -->
-                    <!--<ToggleButton DockPanel.Dock="Right"  BorderThickness="0" 
+                    <ToggleButton DockPanel.Dock="Right" Background="Transparent" BorderThickness="0" Margin="0,0,2,0"
                                   Style="{StaticResource TransparentToggleButtonStyle}"
-                                  IsChecked="{Binding SelectedGistViewModel.Public,
-                                    Converter={StaticResource ReverseBoolConverter},
-                                    Mode=TwoWay}" Margin="0,0,4,0">
-                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Key}"/>
-                    </ToggleButton>-->
-
-                    <ToggleButton DockPanel.Dock="Right" Background="Transparent" BorderThickness="0"
-                                  Style="{StaticResource TransparentToggleButtonStyle}"
-                                    IsChecked="{Binding SelectedGistViewModel.Starred, Mode=TwoWay}">
+                                  ToolTip="Starred Status"
+                                  IsChecked="{Binding SelectedGistViewModel.Starred, Mode=TwoWay}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Favorite}"/>
                     </ToggleButton>
 
@@ -784,9 +780,11 @@
                     </TextBlock>
                 </DockPanel>
 
-                <!-- 2.1 Gist Description -->
+                <Separator Grid.Row="1" Background="Gray"></Separator>
 
-                <ScrollViewer x:Name="GistDescriptionSV" Grid.Row="1" VerticalScrollBarVisibility="Auto" SizeChanged="GistDescriptionSV_SizeChanged">
+                <!-- Gist Description -->
+
+                <ScrollViewer x:Name="GistDescriptionSV" Grid.Row="2" VerticalScrollBarVisibility="Auto" SizeChanged="GistDescriptionSV_SizeChanged">
                     <TextBox x:Name="GistDescriptionTB" MinHeight="32" Background="Transparent" Padding="1" AcceptsReturn="True"
                              TabIndex="0" VerticalAlignment="Top" IsTabStop="True" BorderThickness="0"
                          Text="{Binding SelectedGistViewModel.Description}"
@@ -794,36 +792,42 @@
                          d:Text="Gist Description" d:Foreground="White"></TextBox>
                 </ScrollViewer>
 
-                <!-- 2.2 Splitter -->
+                <!-- Splitter -->
 
-                <GridSplitter Grid.Row="2" Style="{StaticResource SplitterStyle}" HorizontalAlignment="Stretch" />
+                <GridSplitter Grid.Row="3" Style="{StaticResource SplitterStyle}" HorizontalAlignment="Stretch" />
 
-                <!-- 2.3 GistFile Filename Controls -->
+                <!-- GistFile Filename Controls -->
 
-                <DockPanel x:Name="GistFileFilenameDP" Grid.Row="3" Margin="4,4,0,8" LastChildFill="True" >
+                <DockPanel x:Name="GistFileFilenameDP" Grid.Row="4" Margin="2,4,0,2" LastChildFill="True">
 
                     <ContentControl DockPanel.Dock="Left"  VerticalAlignment="Top">
                         <imaging:CrispImage  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}"/>
                     </ContentControl>
+
+                    <!--<ContentControl DockPanel.Dock="Right" VerticalAlignment="Top" ToolTip="Code Pop-out" Margin="0,0,2,0">
+                        <imaging:CrispImage  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.DocumentSource}"/>
+                    </ContentControl>-->
+
+                    <Button DockPanel.Dock="Right" VerticalAlignment="Top" ToolTip="Code Pop-out" Margin="0,0,2,0" Width="24" Height="24"
+                            Style="{StaticResource ButtonStyle}" Command="{Binding PopoutCodeCMD}">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.DocumentSource}"/>
+                    </Button>
 
                     <TextBox x:Name="GistFileFilenameTB"  Background="Transparent" Style="{StaticResource FilenameTextBox}"
                         BorderThickness="0" Padding="1"                    
                         Text="{Binding SelectedGistFileViewModel.Filename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                         TabIndex="1" IsTabStop="True" VerticalAlignment="Center" 
-                        d:Text="GistFile Filename.cs" d:Foreground="White"
-                             >
-                        <!--<i:Interaction.Triggers>
-                            <i:EventTrigger EventName="TextChanged" SourceObject ="{Binding ElementName=GistFileFilenameTB}">
-                                <i:InvokeCommandAction Command="{Binding CheckNewFilenameCMD}" CommandParameter="{Binding Text, ElementName=GistFileFilenameTB}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>-->
+                        d:Text="GistFile Filename.cs" d:Foreground="White">
                     </TextBox>
+
                 </DockPanel>
 
-                <!-- 2.4 GistFile Filename Controls -->
+                <Separator Grid.Row="5" Background="Gray"></Separator>
 
-                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="4"
+                <!-- GistFile Filename Controls -->
+
+                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="6"
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
                         FallbackValue=''}"
                         FontFamily="Consolas" FontSize="12"

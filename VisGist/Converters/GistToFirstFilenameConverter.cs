@@ -21,10 +21,6 @@ namespace VisGist.Converters
             {
                 return gistFiles.OrderBy(gf => gf.Filename).First().Filename;
             }
-
-            //GistViewModel gistViewModel = (GistViewModel) value;
-            //return gistViewModel.PrimaryGistFilename;
-
             return value;
         }
 

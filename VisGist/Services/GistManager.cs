@@ -24,7 +24,7 @@ namespace VisGist.Services
         }
 
 
-        internal async Task<GistFileViewModel> CreateNewGistFileAsync(GistViewModel gistVm)
+        internal GistFileViewModel CreateNewGistFile(GistViewModel gistVm)
         {
             string dateTime = DateTime.Now.ToString();
 
@@ -54,7 +54,7 @@ namespace VisGist.Services
 
             foreach (GistFileViewModel gistFileViewModel in gistViewModel.GistFiles)
             {
-                if (gistFileViewModel.MarkedForDeletion) gistFileViewModel.Content = null; // this essentially deletes the gistfile
+                if (gistFileViewModel.MarkedForDeletion) gistFileViewModel.Content = ""; // this essentially deletes the gistfile
                 // if not sched for deletion and is blank code, need to add a placeholder so doesn't get deleted
                 else if (gistFileViewModel.Content.IsNullOrWhiteSpace()) 
                 {

@@ -27,7 +27,7 @@ namespace VisGist.ViewModels
         private bool nodeExpanded = false;
         private string propertyChanged = string.Empty;
 
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        //public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
         #endregion End: Private Backing Vars
 
@@ -47,7 +47,7 @@ namespace VisGist.ViewModels
             {
                 if (GistFiles.Count == 0) return null;
                 return GistFiles.OrderBy(gf => gf.Filename).First().Filename;
-            }
+            }     
         }
 
         /// <summary>
@@ -198,6 +198,11 @@ namespace VisGist.ViewModels
         internal void AddGistFile(GistFileViewModel gistFile)
         {
             GistFiles.Add(gistFile);
+        }
+
+        internal void RefreshPrimaryGistFilename()
+        {
+            OnPropertyChanged(nameof(GistFiles));
         }
         public void Dispose()
         {

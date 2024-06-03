@@ -21,6 +21,7 @@ using Microsoft.VisualStudio.VCProjectEngine;
 using VisGist.Data;
 using VisGist.Views;
 using System.Diagnostics;
+using VisGist.Models;
 
 namespace VisGist.ViewModels
 {
@@ -119,7 +120,7 @@ namespace VisGist.ViewModels
         private GistClientService gitClientService = new GistClientService();
         private GistManager gistManager;
         private General userVsOptions = new General();
-        private CodeEditorManager codeEditorManager;
+        //private CodeEditorManager codeEditorManager;
 
         #endregion End: OPERATIONAL PRIVATE VARS 
 
@@ -151,6 +152,7 @@ namespace VisGist.ViewModels
         public IRelayCommand MakeGistTitleCMD { get; set; }
         public IRelayCommand CollapseTreeCMD { get; set; }
 
+        public IRelayCommand PopoutCodeCMD { get; set; }
 
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
@@ -266,6 +268,32 @@ namespace VisGist.ViewModels
             SortGistsCMD = new RelayCommand<GistSortMethod>((param) => SortGists(param));
             MakeGistTitleCMD = new RelayCommand(MakeGistTitle);
             CollapseTreeCMD = new RelayCommand<TreeView>(CollapseTree);
+            PopoutCodeCMD = new RelayCommand(PopoutCode);
+        }
+
+        private void PopoutCode()
+        {
+            //ModalDialogViewModel modalDialogViewModel = new ModalDialogViewModel();
+            //modalDialogViewModel.Button1Text = button1Text;
+            //modalDialogViewModel.Button2Text = button2Text;
+            //modalDialogViewModel.DialogText = dialogText;
+            //modalDialogViewModel.WindowTitle = windowTitle;
+
+            //ModalDialogView modalDialog = new ModalDialogView(modalDialogViewModel);
+            //modalDialog.ShowModal();
+
+            ModalCodeViewModel modalCodeViewModel = new ModalCodeViewModel();
+            modalCodeViewModel.SelectedLanguage = SelectedLanguage;
+            modalCodeViewModel.SelectedGistFileViewModel = SelectedGistFileViewModel;
+
+
+            ModalCodeView modalCodeView = new ModalCodeView(modalCodeViewModel);
+
+            modalCodeView.ShowModal();
+
+            //ModalDialogView modalDialog = new ModalDialogView(modalDialogViewModel);
+            //modalDialog.ShowModal();
+
         }
 
         private void MakeGistTitle()
@@ -280,7 +308,7 @@ namespace VisGist.ViewModels
                 //gistFileViewModel.Filename.Replace(headingChar, "");
             }
 
-            SelectedGistFileViewModel.Filename= headingChar + SelectedGistFileViewModel.Filename;
+            SelectedGistFileViewModel.Filename = headingChar + SelectedGistFileViewModel.Filename;
 
         }
 
@@ -298,23 +326,23 @@ namespace VisGist.ViewModels
                 return;
             }
 
-
             if (userVsOptions.ConfirmDelete)
             {
                 string dialogRepsonse = GetDialogRepsonse("Delete GistFile?", $"Delete GistFile \"{SelectedGistFileViewModel.Filename}\"?", "Yes", "No");
                 if (dialogRepsonse != "Yes") return;
             }
 
-
             SelectedGistFileViewModel.MarkedForDeletion = true;
             await SaveGistAsync();
             SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
+            SelectedGistViewModel.RefreshPrimaryGistFilename();
+
         }
 
         private async Task AddNewGistFileAsync()
         {
             UpdateStatusBar(StatusImage.GitOperation, "Adding New GistFile", true);
-            GistFileViewModel gistFileViewModel = await gistManager.CreateNewGistFileAsync(SelectedGistViewModel);
+            GistFileViewModel gistFileViewModel = gistManager.CreateNewGistFile(SelectedGistViewModel);
             SelectedGistViewModel.AddGistFile(gistFileViewModel);
             await SaveGistAsync();
             SelectedGistViewModel.SortGistFiles();
@@ -351,7 +379,7 @@ namespace VisGist.ViewModels
             string gistFilename = SelectedGistFileViewModel?.Filename;
 
             // Save (update) gist in git server
-            Gist updatedGist = await gistManager.SaveGistAsync(SelectedGistViewModel);
+            Octokit.Gist updatedGist = await gistManager.SaveGistAsync(SelectedGistViewModel);
 
             // Now update the GistViewModel (populates any properties figured server side like filesize etc)
             SelectedGistViewModel.UpdateGistFile(updatedGist);
@@ -451,7 +479,7 @@ namespace VisGist.ViewModels
             //await gitClientService.DoTestActionAsync(this);
         }
 
-        private string GetDialogRepsonse(string windowTitle, string dialogText, string button1Text, string  button2Text)
+        private string GetDialogRepsonse(string windowTitle, string dialogText, string button1Text, string button2Text)
         {
             ModalDialogViewModel modalDialogViewModel = new ModalDialogViewModel();
             modalDialogViewModel.Button1Text = button1Text;

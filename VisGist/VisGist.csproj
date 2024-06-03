@@ -105,12 +105,16 @@
     <Compile Include="ViewModels\GistFileViewModel.cs" />
     <Compile Include="ViewModels\GistViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\ModalCodeViewModel.cs" />
     <Compile Include="ViewModels\ModalDialogViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\GistsBrowser.xaml.cs">
       <DependentUpon>GistsBrowser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ModalDialog.cs" />
+    <Compile Include="Views\ModalCodeView.xaml.cs">
+      <DependentUpon>ModalCodeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ModalDialogBase.cs" />
     <Compile Include="Views\ModalDialogView.xaml.cs">
       <DependentUpon>ModalDialogView.xaml</DependentUpon>
     </Compile>
@@ -167,6 +171,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\GistsBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ModalCodeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

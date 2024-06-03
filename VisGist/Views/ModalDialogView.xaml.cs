@@ -19,7 +19,7 @@ namespace VisGist.Views
     /// <summary>
     /// Interaction logic for ModalDialogView.xaml
     /// </summary>
-    public partial class ModalDialogView : ModalDialog
+    public partial class ModalDialogView : ModalDialogBase
     {
         ModalDialogViewModel modalDialogViewMdel;
 

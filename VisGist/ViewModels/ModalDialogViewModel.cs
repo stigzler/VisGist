@@ -44,15 +44,15 @@ namespace VisGist.ViewModels
 
         private void SetupCommandMethods()
         {
-            ProcessButton1CMD = new RelayCommand<ModalDialog>(ProcessButton1);
-            ProcessButton2CMD = new RelayCommand<ModalDialog>(ProcessButton2);
+            ProcessButton1CMD = new RelayCommand<ModalDialogBase>(ProcessButton1);
+            ProcessButton2CMD = new RelayCommand<ModalDialogBase>(ProcessButton2);
         }
-        private void ProcessButton1(ModalDialog modalDialog)
+        private void ProcessButton1(ModalDialogBase modalDialog)
         {
             SelectedButtonText = Button1Text;
             modalDialog.Close();
         }
-        private void ProcessButton2(ModalDialog modalDialog)
+        private void ProcessButton2(ModalDialogBase modalDialog)
         {
             SelectedButtonText = Button2Text;
             modalDialog.Close();
