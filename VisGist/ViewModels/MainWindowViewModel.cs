@@ -283,13 +283,21 @@ namespace VisGist.ViewModels
             //modalDialog.ShowModal();
 
             ModalCodeViewModel modalCodeViewModel = new ModalCodeViewModel();
-            modalCodeViewModel.SelectedLanguage = SelectedLanguage;
-            modalCodeViewModel.SelectedGistFileViewModel = SelectedGistFileViewModel;
-
 
             ModalCodeView modalCodeView = new ModalCodeView(modalCodeViewModel);
+            modalCodeViewModel.SelectedGistFileViewModel = SelectedGistFileViewModel;
+            modalCodeViewModel.WindowTitle = "VisGist Code: " + SelectedGistFileViewModel.Filename;
+
+            if (SelectedLanguage == Syncfusion.Windows.Edit.Languages.Text)
+                modalCodeViewModel.SelectedLanguage = Syncfusion.Windows.Edit.Languages.Custom;
+            else
+                modalCodeViewModel.SelectedLanguage = SelectedLanguage;
+
+
 
             modalCodeView.ShowModal();
+
+
 
             //ModalDialogView modalDialog = new ModalDialogView(modalDialogViewModel);
             //modalDialog.ShowModal();
@@ -396,6 +404,11 @@ namespace VisGist.ViewModels
             UpdateStatusBar(StatusImage.Success, "Gist Saved.", false);
         }
 
+        private async Task SaveSpecificGistAsync(GistViewModel gistViewModel)
+        {
+
+        }
+
         private async Task DeleteGistAsync()
         {
             if (userVsOptions.ConfirmDelete)
@@ -435,25 +448,32 @@ namespace VisGist.ViewModels
 
         private async Task GetAllGistsAsync()
         {
-            UpdateStatusBar(StatusImage.GitOperation, $"Loading Gists..", true);
+            
+            if (AllGists.Any(g => g.HasChanges))
+            {
+                string dialogRepsonse = GetDialogRepsonse("Load Gists from Github?", $"There are unsaved changes. Loading Gists from Github will overwrite these. Are you sure you want to proceed?", "Yes", "No");
+                if (dialogRepsonse != "Yes") return;
+            }
 
+
+            UpdateStatusBar(StatusImage.GitOperation, $"Loading Gists..", true);
 
             AllGists = await gistManager.LoadGistsAsync();
 
-            //IEnumerable<GistViewModel> apiGists = await gistManager.LoadGistsAsync();
+            SortMethod = GistSortMethod.Alphabetical;
 
-            if (AllGists.Count > 0)
-            {
-                // Update the existing instance to significantly improve the responsiveness of the UI
-                CollatedGists.Clear();
-                foreach (GistViewModel gist in AllGists)
-                {
-                    CollatedGists.Add(gist);
-                }
+            //if (AllGists.Count > 0)
+            //{
+            //    // Update the existing instance to significantly improve the responsiveness of the UI
+            //    CollatedGists.Clear();
+            //    foreach (GistViewModel gist in AllGists)
+            //    {
+            //        CollatedGists.Add(gist);
+            //    }
 
-                SelectedGistViewModel = CollatedGists[0];
-                SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
-            }
+            //    SelectedGistViewModel = CollatedGists[0];
+            //    SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
+            //}
 
             UpdateStatusBar(StatusImage.Success, $"Gists Loaded Successfully", false);
         }

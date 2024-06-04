@@ -7,14 +7,23 @@
             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
             xmlns:viewmodels="clr-namespace:VisGist.ViewModels"
+            xmlns:properties="clr-namespace:VisGist.Properties"
             mc:Ignorable="d" 
-            d:DesignHeight="450" d:DesignWidth="800">
+            ResizeMode="CanResizeWithGrip"
+            Padding="10"
+            Width="{Binding Source={x:Static properties:Settings.Default}, Path=CodeWindowSize.Width}"
+            Height="{Binding Source={x:Static properties:Settings.Default}, Path=CodeWindowSize.Height}"
+            Title="{Binding WindowTitle}" d:DesignHeight="98.293" d:DesignWidth="249.237" SizeChanged="ModalDialogBase_SizeChanged">
 
     <Window.DataContext>
         <viewmodels:ModalCodeViewModel/>
     </Window.DataContext>
-    
+
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="187*"/>
+            <ColumnDefinition Width="63*"/>
+        </Grid.ColumnDefinitions>
         <syncfusion:EditControl
                         DocumentLanguage="{Binding SelectedLanguage}"
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,FallbackValue=''}"
@@ -29,7 +38,7 @@
                         AcceptsTab="True"
                         IsTabStop="True"
                         AllowDragDrop="True" AllowDrop="True"
-                        CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}">
+                        CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Grid.ColumnSpan="2">
         </syncfusion:EditControl>
 
     </Grid>

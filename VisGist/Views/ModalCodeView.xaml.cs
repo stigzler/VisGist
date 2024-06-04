@@ -30,21 +30,19 @@ namespace VisGist.Views
         {
             InitializeComponent();
 
+            // Set Theme
+            SetTheme(Helpers.UI.IsDarkMode());
+
             this.modalCodeViewModel = modalCodeViewModel;
 
             DataContext = modalCodeViewModel;
 
-            // Set Theme
-            SetTheme(Helpers.UI.IsDarkMode());
 
         }
         private void SetTheme(bool darkMode)
         {
             if (darkMode)
             {
-                // below not used at present, but may be needed
-                // resourceDictionaryManager.ChangeTheme(new Uri("pack://application:,,,/VisGist;component/Resources/Themes/Dark.xaml"), this);
-
                 // Syncfusion Theme operations
                 MaterialDarkThemeSettings themeSettings = new MaterialDarkThemeSettings();
                 themeSettings.Palette = Syncfusion.Themes.MaterialDark.WPF.MaterialPalette.Blue;
@@ -53,9 +51,6 @@ namespace VisGist.Views
             }
             else
             {
-                // below not used at present, but may be needed
-                // resourceDictionaryManager.ChangeTheme(new Uri("pack://application:,,,/VisGist;component/Resources/Themes/Light.xaml"), this);
-
                 // Syncfusion Theme operations
                 MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
                 themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
@@ -64,6 +59,10 @@ namespace VisGist.Views
             }
         }
 
-
+        private void ModalDialogBase_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Properties.Settings.Default.CodeWindowSize = new System.Drawing.Size((int)ActualWidth, (int)ActualHeight);
+            Properties.Settings.Default.Save();
+        }
     }
 }

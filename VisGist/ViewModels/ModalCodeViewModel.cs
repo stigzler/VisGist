@@ -18,12 +18,14 @@ namespace VisGist.ViewModels
         //  Backing vars
         private GistFileViewModel selectedGistFileViewModel;
         private Languages selectedLanguage;
+        private string windowTitle = "VisGist Code Preview";
 
         //  ==============================================================================================
         //  Public Members
 
         public GistFileViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; set => SetProperty(ref selectedGistFileViewModel, value); }
         public Languages SelectedLanguage { get => selectedLanguage; set => SetProperty(ref selectedLanguage, value); }
+        public string WindowTitle { get => windowTitle; set => SetProperty(ref windowTitle, value); }
 
         #endregion End: Properties
 
