@@ -1,8 +1,10 @@
-﻿using Syncfusion.SfSkinManager;
+﻿using ICSharpCode.AvalonEdit.Highlighting;
+using Syncfusion.SfSkinManager;
 using Syncfusion.Themes.MaterialDark.WPF;
 using Syncfusion.Themes.MaterialLight.WPF;
 using Syncfusion.Windows.Edit;
 using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -12,6 +14,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using VisGist.ViewModels;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System.Xml;
+using EnvDTE;
 
 namespace VisGist
 {
@@ -32,7 +38,6 @@ namespace VisGist
             // Set MainWindowViewModel as data context
             mainWindowVM = (MainWindowViewModel)this.DataContext;
 
-
             // Setup any MainWindowViewModel event handlers
             SetupVmEventHooks();
 
@@ -43,6 +48,11 @@ namespace VisGist
             GridLengthConverter converter = new GridLengthConverter();
             GistDescriptionRow.Height = (GridLength)converter.ConvertFromString(Properties.Settings.Default.SplitterGistDescription);
             GistBrowserRow.Height = (GridLength)converter.ConvertFromString(Properties.Settings.Default.SplitterGistTree);
+
+            // SyntaxHighlighting Tests
+
+
+
 
         }
 
@@ -115,8 +125,8 @@ namespace VisGist
 
         private void SaveBT_Click(object sender, RoutedEventArgs e)
         {
-            BindingExpression expr = CodeEC.GetBindingExpression(EditControl.TextProperty);
-            expr.UpdateSource();
+            //BindingExpression expr = CodeEC.GetBindingExpression(EditControl.TextProperty);
+            //expr.UpdateSource();
         }
 
         private void GistsTV_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -205,7 +215,7 @@ namespace VisGist
 
         private void GistFileFilenameTB_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter) { CodeEC.Focus(); e.Handled = true; }
+            //if (e.Key == Key.Enter) { CodeEC.Focus(); e.Handled = true; }
         }
 
 

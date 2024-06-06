@@ -17,6 +17,9 @@ using VisGist;
 [assembly: AssemblyVersion(Vsix.Version)]
 [assembly: AssemblyFileVersion(Vsix.Version)]
 
+// My additions
+[assembly: ProvideCodeBase(AssemblyName = "ICSharpCode.AvalonEdit")]
+
 
 namespace System.Runtime.CompilerServices
 {

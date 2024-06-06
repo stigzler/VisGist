@@ -22,4 +22,7 @@ namespace VisGist
             this.RegisterToolWindows();
         }
     }
+
+
+
 }

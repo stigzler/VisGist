@@ -1,27 +1,28 @@
 ﻿<UserControl x:Class="VisGist.MainWindow"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
-             xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
-             xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
-             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:behaviours="clr-namespace:VisGist.Behaviors"
-             xmlns:enums="clr-namespace:VisGist.Enums"
-             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
-             xmlns:controls="clr-namespace:VisGist.Controls"
-             xmlns:converters="clr-namespace:VisGist.Converters" 
-             xmlns:viewmodels="clr-namespace:VisGist.ViewModels" 
-             xmlns:exts="clr-namespace:VisGist.Extensions"
-             toolkit:Themes.UseVsTheme="True"
-             Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
-             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" 
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" d:Foreground="white"
-             AllowDrop="True"
-             Name="MyToolWindow" SizeChanged="MyToolWindow_SizeChanged" Loaded="MyToolWindow_Loaded">
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+            xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+            xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+            xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+            xmlns:behaviours="clr-namespace:VisGist.Behaviors"
+            xmlns:enums="clr-namespace:VisGist.Enums"
+            xmlns:controls="clr-namespace:VisGist.Controls"
+            xmlns:converters="clr-namespace:VisGist.Converters" 
+            xmlns:viewmodels="clr-namespace:VisGist.ViewModels" 
+            xmlns:exts="clr-namespace:VisGist.Extensions"
+            xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+            toolkit:Themes.UseVsTheme="True"
+            Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
+            Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" 
+            mc:Ignorable="d"
+            d:DesignHeight="300" d:DesignWidth="300" d:Foreground="white"
+            AllowDrop="True"
+            Name="MyToolWindow" SizeChanged="MyToolWindow_SizeChanged" Loaded="MyToolWindow_Loaded">
 
     <UserControl.DataContext>
         <viewmodels:MainWindowViewModel/>
@@ -269,7 +270,7 @@
         </Style>
 
         <!-- Code Editor (red highlighted border to provide user feedback for invalid filenames-->
-        <Style x:Key="CodeEditor" TargetType="syncfusion:EditControl">
+        <!--<Style x:Key="CodeEditor" TargetType="syncfusion:EditControl">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -290,7 +291,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
 
 
 
@@ -440,13 +441,14 @@
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Refresh}" />
                     </Button>
 
-                    <Button x:Name="TEstBT" Visibility="Hidden" Command="{Binding DoTestActionCMD}" ToolTip="Run Test">
+                    <Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Run Test"
+                            CommandParameter="{Binding ElementName=aeEditor}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.RunTest}" />
                     </Button>
 
-                    <Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test" MouseDown="TestBT_Click">
+                    <!--<Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test" MouseDown="TestBT_Click">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewTest}" />
-                    </Button>
+                    </Button>-->
 
                 </controls:ToolBar>
             </ToolBarTray>
@@ -854,7 +856,7 @@
 
                 <!-- GistFile Filename Controls -->
 
-                <syncfusion:EditControl x:Name="CodeEC" Grid.Row="6"
+                <!--<syncfusion:EditControl x:Name="CodeEC" Grid.Row="6"
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
                         FallbackValue=''}"
                         IsAutoLineNumberAreaWidthEnabled="True"   
@@ -869,8 +871,17 @@
                         DocumentLanguage="{Binding SelectedLanguage}"
                         AllowDragDrop="True" AllowDrop="True"
                         CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Grid.ColumnSpan="2">
-                         <!--FontFamily="Consolas" FontSize="{Binding CodeSize}"-->
-                </syncfusion:EditControl>
+                         --><!--FontFamily="Consolas" FontSize="{Binding CodeSize}"--><!--
+                </syncfusion:EditControl>-->
+
+                <avalonEdit:TextEditor x:Name="aeEditor" Grid.Row="6"
+                    SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt"
+                    Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+                    Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                       ShowLineNumbers="true" WordWrap="False"
+                />
+
             </Grid>
 
         </Grid>

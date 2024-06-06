@@ -1,5 +1,18 @@
 ﻿# Research
 
+## AvalonEdit
+
+### Syntax Highlighting
+
+#### Custom xshd
+
+Header:
+```xml
+<SyntaxDefinition name="HTML" extensions=".htm;.html" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+```
+
+You **can** put in hex RGB values
+
 ## Authentication 
 
 Use Personal Access Token in Github, not a GitHub App. 
@@ -32,10 +45,13 @@ Not directly accessible from Gist. Have to use `GistCommentsClient`:
 
 If update Gist Description , have to use `GistUpdate`
 
+## Misc
 
+Example Extension location:
 
+c:\users\stigz\appdata\local\microsoft\visualstudio\17.0_83cd348aexp\extensions\steve hall\visgist
 
-
-
-
-
+via:
+```c#
+System.Reflection.Assembly.GetExecutingAssembly().Location
+```

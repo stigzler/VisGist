@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dev", "dev", "{68D852F0-CD2
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Documentation", "Documentation\Documentation.shproj", "{EC3BEF43-3253-4B2A-A553-E5150204A0BB}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "DevFiles", "DevFiles\DevFiles.shproj", "{45D3565F-480E-49A4-9072-CBF055B83873}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,11 +48,13 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5BFC6F85-3B42-4AEF-8795-2D22A3A5D9C6} = {24B1EF80-3F11-413A-AEA4-29D96C5ED368}
 		{EC3BEF43-3253-4B2A-A553-E5150204A0BB} = {68D852F0-CD29-4CAF-8985-74789A9B38A6}
+		{45D3565F-480E-49A4-9072-CBF055B83873} = {68D852F0-CD29-4CAF-8985-74789A9B38A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52623EA6-AB42-4172-A22D-D66F8A42F701}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		DevFiles\DevFiles.projitems*{45d3565f-480e-49a4-9072-cbf055b83873}*SharedItemsImports = 13
 		Documentation\Documentation.projitems*{ec3bef43-3253-4b2a-a553-e5150204a0bb}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

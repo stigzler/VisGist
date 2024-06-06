@@ -22,6 +22,11 @@ using VisGist.Data;
 using VisGist.Views;
 using System.Diagnostics;
 using VisGist.Models;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Highlighting;
+using System.Xml;
+using ICSharpCode.AvalonEdit;
+using System.IO;
 
 namespace VisGist.ViewModels
 {
@@ -263,7 +268,7 @@ namespace VisGist.ViewModels
             AddNewGistFileCMD = new AsyncRelayCommand(AddNewGistFileAsync);
             DeleteGistCMD = new AsyncRelayCommand(DeleteGistAsync);
             DeleteGistFileCMD = new AsyncRelayCommand(DeleteGistFileAsync);
-            DoTestActionCMD = new AsyncRelayCommand(DoTestActionAsync);
+            DoTestActionCMD = new AsyncRelayCommand<object>(DoTestActionAsync);
             SaveGistCMD = new AsyncRelayCommand(SaveGistAsync);
             SaveAllGistsCMD = new AsyncRelayCommand(SaveAllGistsAsync);
             SetSyntaxHighlightingCMD = new RelayCommand<bool>(SetSyntaxHighlighting);
@@ -520,9 +525,22 @@ namespace VisGist.ViewModels
             UpdateStatusBar(StatusImage.Success, $"Gists Loaded Successfully", false);
         }
 
-        private async Task DoTestActionAsync()
+        private async Task DoTestActionAsync(object obj)
         {
-            CodeSize += 1;
+            Debug.WriteLine(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+
+            TextEditor textEditor = (TextEditor)obj;
+
+            string tempFile = Path.Combine(Path.GetTempPath(), "VisGistSyntaxText.xml");
+            File.Copy(@"C:\Users\stigz\source\repos\0.MyCode\CS\Framework\1.Extensions\VisGist\DevFiles\CSharp-Mode.xshd", tempFile,true);
+
+            XmlReader reader = XmlReader.Create(tempFile);
+            textEditor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+
+            reader.Close();
+
+            //CodeSize += 1;
 
             //collatedGists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
 
