@@ -71,7 +71,7 @@
         <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-       
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -325,17 +325,21 @@
 
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true" HorizontalAlignment="Stretch">
 
-                    <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Gist" Click="SaveBT_Click"
+                    <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Selected Gist" Click="SaveBT_Click"
                             IsEnabled="{Binding SelectedGistViewModel.CanSave}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Save}" 
                                             Opacity="{Binding SelectedGistViewModel.CanSave, Converter={StaticResource BoolToOpacityConverter}}"/>
+                    </Button>
+
+                    <Button x:Name="SaveAllBT" Command="{Binding SaveAllGistsCMD}" ToolTip="Save All Gists" Click="SaveBT_Click">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SaveAll}"/>
                     </Button>
 
                     <Button x:Name="NewGistBT" Command="{Binding AddNewGistCMD}" ToolTip="New Gist">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewListItem}" />
                     </Button>
 
-                    <Separator></Separator>
+                    <Separator Background="Gray"></Separator>
 
                     <!--<ToggleButton x:Name="SyntaxHighlightBT" ToolTip="Toggle Syntax Highlighting" 
                                   Command="{Binding SetSyntaxHighlightingCMD}" 
@@ -357,8 +361,7 @@
                               Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}">
                     </ComboBox>
 
-                    <Separator></Separator>
-
+                    <Separator Background="Gray"></Separator>
 
                     <Button x:Name="CollapseTreeBT" Command="{Binding CollapseTreeCMD}" CommandParameter="{Binding ElementName=GistsTV}"  ToolTip="Collapse All Gists">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CollapseAll}" />
@@ -437,14 +440,13 @@
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Refresh}" />
                     </Button>
 
-                    <Button x:Name="TEstBT" Command="{Binding DoTestActionCMD}" ToolTip="Run Test">
+                    <Button x:Name="TEstBT" Visibility="Hidden" Command="{Binding DoTestActionCMD}" ToolTip="Run Test">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.RunTest}" />
                     </Button>
 
-
-                    <!--<Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test" MouseDown="TestBT_Click">
+                    <Button x:Name="TestBT" Command="{Binding DoTestActionCMD}" ToolTip="Test" MouseDown="TestBT_Click">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewTest}" />
-                    </Button>-->
+                    </Button>
 
                 </controls:ToolBar>
             </ToolBarTray>
@@ -660,6 +662,17 @@
                             <StackPanel.ContextMenu>
                                 <ContextMenu Style="{StaticResource ContextMenu}" 
                                              DataContext="{Binding DataContext, Source={exts:RootObject}}">
+
+                                    <!-- View on Github -->
+                                    <MenuItem Header="View in Github" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+                                                 Style="{StaticResource MenuItem}"                                               
+                                                 Command="{Binding ViewInGithubCMD}">
+                                        <MenuItem.Icon>
+                                            <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.GitHub}"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+
+
                                     <!-- Delete Gist -->
                                     <MenuItem Header="Delete Gist" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
                                               Style="{StaticResource MenuItem}"                                               
@@ -828,7 +841,7 @@
                     </Button>
 
                     <TextBox x:Name="GistFileFilenameTB"  Background="Transparent" Style="{StaticResource FilenameTextBox}"
-                        BorderThickness="0"                   
+                        BorderThickness="0" KeyDown="GistFileFilenameTB_KeyDown"                   
                         Text="{Binding SelectedGistFileViewModel.Filename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                         TabIndex="1" IsTabStop="True" VerticalAlignment="Center" 
@@ -844,9 +857,7 @@
                 <syncfusion:EditControl x:Name="CodeEC" Grid.Row="6"
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,
                         FallbackValue=''}"
-                        FontFamily="Consolas" FontSize="12"
-                        exts:FocusExtension.IsFocused="{Binding CodeFocused}"
-                        IsAutoLineNumberAreaWidthEnabled="True"     
+                        IsAutoLineNumberAreaWidthEnabled="True"   
                         LineNumberTextForeground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                         Background="Transparent"
                         Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
@@ -857,9 +868,9 @@
                         TabIndex="2" IsTabStop="True"
                         DocumentLanguage="{Binding SelectedLanguage}"
                         AllowDragDrop="True" AllowDrop="True"
-                        CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}">
+                        CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Grid.ColumnSpan="2">
+                         <!--FontFamily="Consolas" FontSize="{Binding CodeSize}"-->
                 </syncfusion:EditControl>
-
             </Grid>
 
         </Grid>

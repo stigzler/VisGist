@@ -115,6 +115,7 @@ namespace VisGist.Services
         {
             string dateTime = DateTime.Now.ToString();
 
+
             Gist gist = await gitClientService.CreateNewGistAsync(@public,
                 $"New Gist created {dateTime}",
                 $"New Gist created {dateTime}",

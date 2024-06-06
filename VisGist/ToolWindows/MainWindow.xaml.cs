@@ -202,5 +202,16 @@ namespace VisGist
             //e.Handled = true;
 
         }
+
+        private void GistFileFilenameTB_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter) { CodeEC.Focus(); e.Handled = true; }
+        }
+
+
+        private void CodeEC_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+
+        }
     }
 }

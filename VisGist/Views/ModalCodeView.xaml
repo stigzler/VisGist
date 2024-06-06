@@ -11,6 +11,8 @@
             mc:Ignorable="d" 
             ResizeMode="CanResizeWithGrip"
             Padding="10"
+            Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+            Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
             Width="{Binding Source={x:Static properties:Settings.Default}, Path=CodeWindowSize.Width}"
             Height="{Binding Source={x:Static properties:Settings.Default}, Path=CodeWindowSize.Height}"
             Title="{Binding WindowTitle}" d:DesignHeight="98.293" d:DesignWidth="249.237" SizeChanged="ModalDialogBase_SizeChanged">
@@ -20,14 +22,11 @@
     </Window.DataContext>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="187*"/>
-            <ColumnDefinition Width="63*"/>
-        </Grid.ColumnDefinitions>
+
         <syncfusion:EditControl
-                        DocumentLanguage="{Binding SelectedLanguage}"
                         Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,FallbackValue=''}"
                         FontFamily="Consolas" FontSize="12"
+                        DocumentLanguage="{Binding SelectedLanguage}"
                         IsAutoLineNumberAreaWidthEnabled="True"     
                         LineNumberTextForeground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                         Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
@@ -38,7 +37,7 @@
                         AcceptsTab="True"
                         IsTabStop="True"
                         AllowDragDrop="True" AllowDrop="True"
-                        CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Grid.ColumnSpan="2">
+                        CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}">
         </syncfusion:EditControl>
 
     </Grid>

@@ -40,7 +40,7 @@ namespace VisGist.ViewModels
         private Languages selectedLanguage = Syncfusion.Windows.Edit.Languages.Text;
         private bool codeNumberingVisible = false;
         private bool codeOutliningVisible = false;
-        private bool codeFocused = false;
+        private int codeSize = 12;
         private string searchExpression = String.Empty;
         private GistSortMethod sortMethod = GistSortMethod.Alphabetical;
 
@@ -60,9 +60,9 @@ namespace VisGist.ViewModels
         public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
         public bool IsAuthenticated { get => isAuthenticated; set => SetProperty(ref isAuthenticated, value); }
         public bool ViewLoaded { get; set; } = false;
-        public bool CodeFocused { get => codeFocused; set => SetProperty(ref codeFocused, value); }
         public bool CodeNumberingVisible { get => codeNumberingVisible; set => SetProperty(ref codeNumberingVisible, value); }
         public bool CodeOutliningVisible { get => codeOutliningVisible; set => SetProperty(ref codeOutliningVisible, value); }
+        public int CodeSize { get => codeSize; set => SetProperty(ref codeSize, value); }
         public StatusImage StatusImage { get => statusImage; set => SetProperty(ref statusImage, value); }
         public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
         public bool StatusBarVisible { get => statusBarVisible; set => SetProperty(ref statusBarVisible, value); }
@@ -146,13 +146,15 @@ namespace VisGist.ViewModels
         public IAsyncRelayCommand DeleteGistFileCMD { get; set; }
         public IAsyncRelayCommand AddNewGistFileCMD { get; set; }
         public IAsyncRelayCommand SaveGistCMD { get; set; }
+        public IAsyncRelayCommand SaveAllGistsCMD { get; set; }
         public IRelayCommand SetSyntaxHighlightingCMD { get; set; }
         public IRelayCommand SetCodeNumberingVisibleCMD { get; set; }
         public IRelayCommand SortGistsCMD { get; set; }
         public IRelayCommand MakeGistTitleCMD { get; set; }
         public IRelayCommand CollapseTreeCMD { get; set; }
-
         public IRelayCommand PopoutCodeCMD { get; set; }
+        public IRelayCommand ViewInGithubCMD { get; set; }
+        public IRelayCommand MouseWheelMovedCMD { get; set; }
 
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
@@ -170,7 +172,7 @@ namespace VisGist.ViewModels
 
             SetupCommands();
 
-
+            CodeSize = 12;
         }
 
         private void CollapseTree(TreeView treeView)
@@ -263,45 +265,45 @@ namespace VisGist.ViewModels
             DeleteGistFileCMD = new AsyncRelayCommand(DeleteGistFileAsync);
             DoTestActionCMD = new AsyncRelayCommand(DoTestActionAsync);
             SaveGistCMD = new AsyncRelayCommand(SaveGistAsync);
+            SaveAllGistsCMD = new AsyncRelayCommand(SaveAllGistsAsync);
             SetSyntaxHighlightingCMD = new RelayCommand<bool>(SetSyntaxHighlighting);
             SetCodeNumberingVisibleCMD = new RelayCommand(SetCodeNumberingVisible);
             SortGistsCMD = new RelayCommand<GistSortMethod>((param) => SortGists(param));
             MakeGistTitleCMD = new RelayCommand(MakeGistTitle);
             CollapseTreeCMD = new RelayCommand<TreeView>(CollapseTree);
             PopoutCodeCMD = new RelayCommand(PopoutCode);
+            ViewInGithubCMD = new RelayCommand(ViewInGithub);
+            MouseWheelMovedCMD = new RelayCommand<MouseWheelEventArgs>(MouseWheelMoved);
+        }
+
+        private void MouseWheelMoved(MouseWheelEventArgs args)
+        {
+            Debug.WriteLine(args.Delta);
+        }
+
+        private void ViewInGithub()
+        {
+            if (SelectedGistViewModel == null) return;
+
+            Process.Start(SelectedGistViewModel.ReferenceGist.HtmlUrl);
         }
 
         private void PopoutCode()
         {
-            //ModalDialogViewModel modalDialogViewModel = new ModalDialogViewModel();
-            //modalDialogViewModel.Button1Text = button1Text;
-            //modalDialogViewModel.Button2Text = button2Text;
-            //modalDialogViewModel.DialogText = dialogText;
-            //modalDialogViewModel.WindowTitle = windowTitle;
-
-            //ModalDialogView modalDialog = new ModalDialogView(modalDialogViewModel);
-            //modalDialog.ShowModal();
-
             ModalCodeViewModel modalCodeViewModel = new ModalCodeViewModel();
 
             ModalCodeView modalCodeView = new ModalCodeView(modalCodeViewModel);
             modalCodeViewModel.SelectedGistFileViewModel = SelectedGistFileViewModel;
             modalCodeViewModel.WindowTitle = "VisGist Code: " + SelectedGistFileViewModel.Filename;
 
+            // the below controls for a syncfusion Edit control bug - Languages.
+            // Text does not render properly for some reason, but 'Custom' does
             if (SelectedLanguage == Syncfusion.Windows.Edit.Languages.Text)
                 modalCodeViewModel.SelectedLanguage = Syncfusion.Windows.Edit.Languages.Custom;
             else
                 modalCodeViewModel.SelectedLanguage = SelectedLanguage;
 
-
-
             modalCodeView.ShowModal();
-
-
-
-            //ModalDialogView modalDialog = new ModalDialogView(modalDialogViewModel);
-            //modalDialog.ShowModal();
-
         }
 
         private void MakeGistTitle()
@@ -361,9 +363,12 @@ namespace VisGist.ViewModels
         {
             UpdateStatusBar(StatusImage.GitOperation, "Adding New Gist", true);
 
+
             GistViewModel gistViewModel = await gistManager.CreateNewGistAsync(userVsOptions.NewGistPublic);
 
-            collatedGists.Insert(0, gistViewModel);
+            AllGists.Insert(0, gistViewModel);
+
+            RefreshList();
 
             UpdateStatusBar(StatusImage.Success, "New Gist added successfully", false);
         }
@@ -380,20 +385,19 @@ namespace VisGist.ViewModels
 
         private async Task SaveGistAsync()
         {
-            UpdateStatusBar(StatusImage.GitOperation, "Saving Gist", true);
+            //if (SelectedGistViewModel.HasChanges == false)
+            //{
+            //    UpdateStatusBar(StatusImage.Information, $"Gist already up to date.");
+            //    return;
+            //}
+
+            UpdateStatusBar(StatusImage.GitOperation, $"Saving: {SelectedGistViewModel.PrimaryGistFilename}", true);
 
             // store the name of the selected gist file as update essentially creates new gistfile object
             // breaking the link between the UI gistfile and the dataobject one
             string gistFilename = SelectedGistFileViewModel?.Filename;
 
-            // Save (update) gist in git server
-            Octokit.Gist updatedGist = await gistManager.SaveGistAsync(SelectedGistViewModel);
-
-            // Now update the GistViewModel (populates any properties figured server side like filesize etc)
-            SelectedGistViewModel.UpdateGistFile(updatedGist);
-
-            // Now update starred status of GistViewModel (as this isn't stored in the Gist data object)
-            await gistManager.UpdateGistVmStarredStatusAsync(SelectedGistViewModel, updatedGist);
+            await SaveSpecificGistAsync(SelectedGistViewModel);
 
             // Finally try and re-select the original GistFile
             if (gistFilename != null)
@@ -404,9 +408,36 @@ namespace VisGist.ViewModels
             UpdateStatusBar(StatusImage.Success, "Gist Saved.", false);
         }
 
+        private async Task SaveAllGistsAsync()
+        {
+            IEnumerable<GistViewModel> changedGists = CollatedGists.Where(cg => cg.HasChanges == true && 
+                                                                        cg.CanSave == true && cg.HasErrors == false);
+
+            if (changedGists.Count() == 0)
+            {
+                UpdateStatusBar(StatusImage.Information, "No Gists need saving.", false);
+                return;
+            }
+
+            foreach (GistViewModel gistViewModel in changedGists)
+            {
+                UpdateStatusBar(StatusImage.GitOperation, $"Saving: {gistViewModel.PrimaryGistFilename}", true);
+                await SaveSpecificGistAsync(gistViewModel);
+            }
+
+            UpdateStatusBar(StatusImage.Success, "Eligible Gists Saved.", false);
+        }
+
         private async Task SaveSpecificGistAsync(GistViewModel gistViewModel)
         {
+            // Save (update) gist in git server
+            Octokit.Gist updatedGist = await gistManager.SaveGistAsync(gistViewModel);
 
+            // Now update the GistViewModel (populates any properties figured server side like filesize etc)
+            gistViewModel.UpdateGistFile(updatedGist);
+
+            // Now update starred status of GistViewModel (as this isn't stored in the Gist data object)
+            await gistManager.UpdateGistVmStarredStatusAsync(gistViewModel, updatedGist);
         }
 
         private async Task DeleteGistAsync()
@@ -421,10 +452,19 @@ namespace VisGist.ViewModels
 
             await gistManager.DeleteGistAsync(SelectedGistViewModel);
 
-            collatedGists.Remove(SelectedGistViewModel);
+            AllGists.Remove(SelectedGistViewModel);
+
+            RefreshList();
 
             UpdateStatusBar(StatusImage.Success, "Gist deleted", false);
         }
+
+
+        private void RefreshList()
+        {
+            SortAndSerachGists();
+        }
+
         private void OnSelectedGistItemChanged(ViewModelBase gistItem)
         {
             if (gistItem is GistViewModel)
@@ -448,7 +488,7 @@ namespace VisGist.ViewModels
 
         private async Task GetAllGistsAsync()
         {
-            
+
             if (AllGists.Any(g => g.HasChanges))
             {
                 string dialogRepsonse = GetDialogRepsonse("Load Gists from Github?", $"There are unsaved changes. Loading Gists from Github will overwrite these. Are you sure you want to proceed?", "Yes", "No");
@@ -475,20 +515,14 @@ namespace VisGist.ViewModels
             //    SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
             //}
 
+            CodeSize = 11;
+
             UpdateStatusBar(StatusImage.Success, $"Gists Loaded Successfully", false);
         }
 
         private async Task DoTestActionAsync()
         {
-            ModalDialogViewModel modalDialogViewModel = new ModalDialogViewModel();
-            modalDialogViewModel.Button1Text = "Yes";
-            modalDialogViewModel.Button2Text = "No";
-            modalDialogViewModel.DialogText = @"Are you sure you wish to delete the Gist 'DaveWozEre.md'?";
-
-            ModalDialogView modalDialog = new ModalDialogView(modalDialogViewModel);
-            modalDialog.ShowModal();
-
-            Debug.WriteLine(modalDialogViewModel.SelectedButtonText);
+            CodeSize += 1;
 
             //collatedGists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
 

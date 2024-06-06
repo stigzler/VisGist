@@ -51,21 +51,17 @@ namespace VisGist.ViewModels
             set
             {
                 ClearErrors(nameof(Content));
-                //if (value == null || value.Length == 0 || value == String.Empty || value=="\r\n\r\n" || value == "\r\n")
-                //{
-                //    AddError(nameof(Content), "The Code cannot be null");
-                //    ParentGistViewModel.CanSave = false;
-                //}
-                //else
-                //{
-                //    ParentGistViewModel.CanSave = true;
-                //}
 
-                if (value != ReferenceGistFile.Content) HasChanges = true;
+                if (value != ReferenceGistFile.Content)
+                {
+                    HasChanges = true;
+                    ParentGistViewModel.HasChanges = true;
+                }
+
                 else HasChanges = false;
 
                 SetProperty(ref content, value);
-                ParentGistViewModel.HasChanges = ParentGistViewModel.GistHasChanges();
+                //ParentGistViewModel.HasChanges = ParentGistViewModel.GistHasChanges();
             }
         }
 

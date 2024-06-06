@@ -74,6 +74,12 @@ namespace VisGist
         public System.Windows.Media.FontFamily CodeFont { get; set; }
 
         [Category("General")]
+        [DisplayName("Head New Gists")]
+        [Description("Prefixes the New Gist Filename with the Gist File Header.")]
+        public bool HeadNewGists { get; set; } = false;
+
+
+        [Category("General")]
         [DisplayName("Gist File Heading")]
         [Description("Chooses which character to use as the Heading character.")]
         public GistFileHeadingChar GistFileHeadingCharacter { get; set; } = GistFileHeadingChar.Dot;

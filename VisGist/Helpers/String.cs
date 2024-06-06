@@ -50,6 +50,7 @@ namespace VisGist.Helpers
                     return languageKvp.Value;
                 }
             }
+
             return Languages.Text;
         }
 
