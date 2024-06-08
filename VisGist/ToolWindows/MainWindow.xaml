@@ -30,268 +30,30 @@
 
     <UserControl.Resources>
 
-        <!-- CONVERTERS ================================================================================= -->
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
-        <converters:GistFilesVMToFirstFilenameConverter x:Key="GistFilesToFirstFilenameConverter"/>
-        <converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
-        <converters:BrushToColorConverter x:Key="BrushToColorConverter"/>
-        <converters:FontToFontFamilyConverter x:Key="FontToFontFamilyConverter"/>
-        <converters:GistToIndicatorIconConverter x:Key="GistToIndicatorIconConverter"/>
-        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
-        <converters:FilenameToLanguageConverter x:Key="FilenameToLanguageConverter" />
-        <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
-        <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+        <!-- STYLES -->
+        <ResourceDictionary>
 
-        <!-- STYLES ================================================================================= -->
+            <!-- CONVERTERS ================================================================================= -->
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+            <converters:GistFilesVMToFirstFilenameConverter x:Key="GistFilesToFirstFilenameConverter"/>
+            <converters:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
+            <converters:BrushToColorConverter x:Key="BrushToColorConverter"/>
+            <converters:FontToFontFamilyConverter x:Key="FontToFontFamilyConverter"/>
+            <converters:GistToIndicatorIconConverter x:Key="GistToIndicatorIconConverter"/>
+            <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+            <converters:FilenameToLanguageConverter x:Key="FilenameToLanguageConverter" />
+            <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
+            <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
 
-        <!-- TOOLBAR STYLE -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/Styles/Core.xaml"/>
+                <ResourceDictionary Source="../Resources/Styles/ComboBox.xaml"/>
 
-        <Style x:Key="ToolBarTray" TargetType="ToolBarTray">
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
+            </ResourceDictionary.MergedDictionaries>
+            
+        </ResourceDictionary>
 
-        <Style x:Key="ToolBar" TargetType="ToolBar">
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
-
-        <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Focusable" Value="False"/>
-        </Style>
-
-        <Style x:Key="{x:Static ToolBar.SeparatorStyleKey}" TargetType="Separator">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-        </Style>
-
-        <Style x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" TargetType="ToggleButton">
-            <Setter Property="Background" Value="Transparent"/>
-        </Style>
-
-        <!-- BUTTON STYLE -->
-        <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#2000A2Ed"/>
-                    <Setter Property="BorderThickness" Value="1" />
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="False">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="BorderThickness" Value="0" />
-                </Trigger>
-
-            </Style.Triggers>
-            <!--<Setter Property="OverridesDefaultStyle" Value="True"/>-->
-        </Style>
-
-
-        <!-- DROPDOWNBUTTON -->
-        <Style x:Key="DropDownButton" TargetType="MenuItem">
-            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-            <Setter Property="Width" Value="22" />
-            <Setter Property="Height" Value="22" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <Grid SnapsToDevicePixels="true" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" >
-                            <Border x:Name="Bd" BorderBrush="Transparent" BorderThickness="1">
-                                <DockPanel>
-                                    <ContentPresenter x:Name="Icon" Width="16" Height="16" Margin="2" ContentSource="Icon" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    <Path x:Name="GlyphPanel" Fill="{TemplateBinding Foreground}" FlowDirection="LeftToRight" Margin="7,0,0,0" Visibility="Collapsed" VerticalAlignment="Center" />
-                                    <ContentPresenter x:Name="content" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                </DockPanel>
-                            </Border>
-                            <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" HorizontalOffset="1" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Bottom" VerticalOffset="-1">
-                                <Border BorderThickness="1" BorderBrush="Gray" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
-                                    <ScrollViewer x:Name="SubMenuScrollViewer"  CanContentScroll="true" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                        <Grid RenderOptions.ClearTypeHint="Enabled">
-                                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="true" Margin="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle" />
-                                        </Grid>
-                                    </ScrollViewer>
-                                </Border>
-                            </Popup>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsHighlighted" Value="True">
-                                <Setter Property="Background" TargetName="Bd" Value="#2000A2Ed"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="Gray"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="DropDownButtonChild" TargetType="{x:Type MenuItem}">
-            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <Grid SnapsToDevicePixels="true" Background="Purple">
-                            <Border BorderBrush="Red" BorderThickness="1">
-                                <DockPanel>
-                                    <ContentPresenter x:Name="Icon" ContentSource="Icon" Margin="4,0,6,0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
-                                    <Path x:Name="GlyphPanel" Fill="{TemplateBinding Foreground}" FlowDirection="LeftToRight" Margin="7,0,0,0" Visibility="Collapsed" VerticalAlignment="Center" />
-                                    <ContentPresenter x:Name="content" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                </DockPanel>
-                            </Border>
-                            <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" HorizontalOffset="1" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Bottom" VerticalOffset="-1">
-
-                                <Border BorderThickness="2" BorderBrush="Black" Background="Black">
-                                    <ScrollViewer x:Name="SubMenuScrollViewer" Background="Green" CanContentScroll="true" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                        <Grid RenderOptions.ClearTypeHint="Enabled">
-                                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Cycle" Grid.IsSharedSizeScope="true" Margin="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle" />
-                                        </Grid>
-                                    </ScrollViewer>
-                                </Border>
-                            </Popup>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="TextBlock.Foreground" Value="LightCyan" TargetName="content" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!--<Style x:Key="DropDownButtonChild" TargetType="MenuItem">
-            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-        </Style>-->
-
-        <!-- TOGGLEBUTTON STYLE-->
-
-        <Style TargetType="{x:Type ToggleButton}" x:Key="TransparentToggleButtonStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" 
-                                Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center"                  
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Background" Value="Transparent"></Setter>
-            <Style.Triggers>
-                <Trigger Property="IsChecked" Value="False">
-                    <!--<Setter Property="Background" Value="Black" />-->
-                    <Setter Property="Opacity" Value="0.3" />
-                </Trigger>
-                <!--<Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderThickness" Value="2" />
-                </Trigger>-->
-
-            </Style.Triggers>
-        </Style>
-
-        <!-- TEXTBLOCK STYLES -->
-
-        <Style x:Key="SemiTransparentText" TargetType="TextBlock">
-            <Setter Property="Opacity" Value="0.6"/>
-        </Style>
-
-        <!-- CONTEXTMENU STYLE -->
-        <Style x:Key="ContextMenu" TargetType="ContextMenu">
-            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ContextMenu}">
-                        <Border Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
-                                BorderBrush="Gray" BorderThickness="1">
-                            <StackPanel ClipToBounds="True" Orientation="Vertical" IsItemsHost="True" Margin="2"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- MENU ITEM STYLE -->
-        <Style x:Key="MenuItem" TargetType="MenuItem">
-            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-        </Style>
-
-
-        <!-- SEPARATORSTYLE -->
-        <Style x:Key="SplitterStyle" TargetType="GridSplitter">
-            <Setter Property="BorderBrush" Value="#909090"/>
-            <Setter Property="Opacity" Value="0.5"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-
-        <!-- TREEVIEWITEM STYLE -->
-        <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
-            <Setter Property="Margin" Value="0,0,0,1"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-        </Style>
-
-        <!-- TEXTBOX STYLES -->
-        <!-- Filename Textbox (red highlighted border to provide user feedback for invalid filenames-->
-        <Style x:Key="FilenameTextBox" TargetType="TextBox">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <StackPanel>
-                            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                                    Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                                <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
-                            </Border>
-                            <ItemsControl ItemsSource="{TemplateBinding Validation.Errors}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Foreground="Red" FontStyle="Italic"  Text="{Binding ErrorContent}" Padding="4,0,0,2"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Code Editor (red highlighted border to provide user feedback for invalid filenames-->
-        <!--<Style x:Key="CodeEditor" TargetType="syncfusion:EditControl">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type syncfusion:EditControl}">
-                        <StackPanel>
-                            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                                    Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                                <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
-                            </Border>
-                            <ItemsControl ItemsSource="{TemplateBinding Validation.Errors}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Foreground="Red" FontStyle="Italic"  Text="{Binding ErrorContent}" Padding="4,0,0,2"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>-->
 
 
 
@@ -356,10 +118,20 @@
                                   CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
                     </ToggleButton>-->
 
-                    <ComboBox x:Name="LanguageSelectorCB" Width="80" ItemsSource="{Binding Languages}" Margin="4,0,4,0" BorderThickness="1"
-                              SelectedValue="{Binding SelectedLanguage}"
+                    <ComboBox x:Name="LanguageSelectorCB" Width="85" Style="{StaticResource ComboBoxStyle}"
+                              IsEditable="False" IsReadOnly="True" 
                               Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
-                              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}">
+                              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"  
+                              d:Foreground="White"
+                              ItemsSource="{Binding Syntaxes}" Margin="4,0,4,0" 
+                              SelectedItem="{Binding SelectedSyntaxViewModel, Mode=TwoWay}"
+                              DisplayMemberPath="Name">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding SetSyntaxHighlightingCMD}" 
+                                                       CommandParameter="{Binding ElementName=CodeEditor}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </ComboBox>
 
                     <Separator Background="Gray"></Separator>
@@ -367,25 +139,28 @@
                     <Button x:Name="CollapseTreeBT" Command="{Binding CollapseTreeCMD}" CommandParameter="{Binding ElementName=GistsTV}"  ToolTip="Collapse All Gists">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CollapseAll}" />
                     </Button>
-
-
+                    
                     <Menu d:Background="Transparent" ToolTip="Sort Gists">
                         <MenuItem Style="{StaticResource DropDownButton}">
                             <MenuItem.Icon>
                                 <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
                             </MenuItem.Icon>
-                            <MenuItem Header="Alphabetical" Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Alphabetical}">
+                            <MenuItem Header="Alphabetical" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+                                      Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Alphabetical}">
                                 <MenuItem.Icon>
                                     <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Starred" Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Starred}">
+                            <MenuItem Header="Starred" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+                                      Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Starred}">
                                 <MenuItem.Icon>
                                     <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.Favorite}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Private" Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Public}">
+                            <MenuItem Header="Private" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+                                      Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Public}">
                                 <MenuItem.Icon>
+                                    
                                     <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.Key}" />
                                 </MenuItem.Icon>
                             </MenuItem>
@@ -458,26 +233,25 @@
 
         <!-- SEARCH TEXTBOX -->
         <DockPanel DockPanel.Dock="Top" LastChildFill="True" Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
-            <TextBox x:Name="SearchTB"  Margin="2" Height="auto"
-                 Text="{Binding SearchExpression, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibilityConverter}}" 
-                  d:Visibility="Visible" d:Background="Transparent" d:Foreground="White">
+            <TextBox x:Name="SearchTB" Margin="4,2,4,2"
+                Text="{Binding SearchExpression, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolToVisibilityConverter}}" 
+                Padding="6,0,0,0"
+                d:Visibility="Visible" d:Background="Transparent" d:Foreground="White">
                 <TextBox.Template>
                     <ControlTemplate>
-                        <Border Background="Transparent" BorderBrush="Gray" CornerRadius="2" BorderThickness="1">
+                        <Border Background="Transparent" CornerRadius="4" BorderBrush="Gray" BorderThickness="1">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <ScrollViewer Margin="2" x:Name="PART_ContentHost" Grid.Column="0" VerticalAlignment="Center"/>
-                                <Label x:Name="searchLabel" Foreground="Gray" Margin="2" Grid.Column="0"  Content="Search" Padding="2,0,0,0" FontStyle="Italic" 
+                                <ScrollViewer Grid.Column="0" Margin="0" x:Name="PART_ContentHost"  VerticalAlignment="Center" Padding="0"/>
+                                <Label x:Name="searchLabel" Grid.Column="0" Foreground="Gray" Margin="4,0,0,0"   Content="Search"  FontStyle="Italic" 
                                        VerticalAlignment="Center" Visibility="{Binding SearchExpression, Converter={StaticResource EmptyStringToVisibilityConverter}}" />
-                                <Border Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="2">
-                                    <!--<Image Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Resources/search.png" RenderOptions.BitmapScalingMode="Fant" />-->
-                                    <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Search}" />
-                                </Border>
+                                <imaging:CrispImage Grid.Column="1" Margin="0,1,4,0" Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Search}" />
+                    
                             </Grid>
                         </Border>
                     </ControlTemplate>
@@ -516,7 +290,7 @@
                                     <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.StatusOK}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding StatusImage}" Value="GitOperation">
-                                    <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.Git}"/>
+                                    <Setter Property="Moniker" Value="{x:Static catalog:KnownMonikers.GitHub}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -531,8 +305,8 @@
                              Visibility="{Binding AsyncOperationStatusManager.CurrentOperation.Execution.IsNotCompleted, Converter={StaticResource boolToVisibilityConverter}, FallbackValue=Collapsed}"/>-->
 
             <StatusBarItem Grid.Column="2" HorizontalContentAlignment="Stretch" >
-                <ProgressBar  Height="2" Foreground="Orange" IsIndeterminate="True" Margin="10,0,10,0" VerticalAlignment="Center"
-                             HorizontalContentAlignment="Stretch" 
+                <ProgressBar  Height="2" Foreground="Red" IsIndeterminate="True" Margin="10,0,10,0" VerticalAlignment="Center"
+                             HorizontalContentAlignment="Stretch" Background="Transparent" BorderBrush="#40808080"
                              Visibility="{Binding StatusBarVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                              d:Visibility="Visible"/>
 
@@ -871,15 +645,17 @@
                         DocumentLanguage="{Binding SelectedLanguage}"
                         AllowDragDrop="True" AllowDrop="True"
                         CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" Grid.ColumnSpan="2">
-                         --><!--FontFamily="Consolas" FontSize="{Binding CodeSize}"--><!--
+                         -->
+                <!--FontFamily="Consolas" FontSize="{Binding CodeSize}"-->
+                <!--
                 </syncfusion:EditControl>-->
 
-                <avalonEdit:TextEditor x:Name="aeEditor" Grid.Row="6"
+                <avalonEdit:TextEditor x:Name="CodeEditor" Grid.Row="6"
                     SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt"
                     Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
                     Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                                       ShowLineNumbers="true" WordWrap="False"
+                    ShowLineNumbers="true" WordWrap="False"
                 />
 
             </Grid>

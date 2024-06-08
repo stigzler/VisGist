@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<SyntaxDefinition name="XAML" extensions=".xaml" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color foreground="#57A64A" name="Comment" exampleText="&lt;!-- comment --&gt;" />
+	<Color foreground="#E9D585" name="CData" exampleText="&lt;![CDATA[data]]&gt;" />
+	<Color foreground="#569CD6" name="DocType" exampleText="&lt;!DOCTYPE rootElement&gt;" />
+	<Color foreground="#569CD6" name="XmlDeclaration" exampleText='&lt;?xml version="1.0"?&gt;' />
+	<Color foreground="#E6E6E6" name="XmlTag" exampleText='&lt;tag attribute="value" /&gt;' />
+	<Color foreground="#92CAF4" name="AttributeName" exampleText='&lt;tag attribute="value" /&gt;' />
+	<Color foreground="#569CD6" name="AttributeValue" exampleText='&lt;tag attribute="value" /&gt;' />
+	<Color foreground="#D7BA7D" name="AttributeBinding" exampleText='Command=&quot;{Binding DoPostLoadActionsCMD}&quot;' />
+	<Color foreground="#BBA08C" name="BindingKeyword" exampleText='Style=&quot;{StaticResource ButtonStyle}&quot;' />
+	<Color foreground="#00D0FF" name="Entity" exampleText="index.aspx?a=1&amp;amp;b=2" />
+	<Color foreground="#FF0000" name="BrokenEntity" exampleText="index.aspx?a=1&amp;b=2" />
+	<Color foreground="#ff0000" name="Hyperlink" exampleText="" />
+
+	<RuleSet>
+		<Span color="Comment" multiline="true">
+			<Begin>&lt;!--</Begin>
+			<End>--&gt;</End>
+		</Span>
+		<Span color="CData" multiline="true">
+			<Begin>&lt;!\[CDATA\[</Begin>
+			<End>]]&gt;</End>
+		</Span>
+		<Span color="DocType" multiline="true">
+			<Begin>&lt;!DOCTYPE</Begin>
+			<End>&gt;</End>
+		</Span>
+		<Span color="XmlDeclaration" multiline="true">
+			<Begin>&lt;\?</Begin>
+			<End>\?&gt;</End>
+		</Span>
+		<Span color="AttributeBinding" multiline="true">
+			<Begin>&quot;{</Begin>
+			<End>}&quot;</End>
+		</Span>
+		<Span color="XmlTag" multiline="true">
+			<Begin>&lt;</Begin>
+			<End>&gt;</End>
+			<RuleSet>
+				<!-- Treat the position before '<' as end, as that's not a valid character
+				     in attribute names and indicates the user forgot a closing quote. -->
+				<Span color="AttributeBinding" multiline="true" ruleSet="EntitySet">
+					<Begin>"{</Begin>
+					<End>}"</End>
+				</Span>
+				
+				<Span color="AttributeValue" multiline="true" ruleSet="EntitySet">
+					<Begin>"</Begin>
+					<End>"|(?=&lt;)</End>
+				</Span>
+				<Span color="AttributeValue" multiline="true" ruleSet="EntitySet">
+					<Begin>'</Begin>
+					<End>'|(?=&lt;)</End>
+				</Span>
+	
+				<Rule color="AttributeName">[\d\w_\-\.]+(?=(\s*=))</Rule>
+				<Rule color="AttributeValue">=</Rule>	
+			</RuleSet>
+		</Span>
+		
+
+		
+		<Import ruleSet="EntitySet"/>
+	</RuleSet>
+	
+	<RuleSet name="EntitySet">
+		<Rule color="Entity">
+			&amp;
+			[\w\d\#]+
+			;
+		</Rule>
+
+		<Rule color="BrokenEntity">
+			&amp;
+			[\w\d\#]*
+			#missing ;
+		</Rule>
+		
+	
+	
+		
+		<Keywords color="BindingKeyword">
+			<Word>DynamicResource</Word>
+			<Word>StaticResource</Word>			
+			<Word>Binding</Word>
+			<Word>MultiBinding</Word>
+			<Word>PriorityBinding</Word>
+			<Word>x:</Word>
+			<Word>x:Null</Word>
+			<Word>x:Reference</Word>
+			<Word>x:Static</Word>				
+		</Keywords>
+		
+	</RuleSet>
+	
+
+	
+
+
+</SyntaxDefinition>

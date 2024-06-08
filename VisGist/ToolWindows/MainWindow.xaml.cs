@@ -1,23 +1,8 @@
-﻿using ICSharpCode.AvalonEdit.Highlighting;
-using Syncfusion.SfSkinManager;
-using Syncfusion.Themes.MaterialDark.WPF;
-using Syncfusion.Themes.MaterialLight.WPF;
-using Syncfusion.Windows.Edit;
-using System;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using VisGist.ViewModels;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using System.Xml;
-using EnvDTE;
 
 namespace VisGist
 {
@@ -80,10 +65,10 @@ namespace VisGist
                 // resourceDictionaryManager.ChangeTheme(new Uri("pack://application:,,,/VisGist;component/Resources/Themes/Dark.xaml"), this);
 
                 // Syncfusion Theme operations
-                MaterialDarkThemeSettings themeSettings = new MaterialDarkThemeSettings();
-                themeSettings.Palette = Syncfusion.Themes.MaterialDark.WPF.MaterialPalette.Blue;
-                SfSkinManager.RegisterThemeSettings("MaterialDark", themeSettings);
-                SfSkinManager.SetTheme(this, new Theme("MaterialDark"));
+                //MaterialDarkThemeSettings themeSettings = new MaterialDarkThemeSettings();
+                //themeSettings.Palette = Syncfusion.Themes.MaterialDark.WPF.MaterialPalette.Blue;
+                //SfSkinManager.RegisterThemeSettings("MaterialDark", themeSettings);
+                //SfSkinManager.SetTheme(this, new Theme("MaterialDark"));
             }
             else
             {
@@ -91,10 +76,10 @@ namespace VisGist
                 // resourceDictionaryManager.ChangeTheme(new Uri("pack://application:,,,/VisGist;component/Resources/Themes/Light.xaml"), this);
 
                 // Syncfusion Theme operations
-                MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
-                themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
-                SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);
-                SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
+                //MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
+                //themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
+                //SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);
+                //SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
             }
         }
 

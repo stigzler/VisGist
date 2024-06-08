@@ -11,4 +11,7 @@
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)CSharp-Mode.xshd" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Licence.txt" />
+  </ItemGroup>
 </Project>

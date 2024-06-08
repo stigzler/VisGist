@@ -1,8 +1,11 @@
 ﻿using Microsoft.VisualStudio.Imaging;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using VisGist.Data;
 using VisGist.ViewModels;
 
 namespace VisGist
@@ -11,13 +14,13 @@ namespace VisGist
     {
         internal MainWindowViewModel MainWindowViewModel = new MainWindowViewModel();
 
-
         public override string GetTitle(int toolWindowId) => "Gists";
 
         public override Type PaneType => typeof(Pane);
 
         public override Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
-        {
+        {     
+
             return Task.FromResult<FrameworkElement>(new MainWindow(MainWindowViewModel));
         }
 
@@ -26,7 +29,7 @@ namespace VisGist
         {
             public Pane()
             {
-                BitmapImageMoniker = KnownMonikers.ToolWindow;
+                BitmapImageMoniker = KnownMonikers.GitHub;
             }
         }
     }

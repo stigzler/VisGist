@@ -12,6 +12,9 @@ Header:
 ```
 
 You **can** put in hex RGB values
+3
+All Languages syntax testing codes:
+https://github.com/sharkdp/bat/tree/master/tests/syntax-tests/source
 
 ## Authentication 
 
@@ -49,7 +52,11 @@ If update Gist Description , have to use `GistUpdate`
 
 Example Extension location:
 
-c:\users\stigz\appdata\local\microsoft\visualstudio\17.0_83cd348aexp\extensions\steve hall\visgist
+..\appdata\local\microsoft\visualstudio\17.0_83cd348aexp\extensions\steve hall\visgist
+
+Live install location: 
+
+..\AppData\Local\Microsoft\VisualStudio\17.0_83cd348a\Extensions
 
 via:
 ```c#

@@ -1,6 +1,7 @@
 ﻿using Syncfusion.Windows.Edit;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ namespace VisGist.Data
         internal const string GitProductHeaderValue = "VisGist";
         internal const string GistPropertiesChangedPrefix = "Gist Changes: ";
         internal const string GistNoPropertiesChangedPrefix = "No Changes";
+
+        internal static readonly string UserSyntaxDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VisGist\\Highlighting");
+        internal static readonly string DefaultSyntaxDirectory = Path.Combine(Path.GetDirectoryName(  System.Reflection.Assembly.GetExecutingAssembly().Location), "Resources\\Highlighting");
 
         internal static readonly Dictionary<List<String>, Languages> CodeLanguageMappings = new Dictionary<List<string>, Languages>()
             {
