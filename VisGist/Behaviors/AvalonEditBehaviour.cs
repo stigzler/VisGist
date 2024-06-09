@@ -55,7 +55,6 @@ namespace VisGist.Behaviors
                     var caretOffset = editor.CaretOffset;
                     editor.Document.Text = dependencyPropertyChangedEventArgs.NewValue.ToString();
                     editor.CaretOffset = editor.Document.TextLength < caretOffset ? editor.Document.TextLength : caretOffset;
-                    //editor.CaretOffset = caretOffset;
                 }
             }
         }

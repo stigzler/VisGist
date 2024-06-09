@@ -11,8 +11,8 @@ namespace VisGist
         public const string Name = "VisGist";
         public const string Description = @"VisGist integrates your GitHub Gists into Visual Studio allowing you to view, edit, delete and create new Gists straight from the UI.";
         public const string Language = "en-US";
-        public const string Version = "0.9";
-        public const string Author = "Crackhouse Coding";
+        public const string Version = "0.91";
+        public const string Author = "stigzler";
         public const string Tags = "GitHub, Gists, Code";
     }
 }

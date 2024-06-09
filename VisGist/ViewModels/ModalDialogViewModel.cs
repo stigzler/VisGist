@@ -1,9 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using VisGist.Views;
 
@@ -32,10 +27,9 @@ namespace VisGist.ViewModels
         public string Button1Text { get => _button1Text; set => SetProperty(ref _button1Text, value); }
         public string Button2Text { get => _button2Text; set => SetProperty(ref _button2Text, value); }
         public string SelectedButtonText { get => _selectedButtonText; set => SetProperty(ref _selectedButtonText, value); }
-        public string WindowTitle { get => _windowTitle; set => SetProperty(ref _windowTitle, value); } 
+        public string WindowTitle { get => _windowTitle; set => SetProperty(ref _windowTitle, value); }
 
-        #endregion End: Properties
-
+        #endregion Properties =========================================================================================
 
         #region Commands =========================================================================================
 
@@ -47,23 +41,24 @@ namespace VisGist.ViewModels
             ProcessButton1CMD = new RelayCommand<ModalDialogBase>(ProcessButton1);
             ProcessButton2CMD = new RelayCommand<ModalDialogBase>(ProcessButton2);
         }
+
         private void ProcessButton1(ModalDialogBase modalDialog)
         {
             SelectedButtonText = Button1Text;
             modalDialog.Close();
         }
+
         private void ProcessButton2(ModalDialogBase modalDialog)
         {
             SelectedButtonText = Button2Text;
             modalDialog.Close();
         }
 
-        #endregion End: Commands
+        #endregion Commands =========================================================================================
 
         public ModalDialogViewModel()
         {
             SetupCommandMethods();
         }
-
     }
 }

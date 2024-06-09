@@ -11,9 +11,8 @@ namespace VisGist.Helpers
     {
 
         /// <summary>
-        /// Sure there's a better way to do this, but meh
-        /// Examines VS's ToolWindowBackgroundColorKey. If Red lower than 100 (arbitrary) return dark mode is true
-        /// Red due to BGs RGB values all being same(ish?)
+        /// Returns whether Visual Studio is in DarkMode
+        /// Arbitrary method: returns true if the Red value of background is lower than 100
         /// </summary>
         /// <returns></returns>
         internal static bool IsDarkMode()

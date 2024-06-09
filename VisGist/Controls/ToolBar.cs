@@ -1,22 +1,12 @@
 ﻿// Ignore Spelling: Behaviour
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Brush = System.Windows.Media.Brush;
-using Color = System.Windows.Media.Color;
 
 namespace VisGist.Controls
 {
-    internal class ToolBar: System.Windows.Controls.ToolBar
+    internal class ToolBar : System.Windows.Controls.ToolBar
     {
         public Brush OverflowPanelBackground { get; set; }
         public Brush OverflowButtonBackground { get; set; }
@@ -28,10 +18,12 @@ namespace VisGist.Controls
             ShowWhenNeeded,
             AlwaysShow
         }
+
         public ToolBar()
         {
             this.Loaded += ToolBar_Loaded; // no overload :(
         }
+
         private void ToolBar_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             if (OverflowBehaviour != OverflowMode.AlwaysHidden) return;
@@ -44,7 +36,7 @@ namespace VisGist.Controls
             if (this.Template.FindName("MainPanelBorder", this) is FrameworkElement mainPanelBorder)
             {
                 mainPanelBorder.Margin = new Thickness(0);
-            }           
+            }
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)

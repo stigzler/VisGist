@@ -19,7 +19,7 @@ namespace VisGist.Extensions
         public IValueConverter Converter { get; set; }
         public Binding ConverterParameter { get; set; }
 
-        #endregion
+        #endregion Public Properties
 
         public ConverterBindableParameter()
         { }
@@ -54,7 +54,7 @@ namespace VisGist.Extensions
             return multiBinding.ProvideValue(serviceProvider);
         }
 
-        #endregion
+        #endregion Overridden Methods
 
         [ContentProperty(nameof(Converter))]
         private class MultiValueConverterAdapter : IMultiValueConverter

@@ -10,7 +10,8 @@ namespace VisGist
         // Register the options with this attribute on your package class:
         // [ProvideOptionPage(typeof(OptionsProvider.GeneralOptions), "VisGist", "General", 0, 0, true, SupportsProfiles = true)]
         [ComVisible(true)]
-        public class GeneralOptions : BaseOptionPage<General> { }
+        public class GeneralOptions : BaseOptionPage<General>
+        { }
     }
 
     public class General : BaseOptionModel<General>
@@ -50,6 +51,5 @@ namespace VisGist
         [DisplayName("Gist File Heading")]
         [Description("Chooses which character to use as the Heading character.")]
         public GistFileHeadingChar GistFileHeadingCharacter { get; set; } = GistFileHeadingChar.Dot;
-
     }
 }

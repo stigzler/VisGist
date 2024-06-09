@@ -28,13 +28,6 @@ namespace VisGist.Models
             {
                 GistFiles.Add(new GistFile(fileKvp.Value));
             }
-
         }
-
-        //public override string ToString()
-        //{
-        //    return GistFiles.OrderBy(gf => gf.Filename).First().Filename;
-        //}
-
     }
 }

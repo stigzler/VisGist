@@ -1,17 +1,12 @@
-﻿using EnvDTE;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace VisGist.Utility
 {
     public class ResourceDictionaryManager
     {
-        public ResourceDictionary CurrentThemeResourceDictionary {  get; set; }
+        public ResourceDictionary CurrentThemeResourceDictionary { get; set; }
+
         internal void ChangeTheme(Uri themeUri, UserControl userControl)
         {
             ResourceDictionary themeResourceDictionary = new ResourceDictionary() { Source = themeUri };
@@ -24,8 +19,5 @@ namespace VisGist.Utility
             userControl.Resources.MergedDictionaries.Add(themeResourceDictionary);
             CurrentThemeResourceDictionary = themeResourceDictionary;
         }
-
-
-
     }
 }

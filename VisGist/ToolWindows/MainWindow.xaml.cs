@@ -36,10 +36,6 @@ namespace VisGist
             GistBrowserRow.Height = (GridLength)converter.ConvertFromString(Properties.Settings.Default.SplitterGistTree);
 
             // SyntaxHighlighting Tests
-
-
-
-
         }
 
         private void SetupVmEventHooks()
@@ -90,7 +86,7 @@ namespace VisGist
             else mainWindowVM.LayoutHorizontal = false;
         }
 
-        // yeah - I know, I know, But might be dead tomorrow. 
+        // yeah - I know, I know, But might be dead tomorrow.
         private void MainWindowVM_FilenameChangeDetected(bool unique)
         {
             if (unique)
@@ -132,7 +128,7 @@ namespace VisGist
             }
         }
 
-        static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        private static TreeViewItem VisualUpwardSearch(DependencyObject source)
         {
             while (source != null && !(source is TreeViewItem))
                 source = VisualTreeHelper.GetParent(source);
@@ -163,8 +159,6 @@ namespace VisGist
             mainWindowVM.ViewLoaded = true;
         }
 
-
-
         private void SortDropdownButton_Click(object sender, RoutedEventArgs e)
         {
             var sortButton = sender as Button;
@@ -175,8 +169,6 @@ namespace VisGist
             {
                 sortButton.ContextMenu.IsOpen = true;
             }
-
-
         }
 
         private void SortDropdownButton_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -184,7 +176,6 @@ namespace VisGist
             //SortDropdownButton.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice,
             //    Environment.TickCount, MouseButton.Right) { RoutedEvent = Button.Mouse });
             //e.Handled = true;
-
         }
 
         private void GistFileFilenameTB_KeyDown(object sender, KeyEventArgs e)
@@ -192,10 +183,8 @@ namespace VisGist
             if (e.Key == Key.Enter) { CodeEditor.Focus(); e.Handled = true; }
         }
 
-
         private void CodeEC_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-
         }
 
         private void ToolBar_Loaded(object sender, RoutedEventArgs e)
@@ -220,7 +209,6 @@ namespace VisGist
                 overflowPanel.Background = Brushes.Red;
             }
         }
-
 
         private void CodeEditor_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {

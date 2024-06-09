@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using VisGist.Data;
 
 namespace VisGist.Helpers
@@ -21,7 +16,7 @@ namespace VisGist.Helpers
             //Copy all the files & Replaces any files with the same name
             foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             {
-               System.IO.File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+                System.IO.File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
             }
         }
 
@@ -34,7 +29,5 @@ namespace VisGist.Helpers
                 Helpers.File.CopyFilesRecursively(Constants.DefaultSyntaxDirectory, Constants.UserSyntaxDirectory);
             }
         }
-
-
     }
 }

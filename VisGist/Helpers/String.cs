@@ -25,29 +25,5 @@ namespace VisGist.Helpers
             }
             return false;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="filename">filename with Extension</param>
-        /// <returns>Matched Language or Languages.Text if no match found</returns>
-        //internal static Languages FilenameToLanguage(string filename)
-        //{
-        //    if (ContainsIllegalFilenameChars(filename)) return Languages.Text;
-
-        //    string ext = Path.GetExtension(filename).Replace(".", "");
-
-        //    if (ext != null)
-        //    {
-        //        var languageKvp = Data.Constants.CodeLanguageMappings.Where(x => x.Key.Contains(ext)).FirstOrDefault();
-        //        if (!languageKvp.Equals(default(KeyValuePair<List<string>, Languages>)))
-        //        {
-        //            return languageKvp.Value;
-        //        }
-        //    }
-
-        //    return Languages.Text;
-        //}
-
     }
 }

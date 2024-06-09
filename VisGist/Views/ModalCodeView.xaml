@@ -1,16 +1,16 @@
 ﻿<local:ModalDialogBase x:Class="VisGist.Views.ModalCodeView"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:local="clr-namespace:VisGist.Views"
             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
             xmlns:viewmodels="clr-namespace:VisGist.ViewModels"
             xmlns:properties="clr-namespace:VisGist.Properties"
-            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" 
+            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
             xmlns:behaviours="clr-namespace:VisGist.Behaviors"
-            mc:Ignorable="d" 
+            mc:Ignorable="d"
             ResizeMode="CanResizeWithGrip"
             Padding="10"
             Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
@@ -20,22 +20,25 @@
             Title="{Binding WindowTitle}" d:DesignHeight="98.293" d:DesignWidth="249.237" SizeChanged="ModalDialogBase_SizeChanged">
 
     <Window.DataContext>
-        <viewmodels:ModalCodeViewModel/>
+        <viewmodels:ModalCodeViewModel />
     </Window.DataContext>
 
-    <Grid>
-
+    <DockPanel LastChildFill="True">
+        <StatusBar DockPanel.Dock="Bottom" Height="24"
+            Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+            Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}">
+        </StatusBar>
+        <Separator DockPanel.Dock="Bottom" Background="Gray"></Separator>
         <avalonEdit:TextEditor x:Name="CodeEditor"
                     SyntaxHighlighting="{Binding SelectedSyntax}" FontFamily="Consolas" FontSize="10pt"
                     Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
                     Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
-                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"                                                                     
+                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                     ShowLineNumbers="{Binding CodeNumberingVisible}" WordWrap="{Binding CodeWordWrapEnabled}"
-                    PreviewMouseWheel="CodeEditor_PreviewMouseWheel" >
+                    PreviewMouseWheel="CodeEditor_PreviewMouseWheel">
             <i:Interaction.Behaviors>
-                <behaviours:AvalonEditBehaviour BoundText="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <behaviours:AvalonEditBehaviour BoundText="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </i:Interaction.Behaviors>
         </avalonEdit:TextEditor>
-
-    </Grid>
+    </DockPanel>
 </local:ModalDialogBase>

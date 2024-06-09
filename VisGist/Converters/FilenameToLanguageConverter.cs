@@ -13,7 +13,6 @@ namespace VisGist.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             return value;
             //return Helpers.String.FilenameToLanguage((string)value);
         }

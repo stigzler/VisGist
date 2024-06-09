@@ -1,19 +1,12 @@
-﻿using Octokit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VisGist.Models
+﻿namespace VisGist.Models
 {
     internal class GistFile
     {
         public Octokit.GistFile ImportedGistFile { get; set; }
 
-        public string Content { get; set; } 
+        public string Content { get; set; }
 
-        public string Filename {  get; set; }
+        public string Filename { get; set; }
 
         public string Language { get; set; }
 
@@ -24,12 +17,5 @@ namespace VisGist.Models
             Filename = ImportedGistFile.Filename;
             Language = ImportedGistFile.Language;
         }
-
-        //public override string ToString()
-        //{
-        //    return Filename;
-        //}
-
-
     }
 }

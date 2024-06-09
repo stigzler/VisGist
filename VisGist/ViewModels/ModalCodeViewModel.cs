@@ -11,13 +11,12 @@ namespace VisGist.ViewModels
 {
     internal partial class ModalCodeViewModel : ViewModelBase
     {
-
-
         #region Properties =========================================================================================
 
         //  ==============================================================================================
         //  Backing vars
         private GistFileViewModel selectedGistFileViewModel;
+
         private string windowTitle = "VisGist Code Preview";
         private IHighlightingDefinition selectedSyntax;
         private bool codeNumberingVisible = false;
@@ -32,17 +31,10 @@ namespace VisGist.ViewModels
         public bool CodeNumberingVisible { get => codeNumberingVisible; set => SetProperty(ref codeNumberingVisible, value); }
         public bool CodeWordWrapEnabled { get => codeWordWrapEnabled; set => SetProperty(ref codeWordWrapEnabled, value); }
 
-        #endregion End: Properties
-
-        //public ModalCodeViewModel(GistFileViewModel selectedGistFileViewModel, Languages selectedLanguage)
-        //{
-        //    this.selectedGistFileViewModel = selectedGistFileViewModel;
-        //    this.selectedLanguage = selectedLanguage;
-        //}
+        #endregion Properties =========================================================================================
 
         public ModalCodeViewModel()
         {
         }
-
     }
 }

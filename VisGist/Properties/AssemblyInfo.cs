@@ -10,18 +10,15 @@ using VisGist;
 [assembly: AssemblyCopyright(Vsix.Author)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-
 [assembly: ComVisible(false)]
-
 [assembly: AssemblyVersion(Vsix.Version)]
 [assembly: AssemblyFileVersion(Vsix.Version)]
 
 // My additions
 [assembly: ProvideCodeBase(AssemblyName = "ICSharpCode.AvalonEdit")]
 
-
 namespace System.Runtime.CompilerServices
 {
-    public class IsExternalInit { }
+    public class IsExternalInit
+    { }
 }

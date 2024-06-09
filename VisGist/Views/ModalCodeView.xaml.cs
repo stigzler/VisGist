@@ -9,7 +9,7 @@ namespace VisGist.Views
     /// </summary>
     public partial class ModalCodeView : ModalDialogBase
     {
-        ModalCodeViewModel modalCodeViewModel;
+        private ModalCodeViewModel modalCodeViewModel;
 
         internal ModalCodeView(ModalCodeViewModel modalCodeViewModel)
         {
@@ -21,9 +21,8 @@ namespace VisGist.Views
             this.modalCodeViewModel = modalCodeViewModel;
 
             DataContext = modalCodeViewModel;
-
-
         }
+
         private void SetTheme(bool darkMode)
         {
         }

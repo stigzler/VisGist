@@ -1,59 +1,57 @@
 ﻿<local:ModalDialogBase x:Class="VisGist.Views.ModalDialogView"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:local="clr-namespace:VisGist.Views"
             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
             xmlns:viewmodels="clr-namespace:VisGist.ViewModels"
-            mc:Ignorable="d"     
-            Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
-            Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" 
-            Width="350" Height="150" WindowStartupLocation="CenterScreen" Title="{Binding WindowTitle}" 
+            mc:Ignorable="d"
+            Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+            Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+            Width="350" Height="150" WindowStartupLocation="CenterScreen" Title="{Binding WindowTitle}"
             IsCloseButtonEnabled="False" HasMinimizeButton="False" HasMaximizeButton="False"
-            ResizeMode="CanResize" 
+            ResizeMode="CanResize"
             x:Name="ModalDialogWindow">
 
     <Window.DataContext>
-        <viewmodels:ModalDialogViewModel/>
+        <viewmodels:ModalDialogViewModel />
     </Window.DataContext>
 
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="#10808080"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"/>
-            <Setter Property="BorderBrush" Value="Gray"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Width" Value="75"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="Margin" Value="2"/>
-            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Background" Value="#10808080" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}" />
+            <Setter Property="BorderBrush" Value="Gray" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Width" Value="75" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Padding" Value="4" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Background="{TemplateBinding Background}" BorderThickness="1" BorderBrush="Gray">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#38808080"/>
+                    <Setter Property="Background" Value="#38808080" />
                 </Trigger>
             </Style.Triggers>
 
-            <!--<Setter Property="OverridesDefaultStyle" Value="True"/>-->
+            <!--<Setter Property="OverridesDefaultStyle" Value="True" />-->
         </Style>
     </Window.Resources>
 
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="4">
-            <Button Style="{StaticResource ButtonStyle}" Content="{Binding Button2Text}" Command="{Binding ProcessButton2CMD}" CommandParameter="{Binding ElementName=ModalDialogWindow}"/>
-            <Button Style="{StaticResource ButtonStyle}" Content="{Binding Button1Text}" Command="{Binding ProcessButton1CMD}" CommandParameter="{Binding ElementName=ModalDialogWindow}"/>
+            <Button Style="{StaticResource ButtonStyle}" Content="{Binding Button2Text}" Command="{Binding ProcessButton2CMD}" CommandParameter="{Binding ElementName=ModalDialogWindow}" />
+            <Button Style="{StaticResource ButtonStyle}" Content="{Binding Button1Text}" Command="{Binding ProcessButton1CMD}" CommandParameter="{Binding ElementName=ModalDialogWindow}" />
         </StackPanel>
-        <TextBlock Text="{Binding DialogText}" TextWrapping="WrapWithOverflow" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding DialogText}" TextWrapping="WrapWithOverflow" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
     </DockPanel>
-
-
 </local:ModalDialogBase>

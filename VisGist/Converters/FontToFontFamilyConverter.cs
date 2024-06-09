@@ -14,7 +14,6 @@ namespace VisGist.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Debug.WriteLine(((Font)value).FontFamily.ToString());
             return ((Font)value).FontFamily.Name.ToString();
         }
 

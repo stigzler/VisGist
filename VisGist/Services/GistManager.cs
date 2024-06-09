@@ -9,14 +9,12 @@ namespace VisGist.Services
 {
     internal class GistManager
     {
-
         private GistClientService gitClientService;
 
         public GistManager(GistClientService gitClientService)
         {
             this.gitClientService = gitClientService;
         }
-
 
         internal GistFileViewModel CreateNewGistFile(GistViewModel gistVm)
         {
@@ -28,7 +26,7 @@ namespace VisGist.Services
                                             language: "",
                                             content: $"New GistFile contents created {dateTime}",
                                             rawUrl: "");
-            
+
             GistFileViewModel gistFileViewModel = new GistFileViewModel(gistFile, gistVm);
             gistFileViewModel.HasChanges = true;
             gistVm.HasChanges = true;
@@ -50,11 +48,9 @@ namespace VisGist.Services
             {
                 if (gistFileViewModel.MarkedForDeletion) gistFileViewModel.Content = ""; // this essentially deletes the gistfile
                 // if not sched for deletion and is blank code, need to add a placeholder so doesn't get deleted
-                else if (string.IsNullOrWhiteSpace(gistFileViewModel.Content)) 
+                else if (string.IsNullOrWhiteSpace(gistFileViewModel.Content))
                 {
-                    //gistFileViewModel.Content = $"{{Code blank at last VisGist save on {DateTime.Now}}}";
                     gistFileViewModel.Content = $"{{Blank}}";
-
                 }
 
                 GistFileUpdate gistFileUpdate = new GistFileUpdate()
@@ -68,13 +64,7 @@ namespace VisGist.Services
 
             // Update Gist
             Gist updatedGist = await gitClientService.EditGistAsync(gistViewModel.Id, gistUpdate);
-
-            // Now update Public/Private
-
-            // Now update Starred
-
             return updatedGist;
-
         }
 
         internal async Task<ObservableCollection<GistViewModel>> LoadGistsAsync()
@@ -91,8 +81,6 @@ namespace VisGist.Services
                 Gist gist = await gitClientService.GetGistAsync(summaryGist.Id);
 
                 GistViewModel gistVM = new GistViewModel(gist);
-                //gistVM.ReferenceStarred = await gitClientService.GistIsStarredAsync(gist.Id);
-                //gistVM.Starred = gistVM.ReferenceStarred;
                 await UpdateGistVmStarredStatusAsync(gistVM, gist);
                 gistList.Add(gistVM);
             }
@@ -111,7 +99,6 @@ namespace VisGist.Services
         {
             string dateTime = DateTime.Now.ToString();
 
-
             Gist gist = await gitClientService.CreateNewGistAsync(@public,
                 $"New Gist created {dateTime}",
                 $"New Gist created {dateTime}",
@@ -126,8 +113,5 @@ namespace VisGist.Services
         {
             await gitClientService.DeleteGistAsync(gistViewModel.Id);
         }
-
-
-
     }
 }

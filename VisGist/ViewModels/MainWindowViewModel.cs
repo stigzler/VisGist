@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Threading;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -35,7 +34,6 @@ namespace VisGist.ViewModels
         private bool syntaxHighlightingEnabled = false;
         private bool codeNumberingVisible = false;
         private bool codeWordWrapEnabled = false;
-        private int codeSize = 12;
         private string searchExpression = String.Empty;
         private GistSortMethod sortMethod = GistSortMethod.Alphabetical;
         private IHighlightingDefinition selectedSyntax = null;
@@ -53,32 +51,29 @@ namespace VisGist.ViewModels
         private bool layoutHorizontal = false;
         private System.Windows.Media.FontFamily codeFont = new System.Windows.Media.FontFamily("Consolas");
 
-        //  PUBLIC PROPERTIES ============================================================================================== 
+        //  PUBLIC PROPERTIES ==============================================================================================
 
         // UI properties
         public bool IsDarkMode { get => isDarkMode; set => SetProperty(ref isDarkMode, value); }
+
         public bool ViewLoaded { get; set; } = false;
-        public int CodeSize { get => codeSize; set => SetProperty(ref codeSize, value); }
         public bool CodeNumberingVisible { get => codeNumberingVisible; set => SetProperty(ref codeNumberingVisible, value); }
         public bool CodeWordWrapEnabled { get => codeWordWrapEnabled; set => SetProperty(ref codeWordWrapEnabled, value); }
-        public StatusImage StatusImage { get => statusImage; set => SetProperty(ref statusImage, value); }
         public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
         public bool StatusBarVisible { get => statusBarVisible; set => SetProperty(ref statusBarVisible, value); }
         public bool SyntaxHighlightingEnabled { get => syntaxHighlightingEnabled; set => SetProperty(ref syntaxHighlightingEnabled, value); }
         public bool LayoutHorizontal { get => layoutHorizontal; set => SetProperty(ref layoutHorizontal, value); }
-        public GridResizeDirection BrowserEditorsSplitterDirection
-        {
-            get => browserEditorsSplitterDirection;
-            set => SetProperty(ref browserEditorsSplitterDirection, value);
-        }
+        public StatusImage StatusImage { get => statusImage; set => SetProperty(ref statusImage, value); }
 
         // Data Related
         public bool IsAuthenticated { get => isAuthenticated; set => SetProperty(ref isAuthenticated, value); }
+
         public string SearchExpression //{ get => searchExpression; set => { SetProperty(ref searchExpression, value); GistsView.Refresh(); } }
         {
             get { return searchExpression; }
             set { SetProperty(ref searchExpression, value); SortAndSerachGists(); }
         }
+
         public GistSortMethod SortMethod
         {
             get { return sortMethod; }
@@ -95,6 +90,7 @@ namespace VisGist.ViewModels
                 OnSelectedGistItemChanged(value);
             }
         }
+
         public SyntaxViewModel SelectedSyntaxViewModel
         {
             get { return selectedSyntaxViewModel; }
@@ -109,12 +105,13 @@ namespace VisGist.ViewModels
         public GistFileViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; set => SetProperty(ref selectedGistFileViewModel, value); }
         public IHighlightingDefinition SelectedSyntax { get => selectedSyntax; set => SetProperty(ref selectedSyntax, value); }
 
-        // Lists
+        // Collections
         public ObservableCollection<GistViewModel> CollatedGists { get => collatedGists; set => SetProperty(ref collatedGists, value); }
+
         public ObservableCollection<GistViewModel> AllGists { get => allGists; set => SetProperty(ref allGists, value); }
         public ObservableCollection<SyntaxViewModel> Syntaxes { get => syntaxes; set => SetProperty(ref syntaxes, value); }
 
-        #endregion End: PROPERTIES ---------------------------------------------------------------------------------
+        #endregion PROPERTIES =========================================================================================
 
         #region OPERATIONAL PRIVATE VARS ===========================================================================
 
@@ -123,19 +120,22 @@ namespace VisGist.ViewModels
         private General userVsOptions = new General();
         private SyntaxManager syntaxManager;
 
-        #endregion End: OPERATIONAL PRIVATE VARS 
+        #endregion OPERATIONAL PRIVATE VARS ===========================================================================
 
         #region EVENTS =========================================================================================
 
         internal delegate void VSThemeChanged(bool aDarkModeTheme);
+
         internal event VSThemeChanged vsThemeChanged;
 
         internal delegate void FilenameChange(bool duplicate);
+
         internal event FilenameChange FilenameChangeDetected;
 
-        #endregion End: EVENTS ---------------------------------------------------------------------------------
+        #endregion EVENTS =========================================================================================
 
         #region COMMANDS =========================================================================================
+
         public IAsyncRelayCommand GitAuthenticateCMD { get; set; }
         public IRelayCommand LogOutCMD { get; set; }
         public IAsyncRelayCommand DoPostLoadActionsCMD { get; set; }
@@ -169,7 +169,6 @@ namespace VisGist.ViewModels
             DoTestActionCMD = new AsyncRelayCommand<object>(DoTestActionAsync);
             SaveGistCMD = new AsyncRelayCommand(SaveGistAsync);
             SaveAllGistsCMD = new AsyncRelayCommand(SaveAllGistsAsync);
-            //SetSyntaxHighlightingCMD = new RelayCommand<ICSharpCode.AvalonEdit.TextEditor>();
             SetCodeNumberingVisibleCMD = new RelayCommand(SetCodeNumberingVisible);
             SetCodeWordWrapEnabledCMD = new RelayCommand(SetCodeWordWrapEnabled);
             SortGistsCMD = new RelayCommand<GistSortMethod>((param) => SortGists(param));
@@ -179,10 +178,10 @@ namespace VisGist.ViewModels
             ViewInGithubCMD = new RelayCommand(ViewInGithub);
         }
 
-
-        #endregion End: COMMANDS ---------------------------------------------------------------------------------
+        #endregion COMMANDS =========================================================================================
 
         #region CONTRUCTORS =========================================================================================
+
         public MainWindowViewModel()
         {
             // Detect VisualStudio Theme Changes
@@ -197,38 +196,17 @@ namespace VisGist.ViewModels
 
             // Link Commands and User Operation Methods
             SetupCommands();
-
-            CodeSize = 12;
         }
 
-        #endregion End: CONTRUCTORS
+        #endregion CONTRUCTORS =========================================================================================
 
         #region USER OPERATIONS =========================================================================================
 
         private async Task DoTestActionAsync(object obj)
         {
-            Debug.WriteLine(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-            //TextEditor textEditor = (TextEditor)obj;
-
-            //string tempFile = Path.Combine(Path.GetTempPath(), "VisGistSyntaxText.xml");
-            //File.Copy(@"C:\Users\stigz\source\repos\0.MyCode\CS\Framework\1.Extensions\VisGist\DevFiles\CSharp-Mode.xshd", tempFile, true);
-
-            //XmlReader reader = XmlReader.Create(tempFile);
-            //textEditor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
-
-            //reader.Close();
-
-            //CodeSize += 1;
-
-            //collatedGists[0].GistFiles[0].Filename = "Zzzzz - aappp!";
-
-            // LayoutHorizontal = !LayoutHorizontal;
-
-            //BrowserEditorsSplitterDirection = GridResizeDirection.Columns;
-
-            //await gitClientService.DoTestActionAsync(this);
+            await Task.CompletedTask;
         }
+
         private async Task AuthenticateUserAsync()
         {
             if (string.IsNullOrWhiteSpace(userVsOptions.PersonalAccessToken)) return;
@@ -246,6 +224,7 @@ namespace VisGist.ViewModels
                 IsAuthenticated = false;
             }
         }
+
         private void CollapseTree(TreeView treeView)
         {
             foreach (GistViewModel tvi in treeView.Items)
@@ -255,11 +234,9 @@ namespace VisGist.ViewModels
                     treeItem.IsExpanded = false;
             }
         }
+
         private void SortAndSerachGists()
         {
-            //return SearchExpression == null
-            //    || gist.PrimaryGistFilename.IndexOf(SearchExpression, StringComparison.OrdinalIgnoreCase) != -1;
-
             if (AllGists.Count > 0)
             {
                 // Update the existing instance to significantly improve the responsiveness of the UI
@@ -274,9 +251,11 @@ namespace VisGist.ViewModels
                     case GistSortMethod.Alphabetical:
                         sortedGists = new ObservableCollection<GistViewModel>(AllGists.OrderBy(g => g.PrimaryGistFilename));
                         break;
+
                     case GistSortMethod.Starred:
                         sortedGists = new ObservableCollection<GistViewModel>(AllGists.OrderByDescending(g => g.Starred));
                         break;
+
                     case GistSortMethod.Public:
                         sortedGists = new ObservableCollection<GistViewModel>(AllGists.OrderBy(g => g.Public));
                         break;
@@ -295,7 +274,6 @@ namespace VisGist.ViewModels
                     {
                         if (!CollatedGists.Any(cg => cg.Id == gistVm.Id)) CollatedGists.Add(gistVm);
                         gistVm.NodeExpanded = true;
-
                     }
                 }
 
@@ -306,17 +284,20 @@ namespace VisGist.ViewModels
                 }
             }
         }
+
         private async Task AuthenticateAndLoadGistsAsync()
         {
             await AuthenticateUserAsync();
             if (IsAuthenticated) await GetAllGistsAsync();
         }
+
         private void ViewInGithub()
         {
             if (SelectedGistViewModel == null) return;
 
             System.Diagnostics.Process.Start(SelectedGistViewModel.ReferenceGist.HtmlUrl);
         }
+
         private void PopoutCode()
         {
             ModalCodeViewModel modalCodeViewModel = new ModalCodeViewModel();
@@ -330,6 +311,7 @@ namespace VisGist.ViewModels
 
             modalCodeView.ShowModal();
         }
+
         private void MakeGistTitle()
         {
             char headingChar = Constants.GistFileHeadingChars[userVsOptions.GistFileHeadingCharacter];
@@ -343,12 +325,13 @@ namespace VisGist.ViewModels
             }
 
             SelectedGistFileViewModel.Filename = headingChar + SelectedGistFileViewModel.Filename;
-
         }
+
         private void SortGists(GistSortMethod gistSortMethod)
         {
             SortMethod = gistSortMethod;
         }
+
         private async Task DeleteGistFileAsync()
         {
             if (SelectedGistViewModel.GistFiles.Count == 1)
@@ -368,8 +351,8 @@ namespace VisGist.ViewModels
             await SaveGistAsync();
             SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
             SelectedGistViewModel.RefreshPrimaryGistFilename();
-
         }
+
         private async Task AddNewGistFileAsync()
         {
             UpdateStatusBar(StatusImage.GitOperation, "Adding New GistFile", true);
@@ -379,10 +362,10 @@ namespace VisGist.ViewModels
             SelectedGistViewModel.SortGistFiles();
             UpdateStatusBar(StatusImage.Success, "New GistFile added successfully", false);
         }
+
         private async Task AddNewGistAsync()
         {
             UpdateStatusBar(StatusImage.GitOperation, "Adding New Gist", true);
-
 
             GistViewModel gistViewModel = await gistManager.CreateNewGistAsync(userVsOptions.NewGistPublic);
 
@@ -392,22 +375,19 @@ namespace VisGist.ViewModels
 
             UpdateStatusBar(StatusImage.Success, "New Gist added successfully", false);
         }
+
         private void SetCodeNumberingVisible()
         {
             CodeNumberingVisible = !CodeNumberingVisible;
         }
+
         private void SetCodeWordWrapEnabled()
         {
             CodeWordWrapEnabled = !CodeWordWrapEnabled;
         }
+
         private async Task SaveGistAsync()
         {
-            //if (SelectedGistViewModel.HasChanges == false)
-            //{
-            //    UpdateStatusBar(StatusImage.Information, $"Gist already up to date.");
-            //    return;
-            //}
-
             UpdateStatusBar(StatusImage.GitOperation, $"Saving: {SelectedGistViewModel.PrimaryGistFilename}", true);
 
             // store the name of the selected gist file as update essentially creates new gistfile object
@@ -424,6 +404,7 @@ namespace VisGist.ViewModels
 
             UpdateStatusBar(StatusImage.Success, "Gist Saved.", false);
         }
+
         private async Task SaveAllGistsAsync()
         {
             IEnumerable<GistViewModel> changedGists = CollatedGists.Where(cg => cg.HasChanges == true &&
@@ -443,6 +424,7 @@ namespace VisGist.ViewModels
 
             UpdateStatusBar(StatusImage.Success, "Eligible Gists Saved.", false);
         }
+
         private async Task SaveSpecificGistAsync(GistViewModel gistViewModel)
         {
             // Save (update) gist in git server
@@ -454,6 +436,7 @@ namespace VisGist.ViewModels
             // Now update starred status of GistViewModel (as this isn't stored in the Gist data object)
             await gistManager.UpdateGistVmStarredStatusAsync(gistViewModel, updatedGist);
         }
+
         private async Task DeleteGistAsync()
         {
             if (userVsOptions.ConfirmDelete)
@@ -472,15 +455,14 @@ namespace VisGist.ViewModels
 
             UpdateStatusBar(StatusImage.Success, "Gist deleted", false);
         }
+
         private async Task GetAllGistsAsync()
         {
-
             if (AllGists.Any(g => g.HasChanges))
             {
                 string dialogRepsonse = GetDialogRepsonse("Load Gists from Github?", $"There are unsaved changes. Loading Gists from Github will overwrite these. Are you sure you want to proceed?", "Yes", "No");
                 if (dialogRepsonse != "Yes") return;
             }
-
 
             UpdateStatusBar(StatusImage.GitOperation, $"Loading Gists..", true);
 
@@ -488,23 +470,9 @@ namespace VisGist.ViewModels
 
             SortMethod = GistSortMethod.Alphabetical;
 
-            //if (AllGists.Count > 0)
-            //{
-            //    // Update the existing instance to significantly improve the responsiveness of the UI
-            //    CollatedGists.Clear();
-            //    foreach (GistViewModel gist in AllGists)
-            //    {
-            //        CollatedGists.Add(gist);
-            //    }
-
-            //    SelectedGistViewModel = CollatedGists[0];
-            //    SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
-            //}
-
-            CodeSize = 11;
-
             UpdateStatusBar(StatusImage.Success, $"Gists Loaded Successfully", false);
         }
+
         private void LogOut()
         {
             gitClientService.Logout();
@@ -512,7 +480,7 @@ namespace VisGist.ViewModels
             IsAuthenticated = false;
         }
 
-        #endregion End: USER OPERATIONS
+        #endregion USER OPERATIONS =========================================================================================
 
         #region VIEW LOGIC =========================================================================================
 
@@ -526,6 +494,7 @@ namespace VisGist.ViewModels
                 else if (darkMode && syntax.FileDarkTheme != null) Syntaxes.Add(new SyntaxViewModel(syntax, darkMode));
             }
         }
+
         private void SetSyntaxHighlighting()
         {
             if (SelectedSyntaxViewModel == null || SelectedSyntaxViewModel.Name == "None")
@@ -539,6 +508,7 @@ namespace VisGist.ViewModels
                 SelectedSyntax = HighlightingLoader.Load(reader, HighlightingManager.Instance);
             }
         }
+
         private async Task OnViewLoadedAsync()
         {
             userVsOptions = await General.GetLiveInstanceAsync();
@@ -548,10 +518,12 @@ namespace VisGist.ViewModels
             else
                 await AuthenticateAndLoadGistsAsync();
         }
+
         private void RefreshGistList()
         {
             SortAndSerachGists();
         }
+
         private void OnSelectedGistItemChanged(ViewModelBase gistItem)
         {
             if (gistItem is GistViewModel)
@@ -568,7 +540,6 @@ namespace VisGist.ViewModels
             }
 
             AutoUpdateCodeSyntax();
-
         }
 
         private void AutoUpdateCodeSyntax()
@@ -599,6 +570,7 @@ namespace VisGist.ViewModels
 
             return modalDialogViewModel.SelectedButtonText;
         }
+
         private void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
         {
             if (!ViewLoaded) return;
@@ -610,10 +582,12 @@ namespace VisGist.ViewModels
             UpdateSyntaxes(IsDarkMode);
             Syntaxes.Count();
         }
+
         internal void FilenameResetMsgToUser()
         {
             UpdateStatusBar(StatusImage.Warning, "New Filename not unique in Gist. Reset.", false);
         }
+
         private void UpdateStatusBar(StatusImage stausImage, string statusText, bool progressBarVisible = false)
         {
             StatusImage = stausImage;
@@ -621,8 +595,6 @@ namespace VisGist.ViewModels
             StatusBarVisible = progressBarVisible;
         }
 
-
-        #endregion End: VIEW LOGIC
-
+        #endregion VIEW LOGIC =========================================================================================
     }
 }

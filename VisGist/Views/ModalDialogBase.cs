@@ -8,13 +8,10 @@ using VisGist.ViewModels;
 
 namespace VisGist.Views
 {
-    public class ModalDialogBase: DialogWindow
+    public class ModalDialogBase : DialogWindow
     {
-
-
         public ModalDialogBase()
         {
-
         }
     }
 }

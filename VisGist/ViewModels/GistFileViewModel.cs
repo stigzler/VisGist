@@ -1,52 +1,26 @@
-﻿using Microsoft.VisualStudio.VCProjectEngine;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography.Xml;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 using VisGist.Extensions;
 
 namespace VisGist.ViewModels
 {
     internal class GistFileViewModel : ViewModelBase, INotifyDataErrorInfo
     {
-        private string filename;
-        private string content;
-
-        private bool hasChanges;
-
-        private string propertyChanged = string.Empty;
-        private string lastUniqueFilename;
-        private readonly Dictionary<string, List<string>> propertyErrors = new Dictionary<string, List<string>>();
-
-        /// <summary>
-        /// This is either the Gist imported from CollatedGists, or the updated Gist following Gist Save
-        /// Used in tracking changes
-        /// </summary>
-        public Octokit.GistFile ReferenceGistFile { get; set; }
-        public GistViewModel ParentGistViewModel { get; set; }
-        public bool HasChanges { get => hasChanges; set => SetProperty(ref hasChanges, value); }
-        public bool HasErrors => propertyErrors.Any();
-        public bool MarkedForDeletion { get; set; } = false;
-
-        /// <summary>
-        /// Holds a string describing which properties have changed. Can be used
-        /// with Tooltips etc.
-        /// </summary>
-        public string PropertiesChanged { get => propertyChanged; set => SetProperty(ref propertyChanged, value); }
-
-
         // GistFile mirrors
         public string Id = Guid.NewGuid().ToString();
 
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        private readonly Dictionary<string, List<string>> propertyErrors = new Dictionary<string, List<string>>();
+        private string content;
+        private string filename;
+        private bool hasChanges;
+        private string lastUniqueFilename;
+        private string propertyChanged = string.Empty;
 
-        public string Content {
-            get { return  content; }
+        public string Content
+        {
+            get { return content; }
             set
             {
                 ClearErrors(nameof(Content));
@@ -56,11 +30,9 @@ namespace VisGist.ViewModels
                     HasChanges = true;
                     ParentGistViewModel.HasChanges = true;
                 }
-
                 else HasChanges = false;
 
                 SetProperty(ref content, value);
-                //ParentGistViewModel.HasChanges = ParentGistViewModel.GistHasChanges();
             }
         }
 
@@ -100,7 +72,23 @@ namespace VisGist.ViewModels
             }
         }
 
+        public bool HasChanges { get => hasChanges; set => SetProperty(ref hasChanges, value); }
         public string LastUniqueFilename { get => lastUniqueFilename; }
+        public bool MarkedForDeletion { get; set; } = false;
+        public GistViewModel ParentGistViewModel { get; set; }
+        public bool HasErrors => propertyErrors.Any();
+
+        /// <summary>
+        /// Holds a string describing which properties have changed. Can be used
+        /// with Tooltips etc.
+        /// </summary>
+        public string PropertiesChanged { get => propertyChanged; set => SetProperty(ref propertyChanged, value); }
+
+        /// <summary>
+        /// This is either the Gist imported from CollatedGists, or the updated Gist following Gist Save
+        /// Used in tracking changes
+        /// </summary>
+        public Octokit.GistFile ReferenceGistFile { get; set; }
 
         public GistFileViewModel(Octokit.GistFile gistFile, GistViewModel parentGistViewModel)
         {
@@ -109,6 +97,32 @@ namespace VisGist.ViewModels
             Content = ReferenceGistFile.Content;
             Filename = ReferenceGistFile.Filename;
             lastUniqueFilename = Filename;
+        }
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        public void AddError(string propertyName, string errorMessage)
+        {
+            if (!propertyErrors.ContainsKey(propertyName))
+            {
+                propertyErrors.Add(propertyName, new List<string>());
+            }
+            propertyErrors[propertyName].Add(errorMessage);
+            OnErrorsChanged(propertyName);
+        }
+
+        public IEnumerable GetErrors(string propertyName)
+        {
+            if (propertyName == null) return null;
+            return propertyErrors.GetValueOrDefault(propertyName, null);
+        }
+
+        internal void ClearErrors(string propertyName)
+        {
+            if (propertyErrors.Remove(propertyName))
+            {
+                OnErrorsChanged(propertyName);
+            }
         }
 
         internal bool IsUniqueFilename(string candidateFilename)
@@ -144,37 +158,9 @@ namespace VisGist.ViewModels
             return hasChanges;
         }
 
-
-        public IEnumerable GetErrors(string propertyName)
-        {
-            if (propertyName == null) return null;
-            return propertyErrors.GetValueOrDefault(propertyName, null);
-        }
-
-        internal void ClearErrors(string propertyName)
-        {
-            if (propertyErrors.Remove(propertyName))
-            {
-                OnErrorsChanged(propertyName);
-            }
-        }
-
-        public void AddError(string propertyName, string errorMessage)
-        {
-            if (!propertyErrors.ContainsKey(propertyName))
-            {
-                propertyErrors.Add(propertyName, new List<string>());
-            }
-            propertyErrors[propertyName].Add(errorMessage);
-            OnErrorsChanged(propertyName);
-
-        }
-
         private void OnErrorsChanged(string propertyName)
         {
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
-
-
     }
 }

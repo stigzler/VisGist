@@ -1,15 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace VisGist.ViewModels
 {
@@ -29,7 +20,7 @@ namespace VisGist.ViewModels
 
         //public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        #endregion End: Private Backing Vars
+        #endregion Private Backing Vars =========================================================================================
 
         #region Properties =========================================================================================
 
@@ -47,7 +38,7 @@ namespace VisGist.ViewModels
             {
                 if (GistFiles.Count == 0) return null;
                 return GistFiles.OrderBy(gf => gf.Filename).First().Filename;
-            }     
+            }
         }
 
         /// <summary>
@@ -58,7 +49,7 @@ namespace VisGist.ViewModels
 
         /// <summary>
         /// CollatedGists does not store 'Starred' as a property in Octocat.Gist. Thus,
-        /// have to monitor it state separately. 
+        /// have to monitor it state separately.
         /// </summary>
         public bool ReferenceStarred { get; set; }
 
@@ -70,11 +61,9 @@ namespace VisGist.ViewModels
 
         public bool CanSave { get => canSave; set => SetProperty(ref canSave, value); }
 
-        public bool NodeExpanded { get => nodeExpanded; set =>SetProperty(ref nodeExpanded, value); }
+        public bool NodeExpanded { get => nodeExpanded; set => SetProperty(ref nodeExpanded, value); }
 
         public bool HasErrors => gistFiles.Any(gf => gf.HasErrors);
-
-
 
         /// <summary>
         /// Holds a string describing which properties have changed. Can be used
@@ -104,7 +93,7 @@ namespace VisGist.ViewModels
 
         /// <summary>
         /// Note: This needs to be updated via gitClientService.GistIsStarredAsync - not a property of Gist
-        /// Thus, this needs to be updated externally - through a ViewModel or wherever adding/updating GistViewModel. 
+        /// Thus, this needs to be updated externally - through a ViewModel or wherever adding/updating GistViewModel.
         /// </summary>
         public bool Starred
         {
@@ -118,8 +107,7 @@ namespace VisGist.ViewModels
 
         public BindingList<GistFileViewModel> GistFiles { get => gistFiles; }
 
-
-        #endregion End: Properties
+        #endregion Properties =========================================================================================
 
         #region Constructors =========================================================================================
 
@@ -128,9 +116,7 @@ namespace VisGist.ViewModels
             UpdateGistFile(gist);
         }
 
-
-
-        #endregion End: Constructors
+        #endregion Constructors =========================================================================================
 
         #region Private Methods =========================================================================================
 
@@ -138,10 +124,8 @@ namespace VisGist.ViewModels
 
         private void GistFiles_ListChanged(object sender, ListChangedEventArgs e)
         {
-            Debug.WriteLine("GistFiles List Changed");
             SortGistFiles();
         }
-
 
         internal bool GistHasChanges()
         {
@@ -167,10 +151,10 @@ namespace VisGist.ViewModels
             return hasChanges;
         }
 
-        #endregion End: Private Methods
+        #endregion Private Methods =========================================================================================
 
         #region Public Methods =========================================================================================
-        
+
         internal void UpdateGistFile(Octokit.Gist gist)
         {
             GistFiles.ListChanged -= GistFiles_ListChanged; // shot for nothing + guarantee of no stray handles
@@ -204,12 +188,12 @@ namespace VisGist.ViewModels
         {
             OnPropertyChanged(nameof(GistFiles));
         }
+
         public void Dispose()
         {
             GistFiles.ListChanged -= GistFiles_ListChanged;
         }
 
-        #endregion End: Public Methods
-
+        #endregion Public Methods =========================================================================================
     }
 }

@@ -7,9 +7,6 @@
 
     <!-- STATUSBAR STYLE -->
     <Style x:Key="StatusBar" TargetType="StatusBar">
-        <Setter Property="Foreground" Value="{StaticResource StandardTextColor}"/>
+        <Setter Property="Foreground" Value="{StaticResource StandardTextColor}" />
     </Style>
-    
-    
-
 </ResourceDictionary>

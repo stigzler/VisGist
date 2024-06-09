@@ -109,7 +109,6 @@
     <Compile Include="Services\GistClientService.cs" />
     <Compile Include="Services\GistManager.cs" />
     <Compile Include="Services\SyntaxManager.cs" />
-    <Compile Include="TypeConverters\PatSettingConverter.cs" />
     <Compile Include="Utility\ResourceDictionaryManager.cs" />
     <Compile Include="ViewModels\GistFileViewModel.cs" />
     <Compile Include="ViewModels\GistViewModel.cs" />
@@ -118,9 +117,6 @@
     <Compile Include="ViewModels\ModalDialogViewModel.cs" />
     <Compile Include="ViewModels\SyntaxViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Compile Include="Views\GistsBrowser.xaml.cs">
-      <DependentUpon>GistsBrowser.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ModalCodeView.xaml.cs">
       <DependentUpon>ModalCodeView.xaml</DependentUpon>
     </Compile>
@@ -336,10 +332,6 @@
     <Compile Include="ToolWindows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\GistsBrowser.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ModalCodeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
