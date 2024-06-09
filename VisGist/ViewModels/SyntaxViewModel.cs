@@ -17,7 +17,7 @@ namespace VisGist.ViewModels
         public SyntaxViewModel(Syntax syntax, bool useDarkThemedSyntax)
         {
             Name = syntax.Name;
-            Extensions = new List<string>();
+            Extensions = syntax.Extensions;
             if (useDarkThemedSyntax && syntax.FileDarkTheme != null) Filename = syntax.FileDarkTheme;
             else if (!useDarkThemedSyntax && syntax.FileLightTheme != null) Filename = syntax.FileLightTheme;
         }

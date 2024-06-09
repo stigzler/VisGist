@@ -1,5 +1,4 @@
-﻿using Syncfusion.Windows.Edit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -14,22 +13,9 @@ namespace VisGist.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //string filename = (string)value;
-            //string ext = Path.GetExtension(filename).Replace(".", "");
 
-            //var dave = parameter;
-
-            //if (ext != null)
-            //{
-            //    var languageKvp = Data.
-            //        Constants.CodeLanguageMappings.Where(x => x.Key.Contains(ext)).FirstOrDefault();
-            //    if (!languageKvp.Equals(default(KeyValuePair<List<string>, Languages>)))
-            //    {
-            //        return languageKvp.Value;
-            //    }
-            //}
-
-            return Helpers.String.FilenameToLanguage((string)value);
+            return value;
+            //return Helpers.String.FilenameToLanguage((string)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

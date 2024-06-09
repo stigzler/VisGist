@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.VCProjectEngine;
-using Syncfusion.Windows.Shared;
 using System;
 using System.Collections;
 using System.Collections.Generic;

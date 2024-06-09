@@ -1,12 +1,7 @@
-﻿using Microsoft.VisualStudio.VCProjectEngine;
-using Newtonsoft.Json.Linq;
-using Syncfusion.Windows.Edit;
-using System;
+﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VisGist.Helpers
 {
@@ -36,23 +31,23 @@ namespace VisGist.Helpers
         /// </summary>
         /// <param name="filename">filename with Extension</param>
         /// <returns>Matched Language or Languages.Text if no match found</returns>
-        internal static Languages FilenameToLanguage(string filename)
-        {
-            if (ContainsIllegalFilenameChars(filename)) return Languages.Text;
+        //internal static Languages FilenameToLanguage(string filename)
+        //{
+        //    if (ContainsIllegalFilenameChars(filename)) return Languages.Text;
 
-            string ext = Path.GetExtension(filename).Replace(".", "");
+        //    string ext = Path.GetExtension(filename).Replace(".", "");
 
-            if (ext != null)
-            {
-                var languageKvp = Data.Constants.CodeLanguageMappings.Where(x => x.Key.Contains(ext)).FirstOrDefault();
-                if (!languageKvp.Equals(default(KeyValuePair<List<string>, Languages>)))
-                {
-                    return languageKvp.Value;
-                }
-            }
+        //    if (ext != null)
+        //    {
+        //        var languageKvp = Data.Constants.CodeLanguageMappings.Where(x => x.Key.Contains(ext)).FirstOrDefault();
+        //        if (!languageKvp.Equals(default(KeyValuePair<List<string>, Languages>)))
+        //        {
+        //            return languageKvp.Value;
+        //        }
+        //    }
 
-            return Languages.Text;
-        }
+        //    return Languages.Text;
+        //}
 
     }
 }

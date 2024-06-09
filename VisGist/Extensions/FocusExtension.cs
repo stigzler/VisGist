@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
-using Syncfusion.Windows.Controls.Grid;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -176,19 +176,7 @@ namespace VisGist
                 sortButton.ContextMenu.IsOpen = true;
             }
 
-  
-            //var cm = ContextMenuService.GetContextMenu(sender as DependencyObject);
-            //if (cm == null)
-            //{
-            //    return;
-            //}
-            //cm.Placement = PlacementMode.Top;
-            //cm.PlacementTarget = sender as UIElement;
-            //cm.IsOpen = true;
 
-
-            //SortDropdownButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            //e.Handled = true;
         }
 
         private void SortDropdownButton_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -201,7 +189,7 @@ namespace VisGist
 
         private void GistFileFilenameTB_KeyDown(object sender, KeyEventArgs e)
         {
-            //if (e.Key == Key.Enter) { CodeEC.Focus(); e.Handled = true; }
+            if (e.Key == Key.Enter) { CodeEditor.Focus(); e.Handled = true; }
         }
 
 
@@ -233,6 +221,18 @@ namespace VisGist
             }
         }
 
- 
+
+        private void CodeEditor_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                if (e.Delta > 0 && CodeEditor.FontSize < 200)
+                    CodeEditor.FontSize += 1;
+                else if (CodeEditor.FontSize > 4)
+                    CodeEditor.FontSize -= 1;
+
+                e.Handled = true;
+            }
+        }
     }
 }

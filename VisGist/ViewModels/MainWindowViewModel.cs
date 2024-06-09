@@ -1,33 +1,23 @@
-﻿// Ignore Spelling: Popout Github
+﻿// Ignore Spelling: Popout Github Vm
 
 using CommunityToolkit.Mvvm.Input;
-using EnvDTE;
-using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.VisualStudio.PlatformUI;
-using Microsoft.VisualStudio.Setup.Configuration;
 using Microsoft.VisualStudio.Threading;
-using Syncfusion.Windows.Shared;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
 using System.Xml;
-using VisGist.Data;
 using VisGist.Data.Models;
 using VisGist.Enums;
 using VisGist.Services;
 using VisGist.Views;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using Constants = VisGist.Data.Constants;
-using Languages = Syncfusion.Windows.Edit.Languages;
 
 namespace VisGist.ViewModels
 {
@@ -48,6 +38,7 @@ namespace VisGist.ViewModels
         private int codeSize = 12;
         private string searchExpression = String.Empty;
         private GistSortMethod sortMethod = GistSortMethod.Alphabetical;
+        private IHighlightingDefinition selectedSyntax = null;
 
         private ObservableCollection<GistViewModel> collatedGists = new ObservableCollection<GistViewModel>();
         private ObservableCollection<GistViewModel> allGists = new ObservableCollection<GistViewModel>();
@@ -57,9 +48,6 @@ namespace VisGist.ViewModels
         private GistViewModel selectedGistViewModel;
         private GistFileViewModel selectedGistFileViewModel;
         private SyntaxViewModel selectedSyntaxViewModel = null;
-
-
-
 
         private GridResizeDirection browserEditorsSplitterDirection = GridResizeDirection.Rows;
         private bool layoutHorizontal = false;
@@ -107,9 +95,19 @@ namespace VisGist.ViewModels
                 OnSelectedGistItemChanged(value);
             }
         }
+        public SyntaxViewModel SelectedSyntaxViewModel
+        {
+            get { return selectedSyntaxViewModel; }
+            set
+            {
+                SetProperty(ref selectedSyntaxViewModel, value);
+                SetSyntaxHighlighting();
+            }
+        }
+
         public GistViewModel SelectedGistViewModel { get => selectedGistViewModel; set => SetProperty(ref selectedGistViewModel, value); }
         public GistFileViewModel SelectedGistFileViewModel { get => selectedGistFileViewModel; set => SetProperty(ref selectedGistFileViewModel, value); }
-        public SyntaxViewModel SelectedSyntaxViewModel { get => selectedSyntaxViewModel; set => SetProperty(ref selectedSyntaxViewModel, value); }
+        public IHighlightingDefinition SelectedSyntax { get => selectedSyntax; set => SetProperty(ref selectedSyntax, value); }
 
         // Lists
         public ObservableCollection<GistViewModel> CollatedGists { get => collatedGists; set => SetProperty(ref collatedGists, value); }
@@ -158,7 +156,6 @@ namespace VisGist.ViewModels
         public IRelayCommand PopoutCodeCMD { get; set; }
         public IRelayCommand ViewInGithubCMD { get; set; }
 
-
         private void SetupCommands()
         {
             GitAuthenticateCMD = new AsyncRelayCommand(AuthenticateAndLoadGistsAsync);
@@ -172,7 +169,7 @@ namespace VisGist.ViewModels
             DoTestActionCMD = new AsyncRelayCommand<object>(DoTestActionAsync);
             SaveGistCMD = new AsyncRelayCommand(SaveGistAsync);
             SaveAllGistsCMD = new AsyncRelayCommand(SaveAllGistsAsync);
-            SetSyntaxHighlightingCMD = new RelayCommand<ICSharpCode.AvalonEdit.TextEditor>(SetSyntaxHighlighting);
+            //SetSyntaxHighlightingCMD = new RelayCommand<ICSharpCode.AvalonEdit.TextEditor>();
             SetCodeNumberingVisibleCMD = new RelayCommand(SetCodeNumberingVisible);
             SetCodeWordWrapEnabledCMD = new RelayCommand(SetCodeWordWrapEnabled);
             SortGistsCMD = new RelayCommand<GistSortMethod>((param) => SortGists(param));
@@ -234,7 +231,7 @@ namespace VisGist.ViewModels
         }
         private async Task AuthenticateUserAsync()
         {
-            if (userVsOptions.PersonalAccessToken.IsNullOrWhiteSpace()) return;
+            if (string.IsNullOrWhiteSpace(userVsOptions.PersonalAccessToken)) return;
 
             var authenitcationResult = await gitClientService.AuthenticateAsync();
 
@@ -293,7 +290,7 @@ namespace VisGist.ViewModels
                         if (!CollatedGists.Any(cg => cg.Id == gistVm.Id)) CollatedGists.Add(gistVm);
                     }
 
-                    if (!SearchExpression.IsNullOrWhiteSpace()
+                    if (!string.IsNullOrWhiteSpace(SearchExpression)
                         && gistVm.GistFiles.Any(gf => gf.Filename.ToLower().Contains(SearchExpression.ToLower())))
                     {
                         if (!CollatedGists.Any(cg => cg.Id == gistVm.Id)) CollatedGists.Add(gistVm);
@@ -327,13 +324,9 @@ namespace VisGist.ViewModels
             ModalCodeView modalCodeView = new ModalCodeView(modalCodeViewModel);
             modalCodeViewModel.SelectedGistFileViewModel = SelectedGistFileViewModel;
             modalCodeViewModel.WindowTitle = "VisGist Code: " + SelectedGistFileViewModel.Filename;
-
-            // the below controls for a syncfusion Edit control bug - Languages.
-            // Text does not render properly for some reason, but 'Custom' does
-            //if (SelectedLanguage == Syncfusion.Windows.Edit.Languages.Text)
-            //    modalCodeViewModel.SelectedLanguage = Syncfusion.Windows.Edit.Languages.Custom;
-            //else
-            //    modalCodeViewModel.SelectedLanguage = SelectedLanguage;
+            modalCodeViewModel.CodeNumberingVisible = CodeNumberingVisible;
+            modalCodeViewModel.CodeWordWrapEnabled = CodeWordWrapEnabled;
+            modalCodeViewModel.SelectedSyntax = SelectedSyntax;
 
             modalCodeView.ShowModal();
         }
@@ -533,28 +526,24 @@ namespace VisGist.ViewModels
                 else if (darkMode && syntax.FileDarkTheme != null) Syntaxes.Add(new SyntaxViewModel(syntax, darkMode));
             }
         }
-
-        private void SetSyntaxHighlighting(ICSharpCode.AvalonEdit.TextEditor codeEditor)
+        private void SetSyntaxHighlighting()
         {
             if (SelectedSyntaxViewModel == null || SelectedSyntaxViewModel.Name == "None")
             {
-                codeEditor.SyntaxHighlighting = null;
+                SelectedSyntax = null;
                 return;
             }
 
             using (XmlReader reader = XmlReader.Create(SelectedSyntaxViewModel.Filename))
             {
-                codeEditor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                SelectedSyntax = HighlightingLoader.Load(reader, HighlightingManager.Instance);
             }
-
-
         }
-
         private async Task OnViewLoadedAsync()
         {
             userVsOptions = await General.GetLiveInstanceAsync();
 
-            if (userVsOptions.PersonalAccessToken.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(userVsOptions.PersonalAccessToken))
                 UpdateStatusBar(StatusImage.Warning, "Please set Access Token in Options>VisGist", false);
             else
                 await AuthenticateAndLoadGistsAsync();
@@ -571,19 +560,32 @@ namespace VisGist.ViewModels
 
                 if (SelectedGistViewModel.GistFiles.Count() > 0)
                     SelectedGistFileViewModel = SelectedGistViewModel.GistFiles[0];
-
             }
             else if (gistItem is GistFileViewModel)
             {
                 SelectedGistFileViewModel = (GistFileViewModel)gistItem;
                 SelectedGistViewModel = SelectedGistFileViewModel.ParentGistViewModel;
-                if (userVsOptions.AutoLanguageSelect)
-                {
-                    // TODO: Update below
-                    //SelectedLanguage = Helpers.String.FilenameToLanguage(SelectedGistFileViewModel.Filename);
-                }
+            }
+
+            AutoUpdateCodeSyntax();
+
+        }
+
+        private void AutoUpdateCodeSyntax()
+        {
+            if (userVsOptions.AutoLanguageSelect && SelectedGistFileViewModel != null)
+            {
+                SyntaxViewModel matchedSyntax = Syntaxes.Where(s => s.Extensions != null &&
+                                    s.Extensions.Contains(Path.GetExtension(SelectedGistFileViewModel.Filename)))
+                                    .FirstOrDefault();
+
+                if (matchedSyntax != null)
+                    SelectedSyntaxViewModel = Syntaxes.Where(s => s.Name == matchedSyntax.Name).FirstOrDefault();
+                else
+                    SelectedSyntaxViewModel = null;
             }
         }
+
         private string GetDialogRepsonse(string windowTitle, string dialogText, string button1Text, string button2Text)
         {
             ModalDialogViewModel modalDialogViewModel = new ModalDialogViewModel();

@@ -1,20 +1,5 @@
-﻿using Syncfusion.SfSkinManager;
-using Syncfusion.Themes.MaterialDark.WPF;
-using Syncfusion.Themes.MaterialLight.WPF;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using VisGist.ViewModels;
 
 namespace VisGist.Views
@@ -41,28 +26,24 @@ namespace VisGist.Views
         }
         private void SetTheme(bool darkMode)
         {
-            if (darkMode)
-            {
-                // Syncfusion Theme operations
-                MaterialDarkThemeSettings themeSettings = new MaterialDarkThemeSettings();
-                themeSettings.Palette = Syncfusion.Themes.MaterialDark.WPF.MaterialPalette.Blue;
-                SfSkinManager.RegisterThemeSettings("MaterialDark", themeSettings);
-                SfSkinManager.SetTheme(this, new Theme("MaterialDark"));
-            }
-            else
-            {
-                // Syncfusion Theme operations
-                MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
-                themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
-                SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);
-                SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
-            }
         }
 
         private void ModalDialogBase_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Properties.Settings.Default.CodeWindowSize = new System.Drawing.Size((int)ActualWidth, (int)ActualHeight);
             Properties.Settings.Default.Save();
+        }
+
+        private void CodeEditor_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                if (e.Delta > 0 && CodeEditor.FontSize < 200)
+                    CodeEditor.FontSize += 1;
+                else if (CodeEditor.FontSize > 4)
+                    CodeEditor.FontSize -= 1;
+                e.Handled = true;
+            }
         }
     }
 }

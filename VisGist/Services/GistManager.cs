@@ -1,15 +1,9 @@
 ﻿using Octokit;
-using Syncfusion.Windows.Shared;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.RightsManagement;
-using System.Text;
 using System.Threading.Tasks;
 using VisGist.ViewModels;
-using Octo = Octokit;
-using VisGistModel = VisGist.Models;
 
 namespace VisGist.Services
 {
@@ -56,9 +50,11 @@ namespace VisGist.Services
             {
                 if (gistFileViewModel.MarkedForDeletion) gistFileViewModel.Content = ""; // this essentially deletes the gistfile
                 // if not sched for deletion and is blank code, need to add a placeholder so doesn't get deleted
-                else if (gistFileViewModel.Content.IsNullOrWhiteSpace()) 
+                else if (string.IsNullOrWhiteSpace(gistFileViewModel.Content)) 
                 {
-                    gistFileViewModel.Content = $"{{Code blank at last VisGist save on {DateTime.Now}}}";
+                    //gistFileViewModel.Content = $"{{Code blank at last VisGist save on {DateTime.Now}}}";
+                    gistFileViewModel.Content = $"{{Blank}}";
+
                 }
 
                 GistFileUpdate gistFileUpdate = new GistFileUpdate()

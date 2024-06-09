@@ -4,10 +4,12 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:local="clr-namespace:VisGist.Views"
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
-            xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
             xmlns:viewmodels="clr-namespace:VisGist.ViewModels"
             xmlns:properties="clr-namespace:VisGist.Properties"
+            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" 
+            xmlns:behaviours="clr-namespace:VisGist.Behaviors"
             mc:Ignorable="d" 
             ResizeMode="CanResizeWithGrip"
             Padding="10"
@@ -23,22 +25,17 @@
 
     <Grid>
 
-        <syncfusion:EditControl
-                        Text="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=LostFocus,FallbackValue=''}"
-                        FontFamily="Consolas" FontSize="12"
-                        DocumentLanguage="{Binding SelectedLanguage}"
-                        IsAutoLineNumberAreaWidthEnabled="True"     
-                        LineNumberTextForeground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
-                        Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
-                        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
-                        LineNumberAreaBackground="Transparent"
-                        OutliningAreaWidth="0"
-                        ShowLineNumber="True"
-                        AcceptsTab="True"
-                        IsTabStop="True"
-                        AllowDragDrop="True" AllowDrop="True"
-                        CaretBrush="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}">
-        </syncfusion:EditControl>
+        <avalonEdit:TextEditor x:Name="CodeEditor"
+                    SyntaxHighlighting="{Binding SelectedSyntax}" FontFamily="Consolas" FontSize="10pt"
+                    Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+                    Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"                                                                     
+                    ShowLineNumbers="{Binding CodeNumberingVisible}" WordWrap="{Binding CodeWordWrapEnabled}"
+                    PreviewMouseWheel="CodeEditor_PreviewMouseWheel" >
+            <i:Interaction.Behaviors>
+                <behaviours:AvalonEditBehaviour BoundText="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </i:Interaction.Behaviors>
+        </avalonEdit:TextEditor>
 
     </Grid>
 </local:ModalDialogBase>
