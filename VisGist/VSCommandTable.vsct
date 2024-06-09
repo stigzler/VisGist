@@ -14,8 +14,7 @@
         <Icon guid="ImageCatalogGuid" id="GitNoColor" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
-          <ButtonText>Gists</ButtonText>
-			
+          <ButtonText>Gists</ButtonText>			
           <LocCanonicalName>.View.MyToolWindow</LocCanonicalName>
         </Strings>
       </Button>

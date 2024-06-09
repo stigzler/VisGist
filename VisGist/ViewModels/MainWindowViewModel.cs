@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿// Ignore Spelling: Popout Github
+
+using CommunityToolkit.Mvvm.Input;
 using EnvDTE;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -42,7 +44,7 @@ namespace VisGist.ViewModels
         private bool statusBarVisible = false;
         private bool syntaxHighlightingEnabled = false;
         private bool codeNumberingVisible = false;
-        private bool codeOutliningVisible = false;
+        private bool codeWordWrapEnabled = false;
         private int codeSize = 12;
         private string searchExpression = String.Empty;
         private GistSortMethod sortMethod = GistSortMethod.Alphabetical;
@@ -56,7 +58,7 @@ namespace VisGist.ViewModels
         private GistFileViewModel selectedGistFileViewModel;
         private SyntaxViewModel selectedSyntaxViewModel = null;
 
-        
+
 
 
         private GridResizeDirection browserEditorsSplitterDirection = GridResizeDirection.Rows;
@@ -70,7 +72,7 @@ namespace VisGist.ViewModels
         public bool ViewLoaded { get; set; } = false;
         public int CodeSize { get => codeSize; set => SetProperty(ref codeSize, value); }
         public bool CodeNumberingVisible { get => codeNumberingVisible; set => SetProperty(ref codeNumberingVisible, value); }
-        public bool CodeOutliningVisible { get => codeOutliningVisible; set => SetProperty(ref codeOutliningVisible, value); }
+        public bool CodeWordWrapEnabled { get => codeWordWrapEnabled; set => SetProperty(ref codeWordWrapEnabled, value); }
         public StatusImage StatusImage { get => statusImage; set => SetProperty(ref statusImage, value); }
         public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
         public bool StatusBarVisible { get => statusBarVisible; set => SetProperty(ref statusBarVisible, value); }
@@ -149,6 +151,7 @@ namespace VisGist.ViewModels
         public IAsyncRelayCommand SaveAllGistsCMD { get; set; }
         public IRelayCommand SetSyntaxHighlightingCMD { get; set; }
         public IRelayCommand SetCodeNumberingVisibleCMD { get; set; }
+        public IRelayCommand SetCodeWordWrapEnabledCMD { get; set; }
         public IRelayCommand SortGistsCMD { get; set; }
         public IRelayCommand MakeGistTitleCMD { get; set; }
         public IRelayCommand CollapseTreeCMD { get; set; }
@@ -171,12 +174,14 @@ namespace VisGist.ViewModels
             SaveAllGistsCMD = new AsyncRelayCommand(SaveAllGistsAsync);
             SetSyntaxHighlightingCMD = new RelayCommand<ICSharpCode.AvalonEdit.TextEditor>(SetSyntaxHighlighting);
             SetCodeNumberingVisibleCMD = new RelayCommand(SetCodeNumberingVisible);
+            SetCodeWordWrapEnabledCMD = new RelayCommand(SetCodeWordWrapEnabled);
             SortGistsCMD = new RelayCommand<GistSortMethod>((param) => SortGists(param));
             MakeGistTitleCMD = new RelayCommand(MakeGistTitle);
             CollapseTreeCMD = new RelayCommand<TreeView>(CollapseTree);
             PopoutCodeCMD = new RelayCommand(PopoutCode);
             ViewInGithubCMD = new RelayCommand(ViewInGithub);
         }
+
 
         #endregion End: COMMANDS ---------------------------------------------------------------------------------
 
@@ -398,7 +403,10 @@ namespace VisGist.ViewModels
         {
             CodeNumberingVisible = !CodeNumberingVisible;
         }
-
+        private void SetCodeWordWrapEnabled()
+        {
+            CodeWordWrapEnabled = !CodeWordWrapEnabled;
+        }
         private async Task SaveGistAsync()
         {
             //if (SelectedGistViewModel.HasChanges == false)

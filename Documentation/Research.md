@@ -12,7 +12,7 @@ Header:
 ```
 
 You **can** put in hex RGB values
-3
+
 All Languages syntax testing codes:
 https://github.com/sharkdp/bat/tree/master/tests/syntax-tests/source
 

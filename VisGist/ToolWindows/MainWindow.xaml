@@ -54,9 +54,6 @@
             
         </ResourceDictionary>
 
-
-
-
     </UserControl.Resources>
 
     <!-- WINDOW ================================================================================= -->
@@ -74,7 +71,7 @@
             <ToolBarTray x:Name="GreeterTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
                 Converter={StaticResource InverseBoolToVisibilityConverter}}" Background="Transparent">
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true"
-                d:Visibility="Visible">
+                d:Visibility="Visible" >
 
                     <Button x:Name="LoginBT" Command="{Binding GitAuthenticateCMD}" ToolTip="Log In">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.LoginUser}"/>
@@ -86,7 +83,9 @@
             <ToolBarTray x:Name="MainTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
                 Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible">
 
-                <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true" HorizontalAlignment="Stretch">
+                <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true" HorizontalAlignment="Stretch"
+                                  OverflowBehaviour="ShowWhenNeeded"
+                                  Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
 
                     <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Selected Gist" Click="SaveBT_Click"
                             IsEnabled="{Binding SelectedGistViewModel.CanSave}">
@@ -102,44 +101,12 @@
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.NewListItem}" />
                     </Button>
 
-                    <Separator Background="Gray"></Separator>
-
-                    <!--<ToggleButton x:Name="SyntaxHighlightBT" ToolTip="Toggle Syntax Highlighting" 
-                                  Command="{Binding SetSyntaxHighlightingCMD}" 
-                                  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
-                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CommentCode}" />
-                    </ToggleButton>-->
-
-                    <Button x:Name="CodeNumberVisibleBT" ToolTip="Toggle Code Numbers" Command="{Binding SetCodeNumberingVisibleCMD}">
-                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.OrderedList}" />
-                    </Button>
-
-                    <!--<ToggleButton x:Name="CodeOutliningVisibleBT" Content="Dave" ToolTip="Toggle Code Outlining" Command="{Binding TestRCCommand}"
-                                  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
-                    </ToggleButton>-->
-
-                    <ComboBox x:Name="LanguageSelectorCB" Width="85" Style="{StaticResource ComboBoxStyle}"
-                              IsEditable="False" IsReadOnly="True" 
-                              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
-                              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"  
-                              d:Foreground="White"
-                              ItemsSource="{Binding Syntaxes}" Margin="4,0,4,0" 
-                              SelectedItem="{Binding SelectedSyntaxViewModel, Mode=TwoWay}"
-                              DisplayMemberPath="Name">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding SetSyntaxHighlightingCMD}" 
-                                                       CommandParameter="{Binding ElementName=CodeEditor}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </ComboBox>
-
-                    <Separator Background="Gray"></Separator>
+                    <!--<Separator Background="Gray"></Separator>-->
 
                     <Button x:Name="CollapseTreeBT" Command="{Binding CollapseTreeCMD}" CommandParameter="{Binding ElementName=GistsTV}"  ToolTip="Collapse All Gists">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CollapseAll}" />
                     </Button>
-                    
+
                     <Menu d:Background="Transparent" ToolTip="Sort Gists">
                         <MenuItem Style="{StaticResource DropDownButton}">
                             <MenuItem.Icon>
@@ -160,12 +127,32 @@
                             <MenuItem Header="Private" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                                       Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Public}">
                                 <MenuItem.Icon>
-                                    
+
                                     <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.Key}" />
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuItem>
                     </Menu>
+
+
+                    <ComboBox x:Name="LanguageSelectorCB" Width="85" Style="{StaticResource ComboBoxStyle}"
+                              IsEditable="False" IsReadOnly="True" 
+                              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
+                              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"  
+                              d:Foreground="White"
+                              ItemsSource="{Binding Syntaxes}" Margin="2,0,2,0" 
+                              SelectedItem="{Binding SelectedSyntaxViewModel, Mode=TwoWay}"
+                              DisplayMemberPath="Name">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding SetSyntaxHighlightingCMD}" 
+                                                       CommandParameter="{Binding ElementName=CodeEditor}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ComboBox>
+
+                    <!--<Separator Background="Gray"></Separator>-->
+
 
                     <!--<Button x:Name="SortDropdownButton" Click="SortDropdownButton_Click" ToolTip="Sort Gists" DockPanel.Dock="Right"
                      Width="28" Background="Transparent">
@@ -305,7 +292,7 @@
                              Visibility="{Binding AsyncOperationStatusManager.CurrentOperation.Execution.IsNotCompleted, Converter={StaticResource boolToVisibilityConverter}, FallbackValue=Collapsed}"/>-->
 
             <StatusBarItem Grid.Column="2" HorizontalContentAlignment="Stretch" >
-                <ProgressBar  Height="2" Foreground="Red" IsIndeterminate="True" Margin="10,0,10,0" VerticalAlignment="Center"
+                <ProgressBar  Height="2" Foreground="#00A2ED" IsIndeterminate="True" Margin="10,0,10,0" VerticalAlignment="Center"
                              HorizontalContentAlignment="Stretch" Background="Transparent" BorderBrush="#40808080"
                              Visibility="{Binding StatusBarVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                              d:Visibility="Visible"/>
@@ -573,7 +560,7 @@
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Favorite}"/>
                     </ToggleButton>
 
-                    <ContentControl DockPanel.Dock="Left" Margin="4,0,0,0">
+                    <ContentControl DockPanel.Dock="Left" Margin="2,0,2,0" ToolTip="{Binding SelectedGistViewModel.PrimaryGistFilename}">
                         <imaging:CrispImage  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Item}"/>
                     </ContentControl>
 
@@ -603,8 +590,9 @@
 
                 <DockPanel x:Name="GistFileFilenameDP" Grid.Row="4" Margin="2,4,0,2" LastChildFill="True">
 
-                    <ContentControl DockPanel.Dock="Left"  VerticalAlignment="Center">
-                        <imaging:CrispImage  Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}"/>
+                    <ContentControl DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,2,0"
+                                    ToolTip="{Binding SelectedGistFileViewModel.Filename}">
+                        <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}"/>
                     </ContentControl>
 
                     <!--<ContentControl DockPanel.Dock="Right" VerticalAlignment="Top" ToolTip="Code Pop-out" Margin="0,0,2,0">
@@ -612,8 +600,20 @@
                     </ContentControl>-->
 
                     <Button DockPanel.Dock="Right" VerticalAlignment="Center" ToolTip="Code Pop-out" Margin="0,0,2,0" Width="20" Height="20"
-                            Style="{StaticResource ButtonStyle}" Command="{Binding PopoutCodeCMD}">
+                        Style="{StaticResource ButtonStyle}" Command="{Binding PopoutCodeCMD}">
                         <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.DocumentSource}"/>
+                    </Button>
+                    
+                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" ToolTip="Toggle Line Numbers"
+                            Margin="0,0,2,0" Width="20" Height="20" Command="{Binding SetCodeNumberingVisibleCMD}"
+                            Style="{StaticResource ButtonStyle}" >
+                        <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.OrderedList}"/>
+                    </Button>
+
+                    <Button DockPanel.Dock="Right" VerticalAlignment="Center" ToolTip="Toggle WordWrap" 
+                            Margin="0,0,2,0" Width="20" Height="20" Command="{Binding SetCodeWordWrapEnabledCMD}"
+                            Style="{StaticResource ButtonStyle}">
+                        <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.WordWrap}"/>
                     </Button>
 
                     <TextBox x:Name="GistFileFilenameTB"  Background="Transparent" Style="{StaticResource FilenameTextBox}"
@@ -654,9 +654,12 @@
                     SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt"
                     Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
                     Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
-                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                    ShowLineNumbers="true" WordWrap="False"
-                />
+                    VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"                                                                     
+                    ShowLineNumbers="{Binding CodeNumberingVisible}" WordWrap="{Binding CodeWordWrapEnabled}">
+                    <i:Interaction.Behaviors>
+                        <behaviours:AvalonEditBehaviour BoundText="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </i:Interaction.Behaviors>
+                </avalonEdit:TextEditor>
 
             </Grid>
 

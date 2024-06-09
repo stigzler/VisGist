@@ -22,7 +22,6 @@ namespace VisGist
     {
         private string personalAccessToken = "{unset}";
 
-
         [Category("Github Settings")]
         [DisplayName("Personal Access Token")]
         [Description("Your GitHub Personal Access Token. Get one via Github > Settings > Developer Settings > Personal Access Tokens > Fine-grained tokens")]
@@ -67,16 +66,16 @@ namespace VisGist
         [DefaultValue(true)]
         public bool ConfirmDelete { get; set; } = true;
 
-        [Category("General")]
-        [DisplayName("Code Font")]
-        [Description("Sets the Font for the Code.")]
-        [DefaultValue(typeof(Font), "Consolas, 12pt")]
-        public System.Windows.Media.FontFamily CodeFont { get; set; }
+        //[Category("General")]
+        //[DisplayName("Code Font")]
+        //[Description("Sets the Font for the Code.")]
+        //[DefaultValue(typeof(Font), "Consolas, 12pt")]
+        //public System.Windows.Media.FontFamily CodeFont { get; set; }
 
-        [Category("General")]
-        [DisplayName("Head New Gists")]
-        [Description("Prefixes the New Gist Filename with the Gist File Header.")]
-        public bool HeadNewGists { get; set; } = false;
+        //[Category("General")]
+        //[DisplayName("Head New Gists")]
+        //[Description("Prefixes the New Gist Filename with the Gist File Header.")]
+        //public bool HeadNewGists { get; set; } = false;
 
 
         [Category("General")]

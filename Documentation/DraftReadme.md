@@ -10,12 +10,17 @@ In `Visual Studio > Tools > Options > VisGist > General > Personal Access Token`
 
 ## Operational
 
+### Authentication
+
 Your Git Personal Access Token (PAT) is stored using encryption based on your local machine's hardware using the Data Protection API (DPAPI) system. Thus, you may need to re-enter your PAT if you're having problems.
+
+### Syntax Highlighting
+
+rough: Light/Dark versions stored in AppData (show location). Appeal for others to contribute.
 
 ## Options
 
 Access via `Visual Studio > Tools > Options > VisGist`
-
 
 |Option|Info|
 |--|--|

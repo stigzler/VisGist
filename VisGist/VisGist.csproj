@@ -65,6 +65,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\AvalonEditBehaviour.cs" />
     <Compile Include="Behaviors\BindableSelectedItemBehavior.cs" />
     <Compile Include="Controls\ToolBar.cs" />
     <Compile Include="Converters\BoolConverter.cs" />

@@ -1,15 +1,26 @@
-﻿using System;
+﻿// Ignore Spelling: Behaviour
+
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
+using Brush = System.Windows.Media.Brush;
+using Color = System.Windows.Media.Color;
 
 namespace VisGist.Controls
 {
     internal class ToolBar: System.Windows.Controls.ToolBar
     {
+        public Brush OverflowPanelBackground { get; set; }
+        public Brush OverflowButtonBackground { get; set; }
+        public OverflowMode OverflowBehaviour { get; set; } = OverflowMode.ShowWhenNeeded;
 
         internal enum OverflowMode
         {
@@ -17,14 +28,10 @@ namespace VisGist.Controls
             ShowWhenNeeded,
             AlwaysShow
         }
-
-        public OverflowMode OverflowBehaviour { get; set; } = OverflowMode.ShowWhenNeeded;
-
         public ToolBar()
         {
             this.Loaded += ToolBar_Loaded; // no overload :(
         }
-
         private void ToolBar_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             if (OverflowBehaviour != OverflowMode.AlwaysHidden) return;
@@ -37,7 +44,7 @@ namespace VisGist.Controls
             if (this.Template.FindName("MainPanelBorder", this) is FrameworkElement mainPanelBorder)
             {
                 mainPanelBorder.Margin = new Thickness(0);
-            }
+            }           
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -57,8 +64,25 @@ namespace VisGist.Controls
                     mainPanelBorder.Margin = this.HasOverflowItems ? defaultMargin : new Thickness(0);
                 }
             }
-
             base.OnRenderSizeChanged(sizeInfo);
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+
+            var overflowPanel = base.GetTemplateChild("PART_ToolBarOverflowPanel") as ToolBarOverflowPanel;
+            if (overflowPanel != null)
+            {
+                overflowPanel.Background = OverflowPanelBackground ?? Background;
+                overflowPanel.Margin = new Thickness(0);
+            }
+
+            ToggleButton overflowButton = this.Template.FindName("OverflowButton", this) as ToggleButton;
+            if (overflowButton != null)
+            {
+                overflowButton.Background = OverflowButtonBackground ?? Background;
+            }
         }
     }
 }

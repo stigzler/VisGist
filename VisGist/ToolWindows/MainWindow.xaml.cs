@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using VisGist.ViewModels;
@@ -208,5 +209,30 @@ namespace VisGist
         {
 
         }
+
+        private void ToolBar_Loaded(object sender, RoutedEventArgs e)
+        {
+            // This changes the back color of the Toolbar overflow
+            ToolBar toolBar = sender as ToolBar;
+            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as Grid;
+            if (overflowGrid != null)
+            {
+                overflowGrid.Background = Brushes.Red;
+            }
+
+            var overflowButton = toolBar.Template.FindName("OverflowButton", toolBar) as ToggleButton;
+            if (overflowButton != null)
+            {
+                overflowButton.Background = Brushes.Red;
+            }
+
+            var overflowPanel = toolBar.Template.FindName("PART_ToolBarOverflowPanel", toolBar) as ToolBarOverflowPanel;
+            if (overflowPanel != null)
+            {
+                overflowPanel.Background = Brushes.Red;
+            }
+        }
+
+ 
     }
 }
