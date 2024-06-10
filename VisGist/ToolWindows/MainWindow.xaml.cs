@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Drawing;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -58,25 +59,14 @@ namespace VisGist
         {
             if (darkMode)
             {
-                // below not used at present, but may be needed
-                // resourceDictionaryManager.ChangeTheme(new Uri("pack://application:,,,/VisGist;component/Resources/Themes/Dark.xaml"), this);
-
-                // Syncfusion Theme operations
-                //MaterialDarkThemeSettings themeSettings = new MaterialDarkThemeSettings();
-                //themeSettings.Palette = Syncfusion.Themes.MaterialDark.WPF.MaterialPalette.Blue;
-                //SfSkinManager.RegisterThemeSettings("MaterialDark", themeSettings);
-                //SfSkinManager.SetTheme(this, new Theme("MaterialDark"));
+                // Below sets the hyperlink color in avalonEdit, as this cannot be changed via the xhsd files
+                CodeEditor.TextArea.TextView.LinkTextForegroundBrush = 
+                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(255,86,156,214));
             }
             else
             {
-                // below not used at present, but may be needed
-                // resourceDictionaryManager.ChangeTheme(new Uri("pack://application:,,,/VisGist;component/Resources/Themes/Light.xaml"), this);
-
-                // Syncfusion Theme operations
-                //MaterialLightThemeSettings themeSettings = new MaterialLightThemeSettings();
-                //themeSettings.Palette = Syncfusion.Themes.MaterialLight.WPF.MaterialPalette.Blue;
-                //SfSkinManager.RegisterThemeSettings("MaterialLight", themeSettings);
-                //SfSkinManager.SetTheme(this, new Theme("MaterialLight"));
+                // Below sets the hyperlink color in avalonEdit, as this cannot be changed via the xhsd files
+                CodeEditor.TextArea.TextView.LinkTextForegroundBrush = System.Windows.Media.Brushes.DarkBlue;
             }
         }
 
@@ -156,27 +146,19 @@ namespace VisGist
 
         private void MyToolWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            mainWindowVM.ViewLoaded = true;
+            // mainWindowVM.ViewLoaded = true;
         }
 
         private void SortDropdownButton_Click(object sender, RoutedEventArgs e)
         {
             var sortButton = sender as Button;
-
-            //sortButton.ContextMenu.BringIntoView();
-
             if (sortButton != null)
             {
                 sortButton.ContextMenu.IsOpen = true;
             }
         }
 
-        private void SortDropdownButton_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //SortDropdownButton.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice,
-            //    Environment.TickCount, MouseButton.Right) { RoutedEvent = Button.Mouse });
-            //e.Handled = true;
-        }
+  
 
         private void GistFileFilenameTB_KeyDown(object sender, KeyEventArgs e)
         {

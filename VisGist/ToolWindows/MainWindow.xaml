@@ -76,10 +76,10 @@
             </ToolBarTray>
 
             <ToolBarTray x:Name="MainTBT" Style="{DynamicResource ToolBarTray}" Visibility="{Binding IsAuthenticated,
-                Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible">
+                Converter={StaticResource BoolToVisibilityConverter}}" d:Visibility="Visible" Background="Transparent">
 
                 <controls:ToolBar Style="{DynamicResource ToolBar}" ToolBarTray.IsLocked="true" HorizontalAlignment="Stretch"
-                                  OverflowBehaviour="ShowWhenNeeded"
+                                  OverflowBehaviour="ShowWhenNeeded" 
                                   Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
 
                     <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Selected Gist" Click="SaveBT_Click"
@@ -107,7 +107,8 @@
                             <MenuItem.Icon>
                                 <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
                             </MenuItem.Icon>
-                            <MenuItem Header="Alphabetical" Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+                            <MenuItem Header="Alphabetical" 
+                                      Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                                       Command="{Binding SortGistsCMD}" CommandParameter="{x:Static enums:GistSortMethod.Alphabetical}">
                                 <MenuItem.Icon>
                                     <imaging:CrispImage Moniker="{x:Static catalog:KnownMonikers.SortAscending}" />
@@ -494,7 +495,8 @@
                     Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                     ShowLineNumbers="{Binding CodeNumberingVisible}" WordWrap="{Binding CodeWordWrapEnabled}"
-                    TabIndex="2" IsTabStop="True" PreviewMouseWheel="CodeEditor_PreviewMouseWheel">
+                    TabIndex="2" IsTabStop="True" PreviewMouseWheel="CodeEditor_PreviewMouseWheel"
+                    >
                     <i:Interaction.Behaviors>
                         <behaviours:AvalonEditBehaviour BoundText="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </i:Interaction.Behaviors>

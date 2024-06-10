@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Xml;
 using VisGist.Data.Models;
@@ -187,12 +188,18 @@ namespace VisGist.ViewModels
             // Detect VisualStudio Theme Changes
             VSColorTheme.ThemeChanged += VSColorTheme_ThemeChanged;
 
-            // Ensure User Syntaxes are setup up - NB: This must precede newing up SyntaxManager.
+            // Set Dark Mode
+            IsDarkMode = Helpers.UI.IsDarkMode();
+
+            // Ensure User Syntax files are in User folder - NB: This must precede newing up SyntaxManager.
             Helpers.File.EnsureUserSyntaxFiles();
 
             // Setup Managers
             gistManager = new GistManager(gitClientService);
             syntaxManager = new SyntaxManager();
+
+            // Now setup Syntaxes
+            UpdateSyntaxes(IsDarkMode);
 
             // Link Commands and User Operation Methods
             SetupCommands();
@@ -511,12 +518,17 @@ namespace VisGist.ViewModels
 
         private async Task OnViewLoadedAsync()
         {
-            userVsOptions = await General.GetLiveInstanceAsync();
+            if (!this.ViewLoaded)
+            {
+                userVsOptions = await General.GetLiveInstanceAsync();
 
-            if (string.IsNullOrWhiteSpace(userVsOptions.PersonalAccessToken))
-                UpdateStatusBar(StatusImage.Warning, "Please set Access Token in Options>VisGist", false);
-            else
-                await AuthenticateAndLoadGistsAsync();
+                if (string.IsNullOrWhiteSpace(userVsOptions.PersonalAccessToken))
+                    UpdateStatusBar(StatusImage.Warning, "Please set Access Token in Options>VisGist", false);
+                else
+                    await AuthenticateAndLoadGistsAsync();
+
+                ViewLoaded = true;
+            }
         }
 
         private void RefreshGistList()

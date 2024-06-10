@@ -17,6 +17,7 @@ namespace VisGist
 
         public override Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
+            Helpers.Logger.Initialise();
             return Task.FromResult<FrameworkElement>(new MainWindow(MainWindowViewModel));
         }
 
