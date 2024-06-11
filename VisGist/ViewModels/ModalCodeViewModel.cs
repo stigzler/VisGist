@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace VisGist.ViewModels
 {
@@ -21,6 +22,8 @@ namespace VisGist.ViewModels
         private IHighlightingDefinition selectedSyntax;
         private bool codeNumberingVisible = false;
         private bool codeWordWrapEnabled = false;
+        private int codeSize;
+
 
         //  ==============================================================================================
         //  Public Members
@@ -30,11 +33,14 @@ namespace VisGist.ViewModels
         public IHighlightingDefinition SelectedSyntax { get => selectedSyntax; set => SetProperty(ref selectedSyntax, value); }
         public bool CodeNumberingVisible { get => codeNumberingVisible; set => SetProperty(ref codeNumberingVisible, value); }
         public bool CodeWordWrapEnabled { get => codeWordWrapEnabled; set => SetProperty(ref codeWordWrapEnabled, value); }
+        public int CodeSize { get => codeSize; set => SetProperty(ref codeSize, value); }
 
         #endregion Properties =========================================================================================
 
-        public ModalCodeViewModel()
-        {
+        public ModalCodeViewModel() 
+        { 
+            
         }
+     
     }
 }

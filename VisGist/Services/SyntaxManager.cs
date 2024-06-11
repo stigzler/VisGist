@@ -23,9 +23,6 @@ namespace VisGist.Services
             string lightThemedSyntaxDir = Path.Combine(Data.Constants.UserSyntaxDirectory, "Light");
             string darkThemedSyntaxDir = Path.Combine(Data.Constants.UserSyntaxDirectory, "Dark");
                        
-            Logger.Log("Light Syntax files: " + lightThemedSyntaxDir);
-            Logger.Log("Dark Syntax files: " + darkThemedSyntaxDir);
-
             // Iterate trough Light Theme Syntax files to add Syntax defs to Syntaxes ObsCollection
             foreach (string syntaxFile in Directory.GetFiles(lightThemedSyntaxDir))
             {
@@ -39,7 +36,6 @@ namespace VisGist.Services
                 };
 
                 Syntaxes.Add(newSyntax);
-                Logger.Log($"Added Light Syntax file: {newSyntax.Name}");
             }
 
             // Iterate trough Dark Theme Syntax files to either update an existing Syntax definition or insert a new one.
@@ -52,7 +48,6 @@ namespace VisGist.Services
                 if (matchedLightSyntax != null)
                 {
                     matchedLightSyntax.FileDarkTheme = syntaxFile;
-                    Logger.Log($"Updated Syntax from Dark Syntax file: {matchedLightSyntax.Name}");
                 }
                 else
                 {
@@ -63,7 +58,6 @@ namespace VisGist.Services
                         FileDarkTheme = syntaxFile
                     };
                     Syntaxes.Add(newSyntax);
-                    Logger.Log($"Added Dark Syntax file: {newSyntax.Name}");
                 }
             }
 

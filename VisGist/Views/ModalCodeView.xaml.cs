@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using VisGist.ViewModels;
 
 namespace VisGist.Views
@@ -25,6 +26,15 @@ namespace VisGist.Views
 
         private void SetTheme(bool darkMode)
         {
+            if (darkMode)
+            {
+                CodeEditor.TextArea.TextView.LinkTextForegroundBrush =
+                   new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 86, 156, 214));
+            }
+            else
+            {
+                CodeEditor.TextArea.TextView.LinkTextForegroundBrush = System.Windows.Media.Brushes.DarkBlue;
+            }
         }
 
         private void ModalDialogBase_SizeChanged(object sender, SizeChangedEventArgs e)

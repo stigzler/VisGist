@@ -30,7 +30,8 @@
         </StatusBar>
         <Separator DockPanel.Dock="Bottom" Background="Gray"></Separator>
         <avalonEdit:TextEditor x:Name="CodeEditor"
-                    SyntaxHighlighting="{Binding SelectedSyntax}" FontFamily="Consolas" FontSize="10pt"
+                    SyntaxHighlighting="{Binding SelectedSyntax}" 
+                    FontFamily="Consolas" FontSize="{Binding CodeSize, Mode=TwoWay}"
                     Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
                     Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"

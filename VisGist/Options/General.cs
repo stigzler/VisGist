@@ -29,7 +29,7 @@ namespace VisGist
             set => personalAccessToken = DpapiEncrypt.EncryptString(DpapiEncrypt.ToSecureString(value));
         }
 
-        [Category("General")]
+        [Category("Github Settings")]
         [DisplayName("New Gists Public")]
         [Description("Sets whether to default newly created Gists to Public visibility. If false, new Gists will be private. Warning: Private Gists can be set to Public, but not vice-versa.")]
         [DefaultValue(false)]
@@ -38,8 +38,15 @@ namespace VisGist
         [Category("General")]
         [DisplayName("Auto Language Select")]
         [Description("Tries to automatically select the code language from the file extension")]
-        [DefaultValue(false)]
-        public bool AutoLanguageSelect { get; set; } = false;
+        [DefaultValue(true)]
+        public bool AutoLanguageSelect { get; set; } = true;
+
+        [Category("General")]
+        [DisplayName("Default Code Size")]
+        [Description("The default font size for the code editor")]
+        [DefaultValue(13)]
+        public int DefaultCodeSize { get; set; } = 13;
+
 
         [Category("General")]
         [DisplayName("Confirm Delete")]

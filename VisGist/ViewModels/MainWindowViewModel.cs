@@ -35,6 +35,7 @@ namespace VisGist.ViewModels
         private bool syntaxHighlightingEnabled = false;
         private bool codeNumberingVisible = false;
         private bool codeWordWrapEnabled = false;
+        private int codeSize;
         private string searchExpression = String.Empty;
         private GistSortMethod sortMethod = GistSortMethod.Alphabetical;
         private IHighlightingDefinition selectedSyntax = null;
@@ -60,6 +61,7 @@ namespace VisGist.ViewModels
         public bool ViewLoaded { get; set; } = false;
         public bool CodeNumberingVisible { get => codeNumberingVisible; set => SetProperty(ref codeNumberingVisible, value); }
         public bool CodeWordWrapEnabled { get => codeWordWrapEnabled; set => SetProperty(ref codeWordWrapEnabled, value); }
+        public int CodeSize { get => codeSize; set => SetProperty(ref codeSize, value); }
         public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
         public bool StatusBarVisible { get => statusBarVisible; set => SetProperty(ref statusBarVisible, value); }
         public bool SyntaxHighlightingEnabled { get => syntaxHighlightingEnabled; set => SetProperty(ref syntaxHighlightingEnabled, value); }
@@ -111,7 +113,7 @@ namespace VisGist.ViewModels
 
         public ObservableCollection<GistViewModel> AllGists { get => allGists; set => SetProperty(ref allGists, value); }
         public ObservableCollection<SyntaxViewModel> Syntaxes { get => syntaxes; set => SetProperty(ref syntaxes, value); }
-
+         
         #endregion PROPERTIES =========================================================================================
 
         #region OPERATIONAL PRIVATE VARS ===========================================================================
@@ -315,7 +317,7 @@ namespace VisGist.ViewModels
             modalCodeViewModel.CodeNumberingVisible = CodeNumberingVisible;
             modalCodeViewModel.CodeWordWrapEnabled = CodeWordWrapEnabled;
             modalCodeViewModel.SelectedSyntax = SelectedSyntax;
-
+            modalCodeViewModel.CodeSize = CodeSize;
             modalCodeView.ShowModal();
         }
 
@@ -528,6 +530,8 @@ namespace VisGist.ViewModels
                     await AuthenticateAndLoadGistsAsync();
 
                 ViewLoaded = true;
+
+                CodeSize = userVsOptions.DefaultCodeSize;
             }
         }
 

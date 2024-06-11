@@ -17,7 +17,6 @@ namespace VisGist
 
         public override Task<FrameworkElement> CreateAsync(int toolWindowId, CancellationToken cancellationToken)
         {
-            Helpers.Logger.Initialise();
             return Task.FromResult<FrameworkElement>(new MainWindow(MainWindowViewModel));
         }
 
@@ -26,7 +25,7 @@ namespace VisGist
         {
             public Pane()
             {
-                BitmapImageMoniker = KnownMonikers.GitHub;
+                BitmapImageMoniker = KnownMonikers.GitNoColor;
             }
         }
     }

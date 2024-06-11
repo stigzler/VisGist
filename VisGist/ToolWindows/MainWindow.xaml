@@ -18,10 +18,8 @@
              toolkit:Themes.UseVsTheme="True"
             Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
-            mc:Ignorable="d"
-            d:DesignHeight="300" d:DesignWidth="300" d:Foreground="white"
-            AllowDrop="True"
-            Name="MyToolWindow" SizeChanged="MyToolWindow_SizeChanged" Loaded="MyToolWindow_Loaded">
+            mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:Foreground="white"
+            AllowDrop="True" Name="MyToolWindow" SizeChanged="MyToolWindow_SizeChanged">
 
     <UserControl.DataContext>
         <viewmodels:MainWindowViewModel />
@@ -82,13 +80,13 @@
                                   OverflowBehaviour="ShowWhenNeeded" 
                                   Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
 
-                    <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Selected Gist" Click="SaveBT_Click"
+                    <Button x:Name="SaveBT" Command="{Binding SaveGistCMD}" ToolTip="Save Selected Gist"
                             IsEnabled="{Binding SelectedGistViewModel.CanSave}">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Save}"
                                             Opacity="{Binding SelectedGistViewModel.CanSave, Converter={StaticResource BoolToOpacityConverter}}" />
                     </Button>
 
-                    <Button x:Name="SaveAllBT" Command="{Binding SaveAllGistsCMD}" ToolTip="Save All Gists" Click="SaveBT_Click">
+                    <Button x:Name="SaveAllBT" Command="{Binding SaveAllGistsCMD}" ToolTip="Save All Gists">
                         <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.SaveAll}" />
                     </Button>
 
@@ -490,13 +488,13 @@
                 <!-- Code Editor -->
 
                 <avalonEdit:TextEditor x:Name="CodeEditor" Grid.Row="6"
-                    SyntaxHighlighting="{Binding SelectedSyntax}" FontFamily="Consolas" FontSize="10pt"
+                    SyntaxHighlighting="{Binding SelectedSyntax}" 
                     Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
                     Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                     ShowLineNumbers="{Binding CodeNumberingVisible}" WordWrap="{Binding CodeWordWrapEnabled}"
                     TabIndex="2" IsTabStop="True" PreviewMouseWheel="CodeEditor_PreviewMouseWheel"
-                    >
+                    FontFamily="Consolas" FontSize="{Binding CodeSize}"                    >
                     <i:Interaction.Behaviors>
                         <behaviours:AvalonEditBehaviour BoundText="{Binding SelectedGistFileViewModel.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </i:Interaction.Behaviors>

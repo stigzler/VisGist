@@ -60,8 +60,8 @@ namespace VisGist
             if (darkMode)
             {
                 // Below sets the hyperlink color in avalonEdit, as this cannot be changed via the xhsd files
-                CodeEditor.TextArea.TextView.LinkTextForegroundBrush = 
-                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(255,86,156,214));
+                CodeEditor.TextArea.TextView.LinkTextForegroundBrush =
+                    new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 86, 156, 214));
             }
             else
             {
@@ -88,23 +88,6 @@ namespace VisGist
             {
                 GistFileFilenameTB.BorderThickness = new Thickness(0);
             }
-        }
-
-        private void TestBT_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton != MouseButton.Right) return;
-        }
-
-        private void SaveBT_Click(object sender, RoutedEventArgs e)
-        {
-            //BindingExpression expr = CodeEC.GetBindingExpression(EditControl.TextProperty);
-            //expr.UpdateSource();
-        }
-
-        private void GistsTV_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            TreeViewItem item = sender as TreeViewItem;
-            if (item != null) { item.IsSelected = true; }
         }
 
         private void GistsTV_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -143,57 +126,14 @@ namespace VisGist
             Properties.Settings.Default.SplitterGistDescription = converter.ConvertToString(GistDescriptionRow.Height);
             Properties.Settings.Default.Save();
         }
-
-        private void MyToolWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            // mainWindowVM.ViewLoaded = true;
-        }
-
-        private void SortDropdownButton_Click(object sender, RoutedEventArgs e)
-        {
-            var sortButton = sender as Button;
-            if (sortButton != null)
-            {
-                sortButton.ContextMenu.IsOpen = true;
-            }
-        }
-
-  
-
         private void GistFileFilenameTB_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter) { CodeEditor.Focus(); e.Handled = true; }
         }
 
-        private void CodeEC_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-        }
-
-        private void ToolBar_Loaded(object sender, RoutedEventArgs e)
-        {
-            // This changes the back color of the Toolbar overflow
-            ToolBar toolBar = sender as ToolBar;
-            var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as Grid;
-            if (overflowGrid != null)
-            {
-                overflowGrid.Background = Brushes.Red;
-            }
-
-            var overflowButton = toolBar.Template.FindName("OverflowButton", toolBar) as ToggleButton;
-            if (overflowButton != null)
-            {
-                overflowButton.Background = Brushes.Red;
-            }
-
-            var overflowPanel = toolBar.Template.FindName("PART_ToolBarOverflowPanel", toolBar) as ToolBarOverflowPanel;
-            if (overflowPanel != null)
-            {
-                overflowPanel.Background = Brushes.Red;
-            }
-        }
-
         private void CodeEditor_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
+            // ZOOMs text in code Editor on CTRL+MouseWheel
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 if (e.Delta > 0 && CodeEditor.FontSize < 200)
