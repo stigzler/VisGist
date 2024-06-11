@@ -563,7 +563,7 @@ namespace VisGist.ViewModels
             if (userVsOptions.AutoLanguageSelect && SelectedGistFileViewModel != null)
             {
                 SyntaxViewModel matchedSyntax = Syntaxes.Where(s => s.Extensions != null &&
-                                    s.Extensions.Contains(Path.GetExtension(SelectedGistFileViewModel.Filename)))
+                                    s.Extensions.Contains(Path.GetExtension(SelectedGistFileViewModel.Filename), StringComparer.OrdinalIgnoreCase))
                                     .FirstOrDefault();
 
                 if (matchedSyntax != null)
