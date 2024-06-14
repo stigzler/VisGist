@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)DesignDocument.md" />
-    <None Include="$(MSBuildThisFileDirectory)DraftReadme.md" />
+    <None Include="$(MSBuildThisFileDirectory)ReadMe.md" />
     <None Include="$(MSBuildThisFileDirectory)index.md" />
     <None Include="$(MSBuildThisFileDirectory)Research.md" />
   </ItemGroup>

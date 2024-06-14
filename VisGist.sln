@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisGist", "VisGist\VisGist.csproj", "{5BFC6F85-3B42-4AEF-8795-2D22A3A5D9C6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{24B1EF80-3F11-413A-AEA4-29D96C5ED368}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\ReadMe.md = Documentation\ReadMe.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dev", "dev", "{68D852F0-CD29-4CAF-8985-74789A9B38A6}"
 EndProject
