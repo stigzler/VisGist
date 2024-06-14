@@ -1,7 +1,7 @@
 # VisGist
 
 ## Intro
-VisGist allows you to view, create and edit your gists from within Visual Studio. It also includes customizable syntax highlighting to make working with gists easier.
+VisGist allows you to view, create and edit Gists from within Visual Studio. It also includes customizable syntax highlighting to make working with gists easier.
 
 ![/master/Documentation/Screenshot 2024 06 14 112132](Screenshot%202024-06-14%20112132.png)
 
