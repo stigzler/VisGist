@@ -1,7 +1,7 @@
 # VisGist
 
 ## Intro
-VisGist allows you to view, create and edit your gists from within Visual Studio. It also includes customizable syntax highlighting to make working with gists easier.
+VisGist allows you to view, create and edit Gists from within Visual Studio. It also includes customizable syntax highlighting to make working with gists easier.
 
 ![/master/Documentation/Screenshot 2024 06 14 112132](Screenshot%202024-06-14%20112132.png)
 
@@ -27,7 +27,7 @@ There are Light and Dark versions for each syntax definition. If your language i
 
 VisGit has a language auto-select function. It achieves this via checking the extension of the GistFile and matches it against those in the syntax files. If you have corresponding syntax files for a language for both Light and Dark, **you must ensure that all file extensions you want recognized are in the Light version.** Best practice is to ensure these match across the two. 
 
-💡If you create some new languages - why not share with other users, either by sending me the .xshd files, or by forking + creating a pull request? 🙂
+💡Why not share any languages you create?? Send me the code or fork and pull request💡
 
 ## Gist File Headings
 
