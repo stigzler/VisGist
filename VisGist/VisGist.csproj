@@ -140,6 +140,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Screenshot 2024-06-14 112132.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
