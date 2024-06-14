@@ -27,7 +27,7 @@ There are Light and Dark versions for each syntax definition. If your language i
 
 VisGit has a language auto-select function. It achieves this via checking the extension of the GistFile and matches it against those in the syntax files. If you have corresponding syntax files for a language for both Light and Dark, **you must ensure that all file extensions you want recognized are in the Light version.** Best practice is to ensure these match across the two. 
 
-💡Why not share any languages you create?? Send me the code of form and pull request💡
+💡Why not share any languages you create?? Send me the code or fork and pull request💡
 
 ## Gist File Headings
 
